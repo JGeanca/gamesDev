@@ -54,7 +54,7 @@ void Game::init() {
   this->srcRect.y = 0;
   this->srcRect.w = this->imgWidth;
   this->srcRect.h = this->imgHeight;
-
+  this->imgVel.x = 50;  // 50 pixels per second
 
   // text field
   this->text = "Hello, World!";
@@ -64,7 +64,6 @@ void Game::init() {
     this->text.c_str(),
     this->fontColor
   );
-  
   this->textTexture = SDL_CreateTextureFromSurface(this->renderer, textSurface);
   this->txtWidth = textSurface->w;
   this->txtHeight = textSurface->h;
@@ -77,7 +76,7 @@ void Game::run() {
   this->running = true;
   while (this->running) {
     handleEvents();
-    // update();
+    update();
     render();
   }
 }
@@ -150,4 +149,23 @@ void Game::render() {
 
   SDL_RenderPresent(this->renderer);
 
+}
+
+void Game::update() {
+  
+  int miliCurrentFrame = SDL_GetTicks();  // milliseconds since the program started
+  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;  // Calculate the time between frames
+  int miliSleep = FRAME_DELAY - miliFrameTime;  // Calculate the time to sleep
+
+  if (miliSleep > 0 && miliSleep <= FRAME_DELAY) {
+    SDL_Delay(miliSleep);
+  }
+
+  // time between frames in seconds
+  double deltaTime = miliFrameTime / 1000.0;
+
+  this->miliPreviousFrame = miliCurrentFrame;
+
+  this->position.x += this->imgVel.x * deltaTime;
+  this->position.y += this->imgVel.y * deltaTime;
 }

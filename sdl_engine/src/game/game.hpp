@@ -13,11 +13,14 @@
 #define SDL_DEFAULT_SCREEN_DRIVER -1
 #define SDL_WITHOUT_FLAGS 0
 
+const int FPS = 60;
+const int FRAME_DELAY = 1000 / FPS;
 class Game {
   
   private: // attributes
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
+    int miliPreviousFrame = 0;
 
     size_t screenWidth = 800;
     size_t screenHeight = 600;
@@ -26,10 +29,13 @@ class Game {
     // Image attributes
     SDL_Texture* imgTexture = nullptr;
     glm::vec2 position = glm::vec2();
+    glm::vec2 imgVel = glm::vec2();
+
     size_t imgWidth = 0;
     size_t imgHeight = 0;
     SDL_Rect srcRect= {0, 0, 0, 0};
     double angle = 0.0;
+    
 
     // Text attributes
     TTF_Font* font = nullptr;
