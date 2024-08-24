@@ -11,16 +11,23 @@
 #define SDL_WITHOUT_FLAGS 0
 
 class Game {
-  private:
-    // attributes
+  
+  private: // attributes
     SDL_Window *window = nullptr;
     SDL_Renderer *renderer = nullptr;
 
-    size_t screenWidth = 600;
-    size_t screenHeight = 400;
+    size_t screenWidth = 800;
+    size_t screenHeight = 600;
     bool running;
 
-    // methods
+    SDL_Texture* imgTexture = nullptr;
+    glm::vec2 position = glm::vec2();
+    size_t imgWidth = 0;
+    size_t imgHeight = 0;
+    SDL_Rect srcRect= {0, 0, 0, 0};
+    double angle = 0.0;
+
+  private: // methods
     void handleEvents();
     void update();
     void render();

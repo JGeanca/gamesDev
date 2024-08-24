@@ -29,6 +29,21 @@ void Game::init() {
     SDL_DEFAULT_SCREEN_DRIVER,
     SDL_WITHOUT_FLAGS
   );
+  
+  this->imgWidth = 32;
+  this->imgHeight = 32;
+  this->position.x = (this->screenWidth - this->imgWidth) / 2;
+  this->position.y = (this->screenHeight - this->imgHeight) / 2;
+
+  SDL_Surface* imgSurface = IMG_Load("assets/images/skull_00.png");
+  this->imgTexture = SDL_CreateTextureFromSurface(this->renderer, imgSurface);
+
+
+  SDL_FreeSurface(imgSurface);
+  this->srcRect.x = 0;
+  this->srcRect.y = 0;
+  this->srcRect.w = this->imgWidth;
+  this->srcRect.h = this->imgHeight;
 }
 
 void Game::run() {
@@ -60,13 +75,31 @@ void Game::handleEvents() {
         }
       default:
         break;
-        
     }
   }
 }
 
 void Game::render() {
-  SDL_SetRenderDrawColor(this->renderer, 0, 255, 0, 255);
+  SDL_SetRenderDrawColor(this->renderer, 30, 30, 30, 255);
   SDL_RenderClear(this->renderer);
+
+  SDL_Rect destRect = {
+    static_cast<int>(this->position.x),
+    static_cast<int>(this->position.y),
+    static_cast<int>(this->imgWidth),
+    static_cast<int>(this->imgHeight)
+  };
+
+  SDL_RenderCopyEx(
+    this->renderer,
+    this->imgTexture,
+    &this->srcRect, // Section of the image to render
+    &destRect, // Section of the screen to render the image
+    this->angle,
+    NULL, // Center of the image (null = center)
+    SDL_FLIP_NONE
+  );
+
   SDL_RenderPresent(this->renderer);
+
 }
