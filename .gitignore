@@ -1,4 +1,35 @@
+# IDEs
 .vscode
+.idea
+
+# bin
 *.bin
+
+# text files
 *.txt
 *.tsv
+
+# logs
+*.log
+
+# object files
+*.o
+*.obj
+
+# depure files
+*.d
+*.dep
+*.dSYM/
+*.dSYM/*
+
+# executables
+*.exe
+*.out
+*.app
+*.hex
+*.elf
+
+# backup files
+*~
+*.bak
+*.swp
