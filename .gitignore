@@ -28,6 +28,7 @@
 *.app
 *.hex
 *.elf
+exec
 
 # backup files
 *~
