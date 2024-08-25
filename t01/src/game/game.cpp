@@ -1,4 +1,5 @@
 #include "game.hpp"
+#include <iostream>
 
 Game::Game() : configLoader(new ConfigLoader()) {
   init();
@@ -16,6 +17,7 @@ void Game::init() {
     this->running = false;
     return;
   }
+
   this->screenWidth = this->configLoader->windowConfig.width;
   this->screenHeight = this->configLoader->windowConfig.height;
 
@@ -51,6 +53,8 @@ void Game::init() {
     this->configLoader->fontConfig.fontSize
   );
 
+  loadEntities();
+
   this->paused = false;
 }
 
@@ -58,7 +62,9 @@ void Game::run() {
   this->running = true;
   while (this->running) {
     handleEvents();
-    update();
+    if (!isPaused()) {   
+      update();
+    }  
     render();
   }
 }
@@ -103,44 +109,82 @@ void Game::render() {
   g = this->configLoader->windowConfig.backgroundColor.g;
   b = this->configLoader->windowConfig.backgroundColor.b;
 
-  SDL_SetRenderDrawColor(this->renderer, r, g, b, 255);
+  SDL_SetRenderDrawColor(this->renderer, r, g, b, 0);
   SDL_RenderClear(this->renderer);
 
-  for (const auto& entity : this->entities) {
-    SDL_Rect destRectImg = {
-      static_cast<int>(entity.position.x),
-      static_cast<int>(entity.position.y),
-      entity.imgWidth,
-      entity.imgHeight
-    };
+  // render one entity test
+  SDL_Rect destRectImg = {
+    static_cast<int>(this->entities[0].position.x),
+    static_cast<int>(this->entities[0].position.y),
+    this->entities[0].imgWidth,
+    this->entities[0].imgHeight
+  };
 
-    SDL_RenderCopyEx(
-      this->renderer,
-      entity.imgTexture,
-      &entity.srcRect,
-      &destRectImg,
-      entity.angle,
-      NULL,
-      SDL_FLIP_NONE
-    );
+  SDL_RenderCopyEx(
+    this->renderer,
+    this->entities[0].imgTexture,
+    &this->entities[0].srcRect,
+    &destRectImg,
+    2.5,
+    NULL,
+    SDL_FLIP_NONE
+  );
+  
+  SDL_Rect destRectText = {
+    // Center the text in the image
+    this->entities[0].position.x + (this->entities[0].imgWidth - this->entities[0].txtWidth) / 2,
+    this->entities[0].position.y + (this->entities[0].imgHeight - this->entities[0].txtHeight) / 2,
+    this->entities[0].txtWidth,
+    this->entities[0].txtHeight
+  };
 
-    SDL_Rect destRectText = {
-      entity.position.x + (entity.imgWidth - entity.txtWidth) / 2,
-      entity.position.y + (entity.imgHeight - entity.txtHeight) / 2,
-      entity.txtWidth,
-      entity.txtHeight
-    };
+  SDL_RenderCopyEx(
+    this->renderer,
+    this->entities[0].textTexture,
+    NULL,
+    &destRectText,
+    0,
+    NULL,
+    SDL_FLIP_NONE
+  );
 
-    SDL_RenderCopyEx(
-      this->renderer,
-      entity.imgTexture,
-      NULL,
-      &destRectText,
-      entity.angle,
-      NULL,
-      SDL_FLIP_NONE
-    );
-  }
+  //for (const auto& entity : this->entities) {
+
+    // SDL_Rect destRectImg = {
+    //   static_cast<int>(entity.position.x),
+    //   static_cast<int>(entity.position.y),
+    //   entity.imgWidth,
+    //   entity.imgHeight
+    // };
+
+    // SDL_RenderCopyEx(
+    //   this->renderer,
+    //   entity.imgTexture,
+    //   &entity.srcRect,
+    //   &destRectImg,
+    //   entity.angle,
+    //   NULL,
+    //   SDL_FLIP_NONE
+    // );
+
+    // SDL_Rect destRectText = {
+    //   entity.position.x + (entity.imgWidth - entity.txtWidth) / 2,
+    //   entity.position.y + (entity.imgHeight - entity.txtHeight) / 2,
+    //   entity.txtWidth,
+    //   entity.txtHeight
+    // };
+
+    // SDL_RenderCopyEx(
+    //   this->renderer,
+    //   entity.imgTexture,
+    //   NULL,
+    //   &destRectText,
+    //   entity.angle,
+    //   NULL,
+    //   SDL_FLIP_NONE
+    // );
+  //}
+  //std::cout << "Hi I am: Gean" << std::endl;
    
   SDL_RenderPresent(this->renderer);
 
@@ -168,6 +212,35 @@ void Game::update() {
 
   // update the previous frame time to the current frame time
   this->miliPreviousFrame = miliCurrentFrame;
+
+  // update the position of the image in function of the time to
+  this->entities[0].position.x += this->entities[0].velocity.x * deltaTime;
+  this->entities[0].position.y += this->entities[0].velocity.y * deltaTime;
+
+  // check if the image reaches the left or right side of the screen
+  if (this->entities[0].position.x <= 0 
+    || this->entities[0].position.x + this->entities[0].size.x 
+    >= this->screenWidth) {
+    this->entities[0].velocity.x = -this->entities[0].velocity.x;
+  }
+  
+  // check if the image reaches the top or bottom side of the screen
+  if (this->entities[0].position.y <= 0 || 
+    this->entities[0].position.y + this->entities[0].size.y >= this->screenHeight) {
+    this->entities[0].velocity.y = -this->entities[0].velocity.y;
+  }
+
+  if (this->entities[0].position.x <= 0) {
+    this->entities[0].position.x = 0;
+  } else if (this->entities[0].position.x + this->entities[0].size.x >= this->screenWidth) {
+    this->entities[0].position.x = this->screenWidth - this->entities[0].size.x;
+  }
+
+  if (this->entities[0].position.y <= 0) {
+    this->entities[0].position.y = 0;
+  } else if (this->entities[0].position.y + this->entities[0].size.y >= this->screenHeight) {
+    this->entities[0].position.y = this->screenHeight - this->entities[0].size.y;
+  }
 }
 
 void Game::loadEntities() {
@@ -195,7 +268,6 @@ void Game::loadEntities() {
       entityCfg.name.c_str(),
       this->configLoader->fontConfig.fontColor
     );
-    
     if (textSurface) {
       newEntity.textTexture = SDL_CreateTextureFromSurface(this->renderer, textSurface);
       newEntity.txtWidth = textSurface->w;
@@ -204,6 +276,7 @@ void Game::loadEntities() {
     } else {
       std::cerr << "Failed to render text: " << entityCfg.name << std::endl;
     }
+    // set the source rectangle to the size of the image
     newEntity.srcRect = {0, 0, newEntity.imgWidth, newEntity.imgHeight};
     this->entities.push_back(newEntity);
   }

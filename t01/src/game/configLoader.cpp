@@ -14,22 +14,22 @@ bool ConfigLoader::loadConfig(const std::string& filePath) {
     textLine >> key;  // read the first word of the line and store it in key
     
     if (key == "window") {
+      int r, g, b;
       // Get the window configuration
       textLine >> this->windowConfig.width 
         >> this->windowConfig.height
-        >> this->windowConfig.backgroundColor.r 
-        >> this->windowConfig.backgroundColor.g
-        >> this->windowConfig.backgroundColor.b;
-
+        >> r >> g >> b;
+      this->windowConfig.backgroundColor = 
+        {static_cast<Uint8>(r), static_cast<Uint8>(g), static_cast<Uint8>(b)};
     } else if (key == "font") {  // Get the font configuration
+      int r, g, b;
       textLine >> this->fontConfig.fontPath
-        >> this->fontConfig.fontColor.r
-        >> this->fontConfig.fontColor.g
-        >> this->fontConfig.fontColor.b
+        >> r >> g >> b
         >> this->fontConfig.fontSize;
+      this->fontConfig.fontColor = 
+        {static_cast<Uint8>(r), static_cast<Uint8>(g), static_cast<Uint8>(b)};
     } else if (key == "entity") {
       EntityConfig entity; // create a new entity
-
       textLine >> entity.name
         >> entity.imagePath
         >> entity.size.x  // width

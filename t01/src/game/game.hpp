@@ -42,8 +42,8 @@ class Game {
 
     int miliPreviousFrame = 0;
 
-    size_t screenWidth = 800;
-    size_t screenHeight = 600;
+    size_t screenWidth;
+    size_t screenHeight;
     bool running;
     bool paused;
 
