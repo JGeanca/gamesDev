@@ -41,7 +41,7 @@ class Game {
     TTF_Font* font = nullptr;
 
     int miliPreviousFrame = 0;
-
+    int miliPausedTime = 0;
     size_t screenWidth;
     size_t screenHeight;
     bool running;

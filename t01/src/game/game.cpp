@@ -94,6 +94,11 @@ void Game::handleEvents() {
           this->running = false;
           break;
         } else if (event.key.keysym.sym == SDLK_p) {
+          if (!this->paused) {
+            this->miliPausedTime = SDL_GetTicks();
+          } else {
+            this->miliPreviousFrame += SDL_GetTicks() - this->miliPausedTime;
+          }
           this->paused = !this->paused;
         }
         
@@ -191,6 +196,10 @@ void Game::render() {
 }
 
 void Game::update() {
+  if (isPaused()) {
+    return;
+  }
+
   // milliseconds since the program started
   int miliCurrentFrame = SDL_GetTicks();  
 
