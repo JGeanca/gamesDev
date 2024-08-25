@@ -117,79 +117,44 @@ void Game::render() {
   SDL_SetRenderDrawColor(this->renderer, r, g, b, 0);
   SDL_RenderClear(this->renderer);
 
-  // render one entity test
-  SDL_Rect destRectImg = {
-    static_cast<int>(this->entities[0].position.x),
-    static_cast<int>(this->entities[0].position.y),
-    this->entities[0].imgWidth,
-    this->entities[0].imgHeight
-  };
+  for (const auto& entity : this->entities) {
 
-  SDL_RenderCopyEx(
-    this->renderer,
-    this->entities[0].imgTexture,
-    &this->entities[0].srcRect,
-    &destRectImg,
-    2.5,
-    NULL,
-    SDL_FLIP_NONE
-  );
-  
-  SDL_Rect destRectText = {
-    // Center the text in the image
-    this->entities[0].position.x + (this->entities[0].imgWidth - this->entities[0].txtWidth) / 2,
-    this->entities[0].position.y + (this->entities[0].imgHeight - this->entities[0].txtHeight) / 2,
-    this->entities[0].txtWidth,
-    this->entities[0].txtHeight
-  };
+    SDL_Rect destRectImg = {
+      static_cast<int>(entity.position.x),
+      static_cast<int>(entity.position.y),
+      entity.imgWidth,
+      entity.imgHeight
+    };
 
-  SDL_RenderCopyEx(
-    this->renderer,
-    this->entities[0].textTexture,
-    NULL,
-    &destRectText,
-    0,
-    NULL,
-    SDL_FLIP_NONE
-  );
+    SDL_RenderCopyEx(
+      this->renderer,
+      entity.imgTexture,
+      &entity.srcRect,
+      &destRectImg,
+      entity.angle,
+      NULL,
+      SDL_FLIP_NONE
+    );
 
-  //for (const auto& entity : this->entities) {
+    SDL_Rect destRectText = {
+      static_cast<int>(entity.position.x 
+        + (entity.imgWidth - entity.txtWidth) / 2),
+      static_cast<int>(entity.position.y 
+        + (entity.imgHeight - entity.txtHeight) / 2),
+      entity.txtWidth,
+      entity.txtHeight
+    };
 
-    // SDL_Rect destRectImg = {
-    //   static_cast<int>(entity.position.x),
-    //   static_cast<int>(entity.position.y),
-    //   entity.imgWidth,
-    //   entity.imgHeight
-    // };
-
-    // SDL_RenderCopyEx(
-    //   this->renderer,
-    //   entity.imgTexture,
-    //   &entity.srcRect,
-    //   &destRectImg,
-    //   entity.angle,
-    //   NULL,
-    //   SDL_FLIP_NONE
-    // );
-
-    // SDL_Rect destRectText = {
-    //   entity.position.x + (entity.imgWidth - entity.txtWidth) / 2,
-    //   entity.position.y + (entity.imgHeight - entity.txtHeight) / 2,
-    //   entity.txtWidth,
-    //   entity.txtHeight
-    // };
-
-    // SDL_RenderCopyEx(
-    //   this->renderer,
-    //   entity.imgTexture,
-    //   NULL,
-    //   &destRectText,
-    //   entity.angle,
-    //   NULL,
-    //   SDL_FLIP_NONE
-    // );
-  //}
-  //std::cout << "Hi I am: Gean" << std::endl;
+    SDL_RenderCopyEx(
+      this->renderer,
+      entity.textTexture,
+      NULL,
+      &destRectText,
+      entity.angle,
+      NULL,
+      SDL_FLIP_NONE
+    );
+  }
    
   SDL_RenderPresent(this->renderer);
 
@@ -223,32 +188,34 @@ void Game::update() {
   this->miliPreviousFrame = miliCurrentFrame;
 
   // update the position of the image in function of the time to
-  this->entities[0].position.x += this->entities[0].velocity.x * deltaTime;
-  this->entities[0].position.y += this->entities[0].velocity.y * deltaTime;
+  for (auto& entity : this->entities) {
+    entity.position.x += entity.velocity.x * deltaTime;
+    entity.position.y += entity.velocity.y * deltaTime;
 
-  // check if the image reaches the left or right side of the screen
-  if (this->entities[0].position.x <= 0 
-    || this->entities[0].position.x + this->entities[0].size.x 
-    >= this->screenWidth) {
-    this->entities[0].velocity.x = -this->entities[0].velocity.x;
-  }
-  
-  // check if the image reaches the top or bottom side of the screen
-  if (this->entities[0].position.y <= 0 || 
-    this->entities[0].position.y + this->entities[0].size.y >= this->screenHeight) {
-    this->entities[0].velocity.y = -this->entities[0].velocity.y;
-  }
+    // check if the image reaches the left or right side of the screen
+    if (entity.position.x <= 0 
+      || entity.position.x + entity.size.x 
+      >= this->screenWidth) {
+      entity.velocity.x = -entity.velocity.x;
+    }
 
-  if (this->entities[0].position.x <= 0) {
-    this->entities[0].position.x = 0;
-  } else if (this->entities[0].position.x + this->entities[0].size.x >= this->screenWidth) {
-    this->entities[0].position.x = this->screenWidth - this->entities[0].size.x;
-  }
+    // check if the image reaches the top or bottom side of the screen
+    if (entity.position.y <= 0 || 
+      entity.position.y + entity.size.y >= this->screenHeight) {
+      entity.velocity.y = -entity.velocity.y;
+    }
 
-  if (this->entities[0].position.y <= 0) {
-    this->entities[0].position.y = 0;
-  } else if (this->entities[0].position.y + this->entities[0].size.y >= this->screenHeight) {
-    this->entities[0].position.y = this->screenHeight - this->entities[0].size.y;
+    if (entity.position.x <= 0) {
+      entity.position.x = 0;
+    } else if (entity.position.x + entity.size.x >= this->screenWidth) {
+      entity.position.x = this->screenWidth - entity.size.x;
+    }
+
+    if (entity.position.y <= 0) {
+      entity.position.y = 0;
+    } else if (entity.position.y + entity.size.y >= this->screenHeight) {
+      entity.position.y = this->screenHeight - entity.size.y;
+    }
   }
 }
 
