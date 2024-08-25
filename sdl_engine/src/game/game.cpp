@@ -152,20 +152,29 @@ void Game::render() {
 }
 
 void Game::update() {
-  
-  int miliCurrentFrame = SDL_GetTicks();  // milliseconds since the program started
-  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;  // Calculate the time between frames
-  int miliSleep = FRAME_DELAY - miliFrameTime;  // Calculate the time to sleep
+  // milliseconds since the program started
+  int miliCurrentFrame = SDL_GetTicks();  
 
+  // milliseconds since the last frame
+  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;
+
+  // milliseconds to sleep -> the frame delay to maintain the FPS constant rate
+  int miliSleep = FRAME_DELAY - miliFrameTime;
+
+  // if the frame time is less than the frame delay, sleep the difference
+  // to maintain the FPS constant rate
   if (miliSleep > 0 && miliSleep <= FRAME_DELAY) {
     SDL_Delay(miliSleep);
   }
 
   // time between frames in seconds
+  // is used to calculate the movement of the image in function of the time
   double deltaTime = miliFrameTime / 1000.0;
 
+  // update the previous frame time to the current frame time
   this->miliPreviousFrame = miliCurrentFrame;
 
+  // update the position of the image in function of the time to
   this->position.x += this->imgVel.x * deltaTime;
   this->position.y += this->imgVel.y * deltaTime;
 }
