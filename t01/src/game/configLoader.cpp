@@ -1,5 +1,10 @@
 #include "configLoader.hpp"
 
+/**
+ * @brief  Load the configuration from the file
+ * @param  filePath: path to the configuration file
+ * @return true if the configuration was loaded successfully, false otherwise
+ */
 bool ConfigLoader::loadConfig(const std::string& filePath) {
   std::ifstream file(filePath);
   if (!file.is_open()) {

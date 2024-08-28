@@ -30,13 +30,15 @@ void Game::init() {
   this->screenHeight = this->configLoader->windowConfig.height;
 
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-    std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
+    std::cout << "SDL could not initialize! SDL_Error: "
+      << SDL_GetError() << std::endl;
     this->running = false;
     return;
   }
 
   if (TTF_Init() != 0) {
-    std::cout << "SDL TTF could not initialize! SDL_Error: " << TTF_GetError() << std::endl;
+    std::cout << "SDL TTF could not initialize! SDL_Error: "
+      << TTF_GetError() << std::endl;
     this->running = false;
     return;
   }
@@ -294,7 +296,8 @@ void Game::loadEntities() {
 
     SDL_Surface* imgSurface = IMG_Load(entityCfg.imagePath.c_str());
     if (imgSurface) {
-      newEntity.imgTexture = SDL_CreateTextureFromSurface(this->renderer, imgSurface);
+      newEntity.imgTexture = SDL_CreateTextureFromSurface(
+        this->renderer, imgSurface);
       SDL_FreeSurface(imgSurface);
     } else {
       std::cerr << "Failed to load image: " << entityCfg.imagePath << std::endl;
@@ -306,7 +309,8 @@ void Game::loadEntities() {
       this->configLoader->fontConfig.fontColor
     );
     if (textSurface) {
-      newEntity.textTexture = SDL_CreateTextureFromSurface(this->renderer, textSurface);
+      newEntity.textTexture = SDL_CreateTextureFromSurface(
+        this->renderer, textSurface);
       newEntity.txtWidth = textSurface->w;
       newEntity.txtHeight = textSurface->h;
       SDL_FreeSurface(textSurface);
