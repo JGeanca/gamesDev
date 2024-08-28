@@ -1,17 +1,25 @@
 #include "game.hpp"
 #include <iostream>
 
+/**
+ * @brief  Constructor, initialize the config loader
+ */
 Game::Game() : configLoader(new ConfigLoader()) {
   init();
 }
 
+/**
+ * @brief  Destructor
+ */
 Game::~Game() {
   destroy();
   delete this->configLoader;
 }
 
+/**
+ * @brief  Initialize the game
+ */
 void Game::init() {
-
   if (!this->configLoader->loadConfig("config.txt")) {
     std::cerr << "Error loading config file" << std::endl;
     this->running = false;
@@ -58,17 +66,21 @@ void Game::init() {
   this->paused = false;
 }
 
+/**
+ * @brief  Run the game loop
+ */
 void Game::run() {
   this->running = true;
   while (this->running) {
-    handleEvents();
-    if (!isPaused()) {   
-      update();
-    }  
+    handleEvents(); 
+    update();
     render();
   }
 }
 
+/**
+ * @brief  Free the resources used by the game
+ */
 void Game::destroy() {
   SDL_DestroyRenderer(this->renderer);
   SDL_DestroyWindow(this->window);
@@ -82,6 +94,9 @@ void Game::destroy() {
   SDL_Quit();
 }
 
+/**
+ * @brief  Handle the events of the game
+ */
 void Game::handleEvents() {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
@@ -108,109 +123,152 @@ void Game::handleEvents() {
   }
 }
 
+/**
+ * @brief  Render the entities on the screen
+ */
 void Game::render() {
-  int r, g, b;
-  r = this->configLoader->windowConfig.backgroundColor.r;
-  g = this->configLoader->windowConfig.backgroundColor.g;
-  b = this->configLoader->windowConfig.backgroundColor.b;
-
-  SDL_SetRenderDrawColor(this->renderer, r, g, b, 0);
-  SDL_RenderClear(this->renderer);
-
-  for (const auto& entity : this->entities) {
-
-    SDL_Rect destRectImg = {
-      static_cast<int>(entity.position.x),
-      static_cast<int>(entity.position.y),
-      entity.imgWidth,
-      entity.imgHeight
-    };
-
-    SDL_RenderCopyEx(
-      this->renderer,
-      entity.imgTexture,
-      &entity.srcRect,
-      &destRectImg,
-      entity.angle,
-      NULL,
-      SDL_FLIP_NONE
-    );
-
-    SDL_Rect destRectText = {
-      static_cast<int>(entity.position.x 
-        + (entity.imgWidth - entity.txtWidth) / 2),
-      static_cast<int>(entity.position.y 
-        + (entity.imgHeight - entity.txtHeight) / 2),
-      entity.txtWidth,
-      entity.txtHeight
-    };
-
-    SDL_RenderCopyEx(
-      this->renderer,
-      entity.textTexture,
-      NULL,
-      &destRectText,
-      entity.angle,
-      NULL,
-      SDL_FLIP_NONE
-    );
-  }
-   
+  renderBackground();
+  renderEntities();
   SDL_RenderPresent(this->renderer);
-
 }
 
+/**
+ * @brief  Render the background of the screen
+ */
+void Game::renderBackground() {
+  SDL_SetRenderDrawColor(this->renderer,
+    this->configLoader->windowConfig.backgroundColor.r,
+    this->configLoader->windowConfig.backgroundColor.g,
+    this->configLoader->windowConfig.backgroundColor.b,
+    0 // opacity
+  );
+  SDL_RenderClear(this->renderer);
+}
+
+/**
+ * @brief  Render the entities on the screen
+ */
+void Game::renderEntities() {
+  for (const auto& entity : this->entities) {
+    renderImage(entity);
+    renderText(entity);
+  }
+}
+
+/**
+ * @brief  Render the image on the screen
+ * @param  entity: entity with the image to render
+ */
+void Game::renderImage(const Entity& entity) {
+  SDL_Rect destRect = {
+    static_cast<int>(entity.position.x),
+    static_cast<int>(entity.position.y),
+    entity.imgWidth,
+    entity.imgHeight
+  };
+
+  SDL_RenderCopyEx(
+    this->renderer,
+    entity.imgTexture,
+    &entity.srcRect,
+    &destRect,
+    entity.angle,
+    NULL,
+    SDL_FLIP_NONE
+  );
+}
+
+/**
+ * @brief  Render the text on the screen
+ * @param  entity: entity with the text to render
+ */
+void Game::renderText(const Entity& entity) {
+  SDL_Rect destRect = {
+    static_cast<int>(entity.position.x 
+      + (entity.imgWidth - entity.txtWidth) / 2),
+    static_cast<int>(entity.position.y 
+      + (entity.imgHeight - entity.txtHeight) / 2),
+    entity.txtWidth,
+    entity.txtHeight
+  };
+
+  SDL_RenderCopyEx(
+    this->renderer,
+    entity.textTexture,
+    NULL,
+    &destRect,
+    entity.angle,
+    NULL,
+    SDL_FLIP_NONE
+  );
+}
+
+/**
+ * @brief  Update the game state and the entities, calculating 
+ * the time between frames to maintain the FPS constant rate
+ */
 void Game::update() {
-  if (isPaused()) {
-    return;
-  }
+    if (isPaused()) {
+      return;
+    }
+    // Time (miliseconds) since the SDL library was initialized
+    Uint32 miliCurrentFrame = SDL_GetTicks();
 
-  // milliseconds since the program started
-  int miliCurrentFrame = SDL_GetTicks();  
+    // Time between the current frame and the previous frame in seconds
+    // used to calculate the movement of the entities in function of the time
+    double deltaTime = (miliCurrentFrame - this->miliPreviousFrame) / 1000.0;
 
-  // milliseconds since the last frame
-  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;
+    // Limit the maximum deltaTime to avoid large jumps
+    if (deltaTime > MAX_DELTA_TIME) {
+      deltaTime = MAX_DELTA_TIME;
+    }
 
-  // milliseconds to sleep -> the frame delay to maintain the FPS constant rate
-  int miliSleep = FRAME_DELAY - miliFrameTime;
+    // Update the previous frame time
+    this->miliPreviousFrame = miliCurrentFrame;
 
-  // if the frame time is less than the frame delay, sleep the difference
-  // to maintain the FPS constant rate
-  if (miliSleep > 0 && miliSleep <= FRAME_DELAY) {
-    SDL_Delay(miliSleep);
-  }
+    // Update the entities position
+    screenBounce(deltaTime);
 
-  // time between frames in seconds
-  // is used to calculate the movement of the image in function of the time
-  double deltaTime = miliFrameTime / 1000.0;
+    // The time it took to render the frame
+    Uint32 frameTime = SDL_GetTicks() - miliCurrentFrame;
+    // Check if the rendering frame time was less than the frame delay
+    if (frameTime < FRAME_DELAY) { // if it was, wait the remaining time
+      SDL_Delay(FRAME_DELAY - frameTime);
+    }
+}
 
-  // update the previous frame time to the current frame time
-  this->miliPreviousFrame = miliCurrentFrame;
-
-  // update the position of the image in function of the time to
+/**
+ * @brief  Bounce the image when it reaches the screen limits
+ * @param  deltaTime: time between frames in seconds
+ */
+void Game::screenBounce(double deltaTime) {
   for (auto& entity : this->entities) {
     entity.position.x += entity.velocity.x * deltaTime;
     entity.position.y += entity.velocity.y * deltaTime;
 
     // check if the image reaches the left or right side of the screen
+    // and invert the velocity in the x axis
     if (entity.position.x <= 0 
       || entity.position.x + entity.size.x 
       >= this->screenWidth) {
-      entity.velocity.x = -entity.velocity.x;
+      entity.velocity.x = entity.velocity.x * -1;
     }
 
     // check if the image reaches the top or bottom side of the screen
+    // and invert the velocity in the y axis
     if (entity.position.y <= 0 || 
       entity.position.y + entity.size.y >= this->screenHeight) {
-      entity.velocity.y = -entity.velocity.y;
+      entity.velocity.y = entity.velocity.y * -1;
     }
 
+    // check if the image reaches the screen limits (x) and adjust the position
     if (entity.position.x <= 0) {
       entity.position.x = 0;
     } else if (entity.position.x + entity.size.x >= this->screenWidth) {
       entity.position.x = this->screenWidth - entity.size.x;
     }
 
+    // check if the image reaches the screen limits (y) and adjust the position
     if (entity.position.y <= 0) {
       entity.position.y = 0;
     } else if (entity.position.y + entity.size.y >= this->screenHeight) {
@@ -219,6 +277,9 @@ void Game::update() {
   }
 }
 
+/**
+ * @brief  Load the entities from the config file
+ */
 void Game::loadEntities() {
   for (auto& entityCfg : this->configLoader->entities) {
     Entity newEntity;

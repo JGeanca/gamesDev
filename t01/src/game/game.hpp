@@ -16,6 +16,7 @@
 
 const int FPS = 60;
 const int FRAME_DELAY = 1000 / FPS;
+const double MAX_DELTA_TIME = 0.05;
 
 struct Entity {
   SDL_Texture* imgTexture = nullptr;
@@ -36,12 +37,12 @@ struct Entity {
 class Game {
   
   private: // attributes
-    SDL_Window *window = nullptr;
-    SDL_Renderer *renderer = nullptr;
-    TTF_Font* font = nullptr;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    TTF_Font* font;
 
-    int miliPreviousFrame = 0;
-    int miliPausedTime = 0;
+    int miliPreviousFrame;
+    int miliPausedTime;
     size_t screenWidth;
     size_t screenHeight;
     bool running;
@@ -55,9 +56,13 @@ class Game {
     void update();
     void render();
     void loadEntities();
+    void screenBounce(double deltaTime);
+    void renderEntities();
+    void renderText(const Entity& entity);
+    void renderImage(const Entity& entity);
+    void renderBackground();
   public:
     Game();
-
     ~Game();
     void init();
     void run();
