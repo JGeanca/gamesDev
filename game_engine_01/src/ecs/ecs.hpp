@@ -94,6 +94,7 @@ class Register {
   template <typename TComponent>
   void removeComponent(const Entity& entity);
 
+  template <typename TComponent>
   bool hasComponent(const Entity& entity) const;
 
   template <typename TComponent>
@@ -106,11 +107,92 @@ class Register {
   template <typename TSystem>
   void removeSystem(System system);
 
+  template <typename TSystem>
+  TSystem& getSystem();
+
+  template <typename TSystem>
   bool hasSystem(const System system) const;
 
   // Entity-System Management
   void addEntityToSystem(const Entity& entity);
   void removeEntityFromSystem(const Entity& entity);
 };
+
+template <typename TComponent, typename... TArgs>
+void Register::addComponent(const Entity& entity, TArgs&&... args) {
+  const int componentId = Component<TComponent>::getId();
+  const int entityId = entity.getId();
+
+  if (componentId >= static_cast<int>(componentsPool.size())) {
+    componentsPool.resize(componentId + 10, nullptr);
+  }
+
+  if (!componentsPool[componentId]) {
+    componentsPool[componentId] = std::make_shared<Pool<TComponent>>();
+  }
+
+  std::shared_ptr<Pool<TComponent>> componentPool =
+      std::static_pointer_cast<Pool<TComponent>>(componentsPool[componentId]);
+
+  if (entityId >= componentPool->getSize()) {
+    componentPool->resize(entityId + 100);
+  }
+
+  TComponent newComponent(std::forward<TArgs>(args)...);
+
+  componentPool->set(entityId, newComponent);
+  entityComponentSignatures[entityId].set(componentId);
+}
+
+template <typename TComponent>
+void Register::removeComponent(const Entity& entity) {
+  const int componentId = Component<TComponent>::getId();
+  const int entityId = entity.getId();
+
+  entityComponentSignatures[entityId].set(componentId, false);
+}
+
+template <typename TComponent>
+bool Register::hasComponent(const Entity& entity) const {
+  const int componentId = Component<TComponent>::getId();
+  const int entityId = entity.getId();
+
+  return entityComponentSignatures[entityId].test(componentId);
+}
+
+template <typename TComponent>
+TComponent& Register::getComponent(const Entity& entity) const {
+  const int componentId = Component<TComponent>::getId();
+  const int entityId = entity.getId();
+
+  auto componentPool =
+      std::static_pointer_cast<Pool<TComponent>>(componentsPool[componentId]);
+
+  return componentPool->get(entityId);
+}
+
+template <typename TSystem, typename... TArgs>
+void Register::addSystem(TArgs&&... args) {
+  std::shared_ptr<TSystem> newSystem =
+      std::make_shared<TSystem>(std::forward<TArgs>(args)...);
+  systems.insert(std::make_pair(std::type_index(typeid(TSystem)), newSystem));
+}
+
+template <typename TSystem>
+void Register::removeSystem(System system) {
+  systems.erase(std::type_index(typeid(TSystem)));
+  // todo verify: ECS part 9 12:00
+}
+
+template <typename TSystem>
+bool Register::hasSystem(const System system) const {
+  return systems.find(std::type_index(typeid(TSystem))) != systems.end();
+}
+
+template <typename TSystem>
+TSystem& Register::getSystem() {
+  auto system = systems.find(std::type_index(typeid(TSystem)));
+  return *std::static_pointer_cast<TSystem>(system->second);
+}
 
 #endif

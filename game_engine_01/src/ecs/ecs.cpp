@@ -47,29 +47,3 @@ Entity Register::createEntity() {
 void Register::destroyEntity(const Entity& entity) {
   entitiesToBeRemoved.insert(entity);
 }
-
-template <typename TComponent, typename... TArgs>
-void Register::addComponent(const Entity& entity, TArgs&&... args) {
-  const int componentId = Component<TComponent>::getId();
-  const int entityId = entity.getId();
-
-  if (componentId >= static_cast<int>(componentsPool.size())) {
-    componentsPool.resize(componentId + 10, nullptr);
-  }
-
-  if (!componentsPool[componentId]) {
-    componentsPool[componentId] = std::make_shared<Pool<TComponent>>();
-  }
-
-  std::shared_ptr<Pool<TComponent>> componentPool =
-      std::static_pointer_cast<Pool<TComponent>>(componentsPool[componentId]);
-
-  if (entityId >= componentPool->getSize()) {
-    componentPool->resize(entityId + 100);
-  }
-
-  TComponent newComponent(std::forward<TArgs>(args)...);
-
-  componentPool->set(entityId, newComponent);
-  entityComponentSignatures[entityId].set(componentId);
-}
