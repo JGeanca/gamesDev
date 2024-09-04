@@ -22,3 +22,7 @@ clean:
 
 run: all
 	./$(EXEC)
+
+run-d: CFLAGS += -DDEBUG_FLAG=true
+run-d: all
+	./$(EXEC)

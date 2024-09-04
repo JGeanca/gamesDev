@@ -2,16 +2,18 @@
 
 #include <iostream>
 
+#include "../utils/debug.hpp"
+
 Game::Game() {
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
-  std::cout << "Game constructor called" << std::endl;
+  DEBUG_MSG("[Game] Game constructor called");
   init();
 }
 
 Game::~Game() {
-  std::cout << "Game destructor called" << std::endl;
+  DEBUG_MSG("[Game] Game destructor called");
   destroy();
 }
 
@@ -56,7 +58,7 @@ void Game::run() {
 }
 
 void Game::destroy() {
-  std::cout << "Destroying game" << std::endl;
+  DEBUG_MSG("[Game] Destroying game");
   SDL_DestroyRenderer(this->renderer);
   SDL_DestroyWindow(this->window);
   TTF_Quit();

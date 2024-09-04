@@ -2,7 +2,12 @@
 #define ECS_HPP
 
 #include <bitset>
+#include <deque>
+#include <iostream>
 #include <memory>
+#include <set>
+#include <typeindex>
+#include <unordered_map>
 #include <vector>
 
 #include "../utils/pool.hpp"
@@ -65,6 +70,47 @@ class Register {
  private:
   int numEntities;
   std::vector<std::shared_ptr<IPool>> componentsPool;
+  std::vector<signature> entityComponentSignatures;
+
+  std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+
+  std::set<Entity> entitiesToBeAdded;
+  std::set<Entity> entitiesToBeRemoved;
+
+ public:
+  Register();
+  ~Register();
+
+  void update();
+
+  // Entity Management
+  Entity createEntity();
+  void destroyEntity(const Entity& entity);
+
+  // Component Management
+  template <typename TComponent, typename... TArgs>
+  void addComponent(const Entity& entity, TArgs&&... args);
+
+  template <typename TComponent>
+  void removeComponent(const Entity& entity);
+
+  bool hasComponent(const Entity& entity) const;
+
+  template <typename TComponent>
+  TComponent& getComponent(const Entity& entity) const;
+
+  // System Management
+  template <typename TSystem, typename... TArgs>
+  void addSystem(TArgs&&... args);
+
+  template <typename TSystem>
+  void removeSystem(System system);
+
+  bool hasSystem(const System system) const;
+
+  // Entity-System Management
+  void addEntityToSystem(const Entity& entity);
+  void removeEntityFromSystem(const Entity& entity);
 };
 
 #endif
