@@ -77,6 +77,8 @@ class Register {
   std::set<Entity> entitiesToBeAdded;
   std::set<Entity> entitiesToBeRemoved;
 
+  std::deque<int> freeIds;
+
  public:
   Register();
   ~Register();

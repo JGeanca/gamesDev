@@ -33,10 +33,18 @@ Register::Register() : numEntities(0) {
 Register::~Register() { DEBUG_MSG("[Register] Register destroyed"); }
 
 Entity Register::createEntity() {
-  int entityId = ++numEntities;
-  if (entityId >= static_cast<int>(entityComponentSignatures.size())) {
-    entityComponentSignatures.resize(entityId + 100);
+  int entityId;
+
+  if (freeIds.empty()) {
+    entityId = numEntities++;
+    if (entityId >= static_cast<int>(entityComponentSignatures.size())) {
+      entityComponentSignatures.resize(entityId + 100);
+    }
+  } else {
+    entityId = freeIds.front();
+    freeIds.pop_front();
   }
+
   Entity entity(entityId);
   entitiesToBeAdded.insert(entity);
 
@@ -46,4 +54,38 @@ Entity Register::createEntity() {
 
 void Register::destroyEntity(const Entity& entity) {
   entitiesToBeRemoved.insert(entity);
+}
+
+void Register::addEntityToSystem(const Entity& entity) {
+  const int entityId = entity.getId();
+  const auto& entitySignature = entityComponentSignatures[entityId];
+
+  for (const auto& system : systems) {
+    const auto& systemSignature = system.second->getComponentSignature();
+    bool isInterested = (entitySignature & systemSignature) == systemSignature;
+    if (isInterested) {
+      system.second->addEntityFromSystem(entity);
+    }
+  }
+}
+
+void Register::removeEntityFromSystem(const Entity& entity) {
+  for (const auto& system : systems) {
+    system.second->removeEntityFromSystem(entity);
+  }
+}
+
+void Register::update() {
+  for (const auto& entity : entitiesToBeAdded) {
+    addEntityToSystem(entity);
+  }
+  entitiesToBeAdded.clear();
+
+  for (const auto& entity : entitiesToBeRemoved) {
+    removeEntityFromSystem(entity);
+    entityComponentSignatures[entity.getId()].reset();
+
+    freeIds.push_back(entity.getId());
+  }
+  entitiesToBeRemoved.clear();
 }
