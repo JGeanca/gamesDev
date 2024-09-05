@@ -5,11 +5,12 @@
 #include "../components/TransformComponent.hpp"
 #include "../utils/debug.hpp"
 Game::Game() {
+  DEBUG_MSG("[Game] Game constructor called");
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
   this->registry = std::make_unique<Register>();
-  DEBUG_MSG("[Game] Game constructor called");
+  this->assetManager = std::make_unique<AssetManager>();
   init();
 }
 
@@ -17,6 +18,7 @@ Game::~Game() {
   DEBUG_MSG("[Game] Game destructor called");
   destroy();
   this->registry.reset();
+  this->assetManager.reset();
 }
 
 Game &Game::getInstance() {
@@ -51,9 +53,11 @@ void Game::init() {
 }
 
 void Game::setUp() {
-  Entity entity = this->registry->createEntity();
-  entity.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
-                                          glm::vec2(1.0, 1.0), 0.0);
+  this->assetManager->addTexture(this->renderer, "enemy",
+                                 "assets/images/skull.png");
+  Entity enemy = this->registry->createEntity();
+  enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
+                                         glm::vec2(1.0, 1.0), 0.0);
 }
 
 void Game::run() {

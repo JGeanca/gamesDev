@@ -35,7 +35,7 @@ class Entity {
   int id;
 
  public:
-  Entity(int id) : id(id) {}
+  Entity(int id) : id(id), registry(nullptr) {}
   int getId() const;
 
   bool operator==(const Entity& other) const { return id == other.id; }

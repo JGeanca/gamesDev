@@ -7,11 +7,11 @@
 
 #include <memory>
 
+#include "../assetManager/assetManager.hpp"
 #include "../ecs/ecs.hpp"
 
 #define SDL_DEFAULT_SCREEN_DRIVER -1
 #define SDL_WITHOUT_FLAGS 0
-
 class Game {
  private:  // attributes
   SDL_Window *window;
@@ -21,6 +21,7 @@ class Game {
   int windowHeight;
 
   std::unique_ptr<Register> registry;
+  std::unique_ptr<AssetManager> assetManager;
 
  private:  // methods
   void setUp();
