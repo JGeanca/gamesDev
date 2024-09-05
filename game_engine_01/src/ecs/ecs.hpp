@@ -23,6 +23,7 @@ struct IComponent {
 // Assigns a unique id to each component type
 template <typename TComponent>
 class Component : public IComponent {
+ public:
   static int getId() {
     static int id = ++nextId;
     return id;
@@ -41,6 +42,20 @@ class Entity {
   bool operator!=(const Entity& other) const { return id != other.id; }
   bool operator<(const Entity& other) const { return id < other.id; }
   bool operator>(const Entity& other) const { return id > other.id; }
+
+  template <typename TComponent, typename... TArgs>
+  void addComponent(TArgs&&... args);
+
+  template <typename TComponent>
+  void removeComponent();
+
+  template <typename TComponent>
+  bool hasComponent() const;
+
+  template <typename TComponent>
+  TComponent& getComponent() const;
+
+  class Register* registry;  // forward declaration and pointer
 };
 
 class System {
@@ -136,7 +151,7 @@ void Register::addComponent(const Entity& entity, TArgs&&... args) {
   std::shared_ptr<Pool<TComponent>> componentPool =
       std::static_pointer_cast<Pool<TComponent>>(componentsPool[componentId]);
 
-  if (entityId >= componentPool->getSize()) {
+  if (entityId >= static_cast<int>(componentPool->getSize())) {
     componentPool->resize(entityId + 100);
   }
 
@@ -195,6 +210,26 @@ template <typename TSystem>
 TSystem& Register::getSystem() {
   auto system = systems.find(std::type_index(typeid(TSystem)));
   return *std::static_pointer_cast<TSystem>(system->second);
+}
+
+template <typename TComponent, typename... TArgs>
+void Entity::addComponent(TArgs&&... args) {
+  registry->addComponent<TComponent>(*this, std::forward<TArgs>(args)...);
+}
+
+template <typename TComponent>
+void Entity::removeComponent() {
+  registry->removeComponent<TComponent>(*this);
+}
+
+template <typename TComponent>
+bool Entity::hasComponent() const {
+  return registry->hasComponent<TComponent>(*this);
+}
+
+template <typename TComponent>
+TComponent& Entity::getComponent() const {
+  return registry->getComponent<TComponent>(*this);
 }
 
 #endif

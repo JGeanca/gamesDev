@@ -46,6 +46,7 @@ Entity Register::createEntity() {
   }
 
   Entity entity(entityId);
+  entity.registry = this;
   entitiesToBeAdded.insert(entity);
 
   DEBUG_MSG("[Register] Entity created with id: " + std::to_string(entityId));

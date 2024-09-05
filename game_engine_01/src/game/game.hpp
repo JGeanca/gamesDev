@@ -5,6 +5,10 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include <memory>
+
+#include "../ecs/ecs.hpp"
+
 #define SDL_DEFAULT_SCREEN_DRIVER -1
 #define SDL_WITHOUT_FLAGS 0
 
@@ -16,7 +20,10 @@ class Game {
   int windowWidth;
   int windowHeight;
 
+  std::unique_ptr<Register> registry;
+
  private:  // methods
+  void setUp();
   void handleEvents();
   void update();
   void render();

@@ -2,12 +2,13 @@
 
 #include <iostream>
 
+#include "../components/TransformComponent.hpp"
 #include "../utils/debug.hpp"
-
 Game::Game() {
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
+  this->registry = std::make_unique<Register>();
   DEBUG_MSG("[Game] Game constructor called");
   init();
 }
@@ -15,6 +16,7 @@ Game::Game() {
 Game::~Game() {
   DEBUG_MSG("[Game] Game destructor called");
   destroy();
+  this->registry.reset();
 }
 
 Game &Game::getInstance() {
@@ -48,7 +50,14 @@ void Game::init() {
                                       SDL_WITHOUT_FLAGS);
 }
 
+void Game::setUp() {
+  Entity entity = this->registry->createEntity();
+  entity.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
+                                          glm::vec2(1.0, 1.0), 0.0);
+}
+
 void Game::run() {
+  setUp();
   this->isRunning = true;
   while (isRunning) {
     handleEvents();
