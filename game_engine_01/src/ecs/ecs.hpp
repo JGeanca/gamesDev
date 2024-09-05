@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "../utils/debug.hpp"
 #include "../utils/pool.hpp"
 
 const unsigned int MAX_COMPONENTS = 64;
@@ -159,6 +160,10 @@ void Register::addComponent(const Entity& entity, TArgs&&... args) {
 
   componentPool->set(entityId, newComponent);
   entityComponentSignatures[entityId].set(componentId);
+
+  DEBUG_MSG("[Register] Component added to entity with id: " +
+            std::to_string(componentId) +
+            " to entity with id: " + std::to_string(entityId));
 }
 
 template <typename TComponent>

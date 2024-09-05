@@ -2,8 +2,10 @@
 
 #include <iostream>
 
-#include "../components/TransformComponent.hpp"
+#include "../components/transformComponent.hpp"
+#include "../systems/renderSystem.hpp"
 #include "../utils/debug.hpp"
+
 Game::Game() {
   DEBUG_MSG("[Game] Game constructor called");
   this->window = nullptr;
@@ -53,9 +55,13 @@ void Game::init() {
 }
 
 void Game::setUp() {
+  registry->addSystem<RenderSystem>();
+
   this->assetManager->addTexture(this->renderer, "enemy",
                                  "assets/images/skull.png");
   Entity enemy = this->registry->createEntity();
+
+  enemy.addComponent<SpriteComponent>("enemy", 32, 32, 0, 0);
   enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
                                          glm::vec2(1.0, 1.0), 0.0);
 }
@@ -98,12 +104,13 @@ void Game::handleEvents() {
 }
 
 void Game::render() {
-  SDL_SetRenderDrawColor(this->renderer, 12, 21, 235, 255);
+  SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
   SDL_RenderClear(this->renderer);
+
+  registry->getSystem<RenderSystem>().update(this->renderer,
+                                             this->assetManager);
+
   SDL_RenderPresent(this->renderer);
 }
 
-void Game::update() {
-  // nothing to do here yet
-  // todo
-}
+void Game::update() { registry->update(); }
