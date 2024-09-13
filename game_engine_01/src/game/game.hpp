@@ -13,6 +13,10 @@
 #define SDL_DEFAULT_SCREEN_DRIVER -1  // Default screen driver index
 #define SDL_WITHOUT_FLAGS 0           // No flags for SDL initialization
 
+const int FPS = 60;                      // Frames per second
+const int MILLI_PER_FRAME = 1000 / FPS;  // Milliseconds per frame
+const double MAX_DELTA_TIME = 0.05;
+
 /**
  * @class Game
  * @brief This class is a singleton that represents the game itself.
@@ -25,6 +29,7 @@ class Game {
   bool isRunning;          // Flag to control the game loop.
   int windowWidth;         // Window width
   int windowHeight;        // Window height
+  int miliPreviousFrame;   // Milliseconds per frame (previous frame)
 
   std::unique_ptr<Register> registry;          // ECS registry
   std::unique_ptr<AssetManager> assetManager;  // Asset manager
@@ -61,7 +66,7 @@ class Game {
   /**
    * @brief Render game objects and window.
    * @details Render the game objects by calling the render method of the
-   * systems in the Registry and render the window.
+   * systems in the Registry and render the window. And calculates delta time.
    */
   void render();
 

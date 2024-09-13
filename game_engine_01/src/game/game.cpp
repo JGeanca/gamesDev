@@ -2,7 +2,10 @@
 
 #include <iostream>
 
+#include "../components/rigidBodyComponent.hpp"
+#include "../components/spriteComponent.hpp"
 #include "../components/transformComponent.hpp"
+#include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../utils/debug.hpp"
 
@@ -11,6 +14,7 @@ Game::Game() {
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
+  this->miliPreviousFrame = 0;
   this->registry = std::make_unique<Register>();
   this->assetManager = std::make_unique<AssetManager>();
   init();
@@ -56,6 +60,7 @@ void Game::init() {
 
 void Game::setUp() {
   registry->addSystem<RenderSystem>();
+  registry->addSystem<MovementSystem>();
 
   this->assetManager->addTexture(this->renderer, "enemy",
                                  "assets/images/skull.png");
@@ -64,6 +69,7 @@ void Game::setUp() {
   enemy.addComponent<SpriteComponent>("enemy", 32, 32, 0, 0);
   enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
                                          glm::vec2(1.0, 1.0), 0.0);
+  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
 }
 
 void Game::run() {
@@ -113,4 +119,29 @@ void Game::render() {
   SDL_RenderPresent(this->renderer);
 }
 
-void Game::update() { registry->update(); }
+void Game::update() {
+  Uint32 miliCurrentFrame = SDL_GetTicks();
+
+  // Time between the current frame and the previous frame in seconds
+  // used to calculate the movement of the entities in function of the time
+  double deltaTime = (miliCurrentFrame - this->miliPreviousFrame) / 1000.0;
+
+  // Limit the maximum deltaTime to avoid large jumps
+  if (deltaTime > MAX_DELTA_TIME) {
+    deltaTime = MAX_DELTA_TIME;
+  }
+  // TODO: Add deltaTime to LUA
+
+  // Update the previous frame time
+  this->miliPreviousFrame = miliCurrentFrame;
+
+  // The time it took to render the frame
+  Uint32 frameTime = SDL_GetTicks() - miliCurrentFrame;
+
+  // Check if the rendering frame time was less than the frame delay
+  if (frameTime < MILLI_PER_FRAME) {  // if it was, wait the remaining time
+    SDL_Delay(MILLI_PER_FRAME - frameTime);
+  }
+  registry->update();
+  registry->getSystem<MovementSystem>().update(deltaTime);
+}
