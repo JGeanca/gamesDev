@@ -10,32 +10,83 @@
 #include "../assetManager/assetManager.hpp"
 #include "../ecs/ecs.hpp"
 
-#define SDL_DEFAULT_SCREEN_DRIVER -1
-#define SDL_WITHOUT_FLAGS 0
-class Game {
- private:  // attributes
-  SDL_Window *window;
-  SDL_Renderer *renderer;
-  bool isRunning;
-  int windowWidth;
-  int windowHeight;
+#define SDL_DEFAULT_SCREEN_DRIVER -1  // Default screen driver index
+#define SDL_WITHOUT_FLAGS 0           // No flags for SDL initialization
 
-  std::unique_ptr<Register> registry;
-  std::unique_ptr<AssetManager> assetManager;
+/**
+ * @class Game
+ * @brief This class is a singleton that represents the game itself.
+ * It has the main loop and the main methods to run the game.
+ */
+class Game {
+ private:                  // attributes
+  SDL_Window *window;      // SDL window pointer
+  SDL_Renderer *renderer;  // SDL renderer pointer
+  bool isRunning;          // Flag to control the game loop.
+  int windowWidth;         // Window width
+  int windowHeight;        // Window height
+
+  std::unique_ptr<Register> registry;          // ECS registry
+  std::unique_ptr<AssetManager> assetManager;  // Asset manager
 
  private:  // methods
-  void setUp();
-  void handleEvents();
-  void update();
-  void render();
+  /**
+   * @brief Game constructor
+   */
   Game();
+
+  /**
+   * @brief Game destructor
+   */
   ~Game();
 
+  /**
+   * @brief Set up and initialize the game objects, components, systems, and
+   * assets.
+   */
+  void setUp();
+
+  /**
+   * @brief Handle the events of the game.
+   */
+  void handleEvents();
+
+  /**
+   * @brief Update the game objects.
+   * @details Update the game objects by calling the update method of the
+   * Registry
+   */
+  void update();
+
+  /**
+   * @brief Render game objects and window.
+   * @details Render the game objects by calling the render method of the
+   * systems in the Registry and render the window.
+   */
+  void render();
+
  public:
+  /**
+   * @brief Get the instance of the Game class.
+   * @return Game& The instance of the Game class.
+   */
   static Game &getInstance();
+
+  /**
+   * @brief Initialize the game.
+   */
   void init();
+
+  /**
+   * @brief Run the game.
+   */
   void run();
+
+  /**
+   * @brief Destroy the game.
+   * @details Free all the resources used by the game.
+   */
   void destroy();
 };
 
-#endif
+#endif  // GAME_HPP

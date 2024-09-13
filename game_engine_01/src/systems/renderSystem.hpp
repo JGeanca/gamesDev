@@ -8,13 +8,30 @@
 #include "../components/transformComponent.hpp"
 #include "../ecs/ecs.hpp"
 
+/**
+ * @class RenderSystem
+ * @brief This class represents the render system of the game.
+ * @details Render system is responsible for rendering the entities of the game.
+ */
 class RenderSystem : public System {
  public:
+  /**
+   * @brief RenderSystem constructor
+   * @details This constructor requires the SpriteComponent and
+   * TransformComponent to be present in the entity. **Requires means that the
+   * entity must have these components to be processed by the system.
+   */
   RenderSystem() {
     requireComponent<SpriteComponent>();
     requireComponent<TransformComponent>();
   }
 
+  /**
+   * @brief Update the render system.
+   * @param renderer SDL renderer pointer
+   * @param AssetManager Asset manager pointer
+   * @details This method renders the entities of the game.
+   */
   void update(SDL_Renderer* renderer,
               const std::unique_ptr<AssetManager>& AssetManager) {
     for (auto entity : getEntities()) {

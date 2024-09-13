@@ -14,7 +14,12 @@
   } while (false)
 #endif
 
+/* Debug namespace */
 namespace debug {
+/**
+ * @brief Print a debug message.
+ * @param msg The message to print
+ */
 inline void printDebugMessage(const std::string& msg) {
   std::cout << msg << std::endl;
 }
