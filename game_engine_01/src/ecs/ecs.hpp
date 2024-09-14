@@ -80,6 +80,11 @@ class Entity {
   int getId() const;
 
   /**
+   * @brief Destroys the entity.
+   */
+  void killEntity();
+
+  /**
    * @brief Compares two entities for equality.
    * @param other The entity to compare against.
    * @return True if the entities are equal, false otherwise.

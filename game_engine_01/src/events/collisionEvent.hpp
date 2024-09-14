@@ -1,8 +1,8 @@
 #ifndef COLLISION_EVENT_HPP
 #define COLLISION_EVENT_HPP
 
+#include "../ecs/ecs.hpp"
 #include "../eventManager/event.hpp"
-#include "ecs/ecs.hpp"
 
 /**
  * @class CollisionEvent

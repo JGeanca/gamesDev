@@ -2,10 +2,13 @@
 #define COLLISION_SYSTEM_HPP
 
 #include <iostream>
+#include <memory>
 
 #include "../components/circleColliderComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../ecs/ecs.hpp"
+#include "../eventManager/eventManager.hpp"
+#include "../events/collisionEvent.hpp"
 
 /**
  * @class CollisionSystem
@@ -28,11 +31,12 @@ class CollisionSystem : public System {
 
   /**
    * @brief Update the collision system.
+   * @param eventManager Event manager
    * @details This method detects collisions between entities of the game. The
    * collision is detected by checking the distance between the center of the
    * circle colliders and the sum of their radius.
    */
-  void update() {
+  void update(std::unique_ptr<EventManager>& eventManager) {
     auto entities = getEntities();
     for (auto i = entities.begin(); i != entities.end(); ++i) {
       auto& entityA = *i;
@@ -68,8 +72,7 @@ class CollisionSystem : public System {
             checkCircularCollision(radiusA, radiusB, centerPosA, centerPosB);
 
         if (collision) {
-          std::cout << "Collision detected between entities " << entityA.getId()
-                    << " and " << entityB.getId() << std::endl;
+          eventManager->emitEvent<CollisionEvent>(entityA, entityB);
         }
       }
     }

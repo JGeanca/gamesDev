@@ -8,6 +8,8 @@ int IComponent::nextId = 0;
 
 int Entity::getId() const { return id; }
 
+void Entity::killEntity() { registry->destroyEntity(*this); }
+
 // System methods
 void System::addEntityFromSystem(const Entity& entity) {
   entities.push_back(entity);

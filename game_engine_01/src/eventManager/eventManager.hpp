@@ -122,13 +122,13 @@ class EventManager {
     auto callback = std::make_unique<EventCallback<TOwner, TEvent>>(
         ownerInstance, callbackFunction);
 
-    if (!subscribers[typeid(TEvent)].get()) {
+    if (!subscribers[eventType].get()) {
       // Add the callback to the list of subscribers
-      subscribers[typeid(TEvent)] = std::make_unique<handlerList>();
+      subscribers[eventType] = std::make_unique<handlerList>();
     }
     auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(
         ownerInstance, callbackFunction);
-    subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
+    subscribers[eventType]->push_back(std::move(subscriber));
   }
 
   /**

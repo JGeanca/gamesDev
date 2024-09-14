@@ -7,6 +7,7 @@
 #include "../components/spriteComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../systems/collisionSystem.hpp"
+#include "../systems/damageSystem.hpp"
 #include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../utils/debug.hpp"
@@ -19,6 +20,7 @@ Game::Game() {
   this->miliPreviousFrame = 0;
   this->registry = std::make_unique<Register>();
   this->assetManager = std::make_unique<AssetManager>();
+  this->eventManager = std::make_unique<EventManager>();
   init();
 }
 
@@ -64,6 +66,7 @@ void Game::setUp() {
   registry->addSystem<RenderSystem>();
   registry->addSystem<MovementSystem>();
   registry->addSystem<CollisionSystem>();
+  registry->addSystem<DamageSystem>();
 
   this->assetManager->addTexture(this->renderer, "enemy",
                                  "assets/images/skull.png");
@@ -156,7 +159,12 @@ void Game::update() {
   if (frameTime < MILLI_PER_FRAME) {  // if it was, wait the remaining time
     SDL_Delay(MILLI_PER_FRAME - frameTime);
   }
+
+  eventManager->reset();
+  registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
+
   registry->update();
+
   registry->getSystem<MovementSystem>().update(deltaTime);
-  registry->getSystem<CollisionSystem>().update();
+  registry->getSystem<CollisionSystem>().update(eventManager);
 }
