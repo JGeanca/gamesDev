@@ -79,7 +79,7 @@ void Game::setUp() {
   registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
 
-  lua.open_libraries(sol::lib::base);
+  lua.open_libraries(sol::lib::base, sol::lib::math);
   registry->getSystem<ScriptSystem>().createLuaBinding(lua);
 
   controllerManager->addActionKey("jump", SDLK_SPACE);  // key: 32
