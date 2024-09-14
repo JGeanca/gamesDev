@@ -6,6 +6,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include <memory>
+#include <sol/sol.hpp>
 
 #include "../assetManager/assetManager.hpp"
 #include "../controllerManager/controllerManager.hpp"
@@ -33,9 +34,12 @@ class Game {
   int windowHeight;        // Window height
   int miliPreviousFrame;   // Milliseconds per frame (previous frame)
 
-  std::unique_ptr<Register> registry;                    // ECS registry
-  std::unique_ptr<AssetManager> assetManager;            // Asset manager
-  std::unique_ptr<EventManager> eventManager;            // Event manager
+  std::unique_ptr<Register> registry;          // ECS registry
+  std::unique_ptr<AssetManager> assetManager;  // Asset manager
+  std::unique_ptr<EventManager> eventManager;  // Event manager
+  sol::state lua;                              // Lua state
+
+ public:
   std::unique_ptr<ControllerManager> controllerManager;  // Controller manager
 
  private:  // methods

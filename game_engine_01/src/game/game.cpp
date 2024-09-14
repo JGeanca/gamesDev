@@ -5,6 +5,7 @@
 #include "../components/animationComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
+#include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../controllerManager/controllerManager.hpp"
@@ -13,6 +14,7 @@
 #include "../systems/damageSystem.hpp"
 #include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
+#include "../systems/scriptSystem.hpp"
 #include "../utils/debug.hpp"
 
 Game::Game() {
@@ -75,6 +77,10 @@ void Game::setUp() {
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
   registry->addSystem<DamageSystem>();
+  registry->addSystem<ScriptSystem>();
+
+  lua.open_libraries(sol::lib::base);
+  registry->getSystem<ScriptSystem>().createLuaBinding(lua);
 
   controllerManager->addActionKey("jump", SDLK_SPACE);  // key: 32
   controllerManager->addActionKey("left", SDLK_a);      // key: 97
@@ -83,25 +89,29 @@ void Game::setUp() {
   controllerManager->addActionKey("down", SDLK_s);      // key: 115
 
   this->assetManager->addTexture(this->renderer, "enemy",
-                                 "assets/images/enemy.png");
+                                 "assets/images/enemy_1.png");
   this->assetManager->addTexture(this->renderer, "player",
-                                 "assets/images/player.png");
+                                 "assets/images/player_ship.png");
 
   Entity enemy = this->registry->createEntity();
   Entity player = this->registry->createEntity();
 
+  enemy.addComponent<SpriteComponent>("enemy", 16, 16, 0, 0);
   enemy.addComponent<CircleColliderComponent>(8, 16, 16);
-  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
-  enemy.addComponent<SpriteComponent>("enemy", 48, 50, 0, 0);
   enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
                                          glm::vec2(1.0, 1.0), 0.0);
+  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
   enemy.addComponent<AnimationComponent>(6, 10, true);
 
+  lua.script_file("assets/scripts/player.lua");
+  sol::function playerUpdate = lua["update"];
+  player.addComponent<ScriptComponent>(playerUpdate);
+  player.addComponent<SpriteComponent>("player", 16, 16, 16, 0);
+  player.addComponent<TransformComponent>(glm::vec2(400.0, 300.0),
+                                          glm::vec2(1.0, 1.0), 0.0);
   player.addComponent<CircleColliderComponent>(8, 16, 16);
   // player.addComponent<RigidBodyComponent>(glm::vec2(-50, 0.0));
-  player.addComponent<SpriteComponent>("player", 48, 50, 0, 0);
-  player.addComponent<TransformComponent>(glm::vec2(200.0, 100.0),
-                                          glm::vec2(1.0, 1.0), 0.0);
+  // player.addComponent<AnimationComponent>(6, 10, true);
 }
 
 void Game::run() {
@@ -184,6 +194,8 @@ void Game::update() {
   registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
 
   registry->update();
+
+  registry->getSystem<ScriptSystem>().update(lua);
 
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<CollisionSystem>().update(eventManager);
