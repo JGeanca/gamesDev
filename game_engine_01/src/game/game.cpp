@@ -110,7 +110,7 @@ void Game::setUp() {
   player.addComponent<TransformComponent>(glm::vec2(400.0, 300.0),
                                           glm::vec2(1.0, 1.0), 0.0);
   player.addComponent<CircleColliderComponent>(8, 16, 16);
-  // player.addComponent<RigidBodyComponent>(glm::vec2(-50, 0.0));
+  player.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
   // player.addComponent<AnimationComponent>(6, 10, true);
 }
 
