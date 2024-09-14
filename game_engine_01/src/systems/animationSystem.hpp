@@ -7,13 +7,27 @@
 #include "../components/spriteComponent.hpp"
 #include "../ecs/ecs.hpp"
 
+/**
+ * @class AnimationSystem
+ * @brief This class is a system
+ * that manages the animation components.
+ */
 class AnimationSystem : public System {
  public:
+  /**
+   * @brief AnimationSystem constructor.
+   */
   AnimationSystem() {
     requireComponent<AnimationComponent>();
     requireComponent<SpriteComponent>();
   }
 
+  /**
+   * @brief This method updates the animation components.
+   * @details It takes the current time and calculates the current frame of the
+   * animation, then updates the source rectangle of the sprite component with
+   * the current frame to render the correct frame.
+   */
   void update() {
     for (auto& entity : getEntities()) {
       auto& animation = entity.getComponent<AnimationComponent>();
