@@ -2,9 +2,11 @@
 
 #include <iostream>
 
+#include "../components/circleColliderComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/spriteComponent.hpp"
 #include "../components/transformComponent.hpp"
+#include "../systems/collisionSystem.hpp"
 #include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../utils/debug.hpp"
@@ -61,15 +63,27 @@ void Game::init() {
 void Game::setUp() {
   registry->addSystem<RenderSystem>();
   registry->addSystem<MovementSystem>();
+  registry->addSystem<CollisionSystem>();
 
   this->assetManager->addTexture(this->renderer, "enemy",
                                  "assets/images/skull.png");
   Entity enemy = this->registry->createEntity();
 
+  enemy.addComponent<CircleColliderComponent>(8, 16, 16);
+  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
   enemy.addComponent<SpriteComponent>("enemy", 32, 32, 0, 0);
   enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
                                          glm::vec2(1.0, 1.0), 0.0);
-  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
+
+  this->assetManager->addTexture(this->renderer, "player",
+                                 "assets/images/skull.png");
+  Entity player = this->registry->createEntity();
+
+  player.addComponent<CircleColliderComponent>(8, 16, 16);
+  player.addComponent<RigidBodyComponent>(glm::vec2(-50, 0.0));
+  player.addComponent<SpriteComponent>("player", 32, 32, 0, 0);
+  player.addComponent<TransformComponent>(glm::vec2(200.0, 100.0),
+                                          glm::vec2(1.0, 1.0), 180.0);
 }
 
 void Game::run() {
@@ -144,4 +158,5 @@ void Game::update() {
   }
   registry->update();
   registry->getSystem<MovementSystem>().update(deltaTime);
+  registry->getSystem<CollisionSystem>().update();
 }

@@ -157,4 +157,4 @@ class EventManager {
   }
 };
 
-#endif  // EVENT_MANAGER_HPP
+#endif  // EVENT_MANAGER_HPP      // and execute it
