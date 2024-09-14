@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "../assetManager/assetManager.hpp"
+#include "../controllerManager/controllerManager.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 
@@ -32,9 +33,10 @@ class Game {
   int windowHeight;        // Window height
   int miliPreviousFrame;   // Milliseconds per frame (previous frame)
 
-  std::unique_ptr<Register> registry;          // ECS registry
-  std::unique_ptr<AssetManager> assetManager;  // Asset manager
-  std::unique_ptr<EventManager> eventManager;  // Event manager
+  std::unique_ptr<Register> registry;                    // ECS registry
+  std::unique_ptr<AssetManager> assetManager;            // Asset manager
+  std::unique_ptr<EventManager> eventManager;            // Event manager
+  std::unique_ptr<ControllerManager> controllerManager;  // Controller manager
 
  private:  // methods
   /**

@@ -7,6 +7,7 @@
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/spriteComponent.hpp"
 #include "../components/transformComponent.hpp"
+#include "../controllerManager/controllerManager.hpp"
 #include "../systems/animationSystem.hpp"
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
@@ -23,14 +24,18 @@ Game::Game() {
   this->registry = std::make_unique<Register>();
   this->assetManager = std::make_unique<AssetManager>();
   this->eventManager = std::make_unique<EventManager>();
+  this->controllerManager = std::make_unique<ControllerManager>();
+
   init();
 }
 
 Game::~Game() {
   DEBUG_MSG("[Game] Game destructor called");
   destroy();
-  this->registry.reset();
   this->assetManager.reset();
+  this->controllerManager.reset();
+  this->eventManager.reset();
+  this->registry.reset();
 }
 
 Game &Game::getInstance() {
@@ -70,6 +75,12 @@ void Game::setUp() {
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
   registry->addSystem<DamageSystem>();
+
+  controllerManager->addActionKey("jump", SDLK_SPACE);  // key: 32
+  controllerManager->addActionKey("left", SDLK_a);      // key: 97
+  controllerManager->addActionKey("right", SDLK_d);     // key: 100
+  controllerManager->addActionKey("up", SDLK_w);        // key: 119
+  controllerManager->addActionKey("down", SDLK_s);      // key: 115
 
   this->assetManager->addTexture(this->renderer, "enemy",
                                  "assets/images/enemy.png");
@@ -124,7 +135,12 @@ void Game::handleEvents() {
         this->isRunning = false;
         break;
       }
+      controllerManager->keyDownEvent(event.key.keysym.sym);
+      break;
 
+    case SDL_KEYUP:
+      controllerManager->keyUpEvent(event.key.keysym.sym);
+      break;
     default:
       break;
   }
