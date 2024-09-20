@@ -12,6 +12,7 @@
 #include "../controllerManager/controllerManager.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
+#include "../sceneManager/sceneLoader.hpp"
 
 #define SDL_DEFAULT_SCREEN_DRIVER -1  // Default screen driver index
 #define SDL_WITHOUT_FLAGS 0           // No flags for SDL initialization
@@ -37,6 +38,7 @@ class Game {
   std::unique_ptr<Register> registry;          // ECS registry
   std::unique_ptr<AssetManager> assetManager;  // Asset manager
   std::unique_ptr<EventManager> eventManager;  // Event manager
+  std::unique_ptr<SceneLoader> sceneLoader;  // Scene loader
   sol::state lua;                              // Lua state
 
  public:

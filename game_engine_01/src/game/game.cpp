@@ -28,6 +28,8 @@ Game::Game() {
   this->eventManager = std::make_unique<EventManager>();
   this->controllerManager = std::make_unique<ControllerManager>();
 
+  this->sceneLoader = std::make_unique<SceneLoader>();
+
   init();
 }
 
@@ -82,36 +84,39 @@ void Game::setUp() {
   lua.open_libraries(sol::lib::base, sol::lib::math);
   registry->getSystem<ScriptSystem>().createLuaBinding(lua);
 
-  controllerManager->addActionKey("jump", SDLK_SPACE);  // key: 32
-  controllerManager->addActionKey("left", SDLK_a);      // key: 97
-  controllerManager->addActionKey("right", SDLK_d);     // key: 100
-  controllerManager->addActionKey("up", SDLK_w);        // key: 119
-  controllerManager->addActionKey("down", SDLK_s);      // key: 115
+  sceneLoader->loadScene("assets/scripts/scene_01.lua", lua, this->renderer,
+                         this->assetManager, this->controllerManager,
+                         this->registry);
+  // controllerManager->addActionKey("jump", SDLK_SPACE);  // key: 32
+  // controllerManager->addActionKey("left", SDLK_a);      // key: 97
+  // controllerManager->addActionKey("right", SDLK_d);     // key: 100
+  // controllerManager->addActionKey("up", SDLK_w);        // key: 119
+  // controllerManager->addActionKey("down", SDLK_s);      // key: 115
 
-  this->assetManager->addTexture(this->renderer, "enemy",
-                                 "assets/images/enemy_1.png");
-  this->assetManager->addTexture(this->renderer, "player",
-                                 "assets/images/player_ship.png");
+  // this->assetManager->addTexture(this->renderer, "enemy",
+  //                                "assets/images/enemy_1.png");
+  // this->assetManager->addTexture(this->renderer, "player",
+  //                                "assets/images/player_ship.png");
 
-  Entity enemy = this->registry->createEntity();
-  Entity player = this->registry->createEntity();
+  // Entity enemy = this->registry->createEntity();
+  // Entity player = this->registry->createEntity();
 
-  enemy.addComponent<SpriteComponent>("enemy", 16, 16, 0, 0);
-  enemy.addComponent<CircleColliderComponent>(8, 16, 16);
-  enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
-                                         glm::vec2(1.0, 1.0), 0.0);
-  enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
-  enemy.addComponent<AnimationComponent>(6, 10, true);
+  // enemy.addComponent<SpriteComponent>("enemy", 16, 16, 0, 0);
+  // enemy.addComponent<CircleColliderComponent>(8, 16, 16);
+  // enemy.addComponent<TransformComponent>(glm::vec2(100.0, 100.0),
+  //                                        glm::vec2(1.0, 1.0), 0.0);
+  // enemy.addComponent<RigidBodyComponent>(glm::vec2(50.0, 0.0));
+  // enemy.addComponent<AnimationComponent>(6, 10, true);
 
-  lua.script_file("assets/scripts/player.lua");
-  sol::function playerUpdate = lua["update"];
-  player.addComponent<ScriptComponent>(playerUpdate);
-  player.addComponent<SpriteComponent>("player", 16, 16, 16, 0);
-  player.addComponent<TransformComponent>(glm::vec2(400.0, 300.0),
-                                          glm::vec2(1.0, 1.0), 0.0);
-  player.addComponent<CircleColliderComponent>(8, 16, 16);
-  player.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-  // player.addComponent<AnimationComponent>(6, 10, true);
+  // lua.script_file("assets/scripts/player.lua");
+  // sol::function playerUpdate = lua["update"];
+  // player.addComponent<ScriptComponent>(playerUpdate);
+  // player.addComponent<SpriteComponent>("player", 16, 16, 16, 0);
+  // player.addComponent<TransformComponent>(glm::vec2(400.0, 300.0),
+  //                                         glm::vec2(1.0, 1.0), 0.0);
+  // player.addComponent<CircleColliderComponent>(8, 16, 16);
+  // player.addComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+  // // player.addComponent<AnimationComponent>(6, 10, true);
 }
 
 void Game::run() {
