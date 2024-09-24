@@ -356,6 +356,11 @@ class Register {
    * @param entity The entity to remove.
    */
   void removeEntityFromSystem(const Entity& entity);
+
+  /**
+   * @brief Clears all entities from the register.
+   */
+  void clearAllEntities();
 };
 
 //* -----------------Implementation of template methods------------------------

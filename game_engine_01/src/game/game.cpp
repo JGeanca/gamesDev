@@ -2,15 +2,9 @@
 
 #include <iostream>
 
-#include "../components/animationComponent.hpp"
-#include "../components/circleColliderComponent.hpp"
-#include "../components/rigidBodyComponent.hpp"
-#include "../components/scriptComponent.hpp"
-#include "../components/spriteComponent.hpp"
-#include "../components/textComponent.hpp"
-#include "../components/transformComponent.hpp"
 #include "../controllerManager/controllerManager.hpp"
 #include "../events/clickEvent.hpp"
+#include "../sceneManager/sceneManager.hpp"
 #include "../systems/animationSystem.hpp"
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
@@ -31,9 +25,7 @@ Game::Game() {
   this->assetManager = std::make_unique<AssetManager>();
   this->eventManager = std::make_unique<EventManager>();
   this->controllerManager = std::make_unique<ControllerManager>();
-
-  this->sceneLoader = std::make_unique<SceneLoader>();
-
+  this->sceneManager = std::make_unique<SceneManager>();
   init();
 }
 
@@ -43,8 +35,8 @@ Game::~Game() {
   this->assetManager.reset();
   this->controllerManager.reset();
   this->eventManager.reset();
-  this->sceneLoader.reset();
   this->registry.reset();
+  this->sceneManager.reset();
 }
 
 Game &Game::getInstance() {
@@ -88,21 +80,29 @@ void Game::setUp() {
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
 
+  sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
+
   lua.open_libraries(sol::lib::base, sol::lib::math);
   registry->getSystem<ScriptSystem>().createLuaBinding(lua);
+}
 
-  sceneLoader->loadScene("assets/scripts/scene_01.lua", lua, this->renderer,
-                         this->assetManager, this->controllerManager,
-                         this->registry);
+void Game::runScene() {
+  sceneManager->loadScene();
+  while (sceneManager->isSceneRunning()) {
+    handleEvents();
+    update();
+    render();
+  }
+  assetManager->clearAssets();
+  registry->clearAllEntities();
 }
 
 void Game::run() {
   setUp();
   this->isRunning = true;
   while (isRunning) {
-    handleEvents();
-    update();
-    render();
+    sceneManager->startScene();
+    runScene();
   }
 }
 
@@ -119,11 +119,13 @@ void Game::handleEvents() {
   SDL_PollEvent(&event);
   switch (event.type) {
     case SDL_QUIT:
+      sceneManager->stopScene();
       this->isRunning = false;
       break;
 
     case SDL_KEYDOWN:
       if (event.key.keysym.sym == SDLK_ESCAPE) {
+        sceneManager->stopScene();
         this->isRunning = false;
         break;
       }

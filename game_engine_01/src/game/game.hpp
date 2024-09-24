@@ -13,6 +13,7 @@
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 #include "../sceneManager/sceneLoader.hpp"
+#include "../sceneManager/sceneManager.hpp"
 
 #define SDL_DEFAULT_SCREEN_DRIVER -1  // Default screen driver index
 #define SDL_WITHOUT_FLAGS 0           // No flags for SDL initialization
@@ -27,22 +28,21 @@ const double MAX_DELTA_TIME = 0.05;
  * It has the main loop and the main methods to run the game.
  */
 class Game {
- private:                  // attributes
-  SDL_Window *window;      // SDL window pointer
-  SDL_Renderer *renderer;  // SDL renderer pointer
-  bool isRunning;          // Flag to control the game loop.
-  int windowWidth;         // Window width
-  int windowHeight;        // Window height
-  int miliPreviousFrame;   // Milliseconds per frame (previous frame)
-
-  std::unique_ptr<Register> registry;          // ECS registry
-  std::unique_ptr<AssetManager> assetManager;  // Asset manager
-  std::unique_ptr<EventManager> eventManager;  // Event manager
-  std::unique_ptr<SceneLoader> sceneLoader;  // Scene loader
-  sol::state lua;                              // Lua state
+ private:                 // attributes
+  SDL_Window *window;     // SDL window pointer
+  bool isRunning;         // Flag to control the game loop.
+  int windowWidth;        // Window width
+  int windowHeight;       // Window height
+  int miliPreviousFrame;  // Milliseconds per frame (previous frame)
 
  public:
+  std::unique_ptr<Register> registry;                    // ECS registry
+  std::unique_ptr<AssetManager> assetManager;            // Asset manager
+  std::unique_ptr<EventManager> eventManager;            // Event manager
   std::unique_ptr<ControllerManager> controllerManager;  // Controller manager
+  std::unique_ptr<SceneManager> sceneManager;            // Scene manager
+  SDL_Renderer *renderer;  // SDL renderer pointer+
+  sol::state lua;          // Lua state
 
  private:  // methods
   /**
@@ -79,6 +79,11 @@ class Game {
    * systems in the Registry and render the window. And calculates delta time.
    */
   void render();
+
+  /**
+   * @brief Run the scene.
+   */
+  void runScene();
 
  public:
   /**

@@ -78,6 +78,14 @@ void Register::removeEntityFromSystem(const Entity& entity) {
   }
 }
 
+void Register::clearAllEntities() {
+  for (int i = 0; i < numEntities; i++) {
+    removeEntityFromSystem(Entity(i));
+    entityComponentSignatures[i].reset();
+    freeIds.push_back(i);
+  }
+}
+
 void Register::update() {
   for (const auto& entity : entitiesToBeAdded) {
     addEntityToSystem(entity);
