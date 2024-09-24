@@ -8,6 +8,7 @@
 #include <string>
 
 #include "../components/clickableComponent.hpp"
+#include "../components/scriptComponent.hpp"
 #include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../ecs/ecs.hpp"
@@ -48,9 +49,12 @@ class UISystem : public System {
           event.posX < transform.position.x + text.width &&
           event.posY > transform.position.y &&
           event.posY < transform.position.y + text.height) {
-        // TODO Handle the click event in the script
-        std::cout << "Clicked on entity with id: " << entity.getId()
-                  << std::endl;
+        if (entity.hasComponent<ScriptComponent>()) {
+          const auto& script = entity.getComponent<ScriptComponent>();
+          if (script.onClick != sol::lua_nil) {
+            script.onClick();
+          }
+        }
       }
     }
   }
