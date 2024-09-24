@@ -8,6 +8,7 @@
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
+#include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../utils/debug.hpp"
 
@@ -30,8 +31,27 @@ void SceneLoader::loadSprites(SDL_Renderer* renderer, const sol::table& sprites,
 
     std::string id = sprite["assetId"];
     std::string path = sprite["filePath"];
-    std::cout << "id: " << id << " path: " << path << std::endl;
     assetManager->addTexture(renderer, id, path);
+
+    index++;
+  }
+}
+
+void SceneLoader::loadFonts(const sol::table& fonts,
+                            std::unique_ptr<AssetManager>& assetManager) {
+  int index = 0;
+
+  while (true) {
+    sol::optional<sol::table> hasFont = fonts[index];
+    if (hasFont == sol::nullopt) {
+      break;
+    }
+    sol::table font = fonts[index];
+
+    std::string id = font["fontId"];
+    std::string path = font["filePath"];
+    int size = font["fontSize"];
+    assetManager->addFont(id, path, size);
 
     index++;
   }
@@ -53,6 +73,25 @@ void SceneLoader::loadKeyBindings(
     int keyCode = key["key"];
 
     controllerManager->addActionKey(name, keyCode);
+
+    index++;
+  }
+}
+
+void SceneLoader::loadMouseBindings(
+    const sol::table& mouseBindings,
+    std::unique_ptr<ControllerManager>& controllerManager) {
+  int index = 0;
+  while (true) {
+    sol::optional<sol::table> hasMouseButtons = mouseBindings[index];
+    if (hasMouseButtons == sol::nullopt) {
+      break;
+    }
+    sol::table mouseButton = mouseBindings[index];
+    std::string name = mouseButton["name"];
+    int mouseButtonCode = mouseButton["key"];
+
+    controllerManager->addMouseButton(name, mouseButtonCode);
 
     index++;
   }
@@ -105,6 +144,17 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
             components["sprite"]["src_rect"]["y"]);
       }
 
+      //* TextComponent
+      sol::optional<sol::table> hasTextComponent = components["text"];
+      if (hasTextComponent != sol::nullopt) {
+        newEntity.addComponent<TextComponent>(
+            components["text"]["text"], components["text"]["fontId"],
+            components["text"]["r"], components["text"]["g"],
+            components["text"]["b"], components["text"]["a"]
+
+        );
+      }
+
       //* TransformComponent
       sol::optional<sol::table> hasTransformComponent = components["transform"];
       if (hasTransformComponent != sol::nullopt) {
@@ -155,8 +205,14 @@ void SceneLoader::loadScene(
   sol::table sprites = scene["sprites"];
   loadSprites(renderer, sprites, assetManager);
 
+  sol::table fonts = scene["fonts"];
+  loadFonts(fonts, assetManager);
+
   sol::table keyBindings = scene["keys"];
   loadKeyBindings(keyBindings, controllerManager);
+
+  sol::table mouseBindings = scene["mouse_buttons"];
+  loadMouseBindings(mouseBindings, controllerManager);
 
   sol::table entities = scene["entities"];
   loadEntities(lua, entities, registry);

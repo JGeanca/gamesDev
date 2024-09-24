@@ -27,12 +27,23 @@ class SceneLoader {
                    std::unique_ptr<AssetManager>& assetManager);
 
   /**
+   * @brief Load the fonts from the lua table
+   * @param fonts Lua table containing the fonts
+   * @param assetManager Asset manager pointer
+   */
+  void loadFonts(const sol::table& fonts,
+                 std::unique_ptr<AssetManager>& assetManager);
+
+  /**
    * @brief Load the key bindings from the lua table
    * @param keyBindings Lua table containing the key bindings
    * @param controllerManager Controller manager pointer
    */
   void loadKeyBindings(const sol::table& keyBindings,
                        std::unique_ptr<ControllerManager>& controllerManager);
+
+  void loadMouseBindings(const sol::table& mouseBindings,
+                         std::unique_ptr<ControllerManager>& controllerManager);
 
   /**
    * @brief  Load the entities from the lua table

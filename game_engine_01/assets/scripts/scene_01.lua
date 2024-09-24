@@ -4,7 +4,12 @@ scene = {
     {assetId = "enemy_1", filePath = "./assets/images/enemy_1.png"},
     {assetId = "player_ship", filePath = "./assets/images/player_ship.png"},
   },
-  -- TODO: Fonts
+
+  fonts = {
+    [0] = 
+    {fontId = "highway_gothic", filePath = "./assets/fonts/highway_gothic.ttf", fontSize = 24},
+  },
+
   keys = {
     [0] = 
     {name = "left", key = 97},
@@ -12,8 +17,14 @@ scene = {
     {name = "up", key = 119},
     {name = "down", key = 115}, 
   },
-  -- TODO: Mouse buttons
-  -- TODO: Entities
+
+  mouse_buttons = {
+    [0] = 
+    {name = "left", key = 1},
+    {name = "right", key = 3},
+    {name = "middle", key = 2},
+  },
+
   entities = {
     -- Player
     [0] =
@@ -41,6 +52,20 @@ scene = {
         rg_body = {
           velocity = {x = 0.0, y = 0.0},
         },            
+      },
+    },
+    {
+      components = {
+        text = {
+          text = "Hello World",
+          fontId = "highway_gothic",
+          r = 150, g = 0, b = 150, a = 255,
+        },
+        transform = {
+          position = {x = 500.0, y = 50.0},
+          scale = {x = 2.0, y = 2.0},
+          rotation = 0.0,
+        },         
       }
     }
   }

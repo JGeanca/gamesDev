@@ -91,15 +91,6 @@ void Game::setUp() {
   sceneLoader->loadScene("assets/scripts/scene_01.lua", lua, this->renderer,
                          this->assetManager, this->controllerManager,
                          this->registry);
-
-  assetManager->addFont("highway_gothic", "assets/fonts/highway_gothic.ttf",
-                        24);
-  Entity text = registry->createEntity();
-  text.addComponent<TextComponent>("Hello World", "highway_gothic",
-                                   SDL_Color{150, 0, 150, 255});
-
-  text.addComponent<TransformComponent>(glm::vec2(500.0, 50.0),
-                                        glm::vec2(2.0, 2.0), 0.0);
 }
 
 void Game::run() {

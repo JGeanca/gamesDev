@@ -25,15 +25,12 @@ struct TextComponent {
    * @param height The height of the text
    */
   TextComponent(const std::string& text = "",
-                const std::string& fontAssetId = "",
-                const SDL_Color& color = {u_char(255), u_char(255), u_char(255),
-                                          u_char(255)},
-                int width = 0, int height = 0)
-      : text(text),
-        fontAssetId(fontAssetId),
-        color(color),
-        width(width),
-        height(height) {}
+                const std::string& fontAssetId = "", u_char r = 255,
+                u_char g = 255, u_char b = 255, u_char a = 255, int width = 0,
+                int height = 0)
+      : text(text), fontAssetId(fontAssetId), width(width), height(height) {
+    this->color = {r, g, b, a};
+  }
 };
 
 #endif  // TEXT_COMPONENT_HPP
