@@ -38,3 +38,41 @@ void ControllerManager::clear() {
   actionKeyName.clear();
   keyDown.clear();
 }
+
+void ControllerManager::addMouseButton(const std::string& name,
+                                       int mouseButtonCode) {
+  mouseButtonName.emplace(name, mouseButtonCode);
+  mouseButtonDown.emplace(mouseButtonCode, false);
+}
+
+void ControllerManager::mouseButtonDownEvent(int mouseButtonCode) {
+  auto it = mouseButtonDown.find(mouseButtonCode);
+  if (it != mouseButtonDown.end()) {
+    mouseButtonDown[mouseButtonCode] = true;
+  }
+}
+
+void ControllerManager::mouseButtonUpEvent(int mouseButtonCode) {
+  auto it = mouseButtonDown.find(mouseButtonCode);
+  if (it != mouseButtonDown.end()) {
+    mouseButtonDown[mouseButtonCode] = false;
+  }
+}
+
+bool ControllerManager::isMouseButtonDown(const std::string& name) {
+  auto it = mouseButtonName.find(name);
+  if (it != mouseButtonName.end()) {
+    int mouseButtonCode = mouseButtonName[name];
+    return mouseButtonDown[mouseButtonCode];
+  }
+  return false;
+}
+
+void ControllerManager::setMousePos(int x, int y) {
+  this->mousePosX = x;
+  this->mousePosY = y;
+}
+
+std::tuple<int, int> ControllerManager::getMousePos() {
+  return {this->mousePosX, this->mousePosY};
+}
