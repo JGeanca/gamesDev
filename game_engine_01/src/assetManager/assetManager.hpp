@@ -2,6 +2,7 @@
 #define ASSET_MANAGER_HPP
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include <map>
 #include <string>
@@ -13,6 +14,7 @@
 class AssetManager {
  private:
   std::map<std::string, SDL_Texture*> textures;  // Map of all textures loaded
+  std::map<std::string, TTF_Font*> fonts;        // Map of all fonts loaded
 
  public:
   /**
@@ -34,6 +36,17 @@ class AssetManager {
   void addTexture(SDL_Renderer* renderer, const std::string& assetId,
                   const std::string& path);
   SDL_Texture* getTexture(const std::string& assetId);
+
+  /**
+   * @brief Add a font to the asset manager.
+   * @param assetId The id of the asset
+   * @param path The path to the asset
+   * @param fontSize The size of the font
+   */
+  void addFont(const std::string& assetId, const std::string& path,
+               int fontSize);
+
+  TTF_Font* getFont(const std::string& assetId);
 
   /**
    * @brief Clear all assets from the asset manager.

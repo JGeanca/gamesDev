@@ -11,7 +11,6 @@ AssetManager::~AssetManager() {
   DEBUG_MSG("[AssetManager] AssetManager destroyed");
   clearAssets();
 }
-
 void AssetManager::addTexture(SDL_Renderer* renderer,
                               const std::string& assetId,
                               const std::string& path) {
@@ -35,9 +34,28 @@ SDL_Texture* AssetManager::getTexture(const std::string& assetId) {
   return textures[assetId];
 }
 
+void AssetManager::addFont(const std::string& assetId, const std::string& path,
+                           int fontSize) {
+  TTF_Font* font = TTF_OpenFont(path.c_str(), fontSize);
+  if (font == nullptr) {
+    std::cerr << "[AssetManager] Failed to load font: " << path << std::endl;
+    return;
+  }
+  fonts.emplace(assetId, font);
+}
+
+TTF_Font* AssetManager::getFont(const std::string& assetId) {
+  return fonts[assetId];
+}
+
 void AssetManager::clearAssets() {
   for (auto& texture : textures) {
     SDL_DestroyTexture(texture.second);
   }
+
+  for (auto& font : fonts) {
+    TTF_CloseFont(font.second);
+  }
   textures.clear();
+  fonts.clear();
 }

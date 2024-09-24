@@ -7,6 +7,7 @@
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
+#include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../controllerManager/controllerManager.hpp"
 #include "../systems/animationSystem.hpp"
@@ -14,6 +15,7 @@
 #include "../systems/damageSystem.hpp"
 #include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
+#include "../systems/renderTextSystem.hpp"
 #include "../systems/scriptSystem.hpp"
 #include "../utils/debug.hpp"
 
@@ -76,6 +78,7 @@ void Game::init() {
 
 void Game::setUp() {
   registry->addSystem<RenderSystem>();
+  registry->addSystem<RenderTextSystem>();
   registry->addSystem<MovementSystem>();
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
@@ -88,6 +91,15 @@ void Game::setUp() {
   sceneLoader->loadScene("assets/scripts/scene_01.lua", lua, this->renderer,
                          this->assetManager, this->controllerManager,
                          this->registry);
+
+  assetManager->addFont("highway_gothic", "assets/fonts/highway_gothic.ttf",
+                        24);
+  Entity text = registry->createEntity();
+  text.addComponent<TextComponent>("Hello World", "highway_gothic",
+                                   SDL_Color{150, 0, 150, 255});
+
+  text.addComponent<TransformComponent>(glm::vec2(500.0, 50.0),
+                                        glm::vec2(2.0, 2.0), 0.0);
 }
 
 void Game::run() {
@@ -148,7 +160,8 @@ void Game::render() {
 
   registry->getSystem<RenderSystem>().update(this->renderer,
                                              this->assetManager);
-
+  registry->getSystem<RenderTextSystem>().update(this->renderer,
+                                                 this->assetManager);
   SDL_RenderPresent(this->renderer);
 }
 
@@ -180,9 +193,7 @@ void Game::update() {
   registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
 
   registry->update();
-
   registry->getSystem<ScriptSystem>().update(lua);
-
   registry->getSystem<MovementSystem>().update(deltaTime);
   registry->getSystem<CollisionSystem>().update(eventManager);
   registry->getSystem<AnimationSystem>().update();
