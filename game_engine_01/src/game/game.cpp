@@ -10,6 +10,7 @@
 #include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../controllerManager/controllerManager.hpp"
+#include "../events/clickEvent.hpp"
 #include "../systems/animationSystem.hpp"
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
@@ -17,6 +18,7 @@
 #include "../systems/renderSystem.hpp"
 #include "../systems/renderTextSystem.hpp"
 #include "../systems/scriptSystem.hpp"
+#include "../systems/uiSystem.hpp"
 #include "../utils/debug.hpp"
 
 Game::Game() {
@@ -84,6 +86,7 @@ void Game::setUp() {
   registry->addSystem<CollisionSystem>();
   registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
+  registry->addSystem<UISystem>();
 
   lua.open_libraries(sol::lib::base, sol::lib::math);
   registry->getSystem<ScriptSystem>().createLuaBinding(lua);
@@ -136,9 +139,14 @@ void Game::handleEvents() {
       controllerManager->setMousePos(x, y);
       break;
     case SDL_MOUSEBUTTONDOWN:
+      controllerManager->setMousePos(event.button.x, event.button.y);
       controllerManager->mouseButtonDownEvent(event.button.button);
-      std::cout << "Mouse button down: " << (int)event.button.button
-                << std::endl;
+      eventManager->emitEvent<ClickEvent>(event.button.button, event.button.x,
+                                          event.button.y);
+      break;
+    case SDL_MOUSEBUTTONUP:
+      controllerManager->setMousePos(event.button.x, event.button.y);
+      controllerManager->mouseButtonUpEvent(event.button.button);
       break;
     default:
       break;
@@ -182,7 +190,7 @@ void Game::update() {
 
   eventManager->reset();
   registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
-
+  registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
   registry->update();
   registry->getSystem<ScriptSystem>().update(lua);
   registry->getSystem<MovementSystem>().update(deltaTime);

@@ -5,6 +5,7 @@
 
 #include "../components/animationComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
+#include "../components/clickableComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
@@ -153,6 +154,11 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
             components["text"]["b"], components["text"]["a"]
 
         );
+      }
+      //* ClickableComponent
+      sol::optional<sol::table> hasClickableComponent = components["clickable"];
+      if (hasClickableComponent != sol::nullopt) {
+        newEntity.addComponent<ClickableComponent>();
       }
 
       //* TransformComponent

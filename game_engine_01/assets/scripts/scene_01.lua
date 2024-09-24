@@ -56,6 +56,8 @@ scene = {
     },
     {
       components = {
+        clickable = {
+        },
         text = {
           text = "Hello World",
           fontId = "highway_gothic",
