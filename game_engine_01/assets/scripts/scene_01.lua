@@ -65,7 +65,7 @@ scene = {
         },
         transform = {
           position = {x = 500.0, y = 50.0},
-          scale = {x = 2.0, y = 2.0},
+          scale = {x = 1.0, y = 1.0},
           rotation = 0.0,
         },         
       }

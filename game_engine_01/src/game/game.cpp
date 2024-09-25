@@ -142,13 +142,15 @@ void Game::handleEvents() {
       break;
     case SDL_MOUSEBUTTONDOWN:
       controllerManager->setMousePos(event.button.x, event.button.y);
-      controllerManager->mouseButtonDownEvent(event.button.button);
+      controllerManager->mouseButtonDownEvent(
+          static_cast<int>(event.button.button));
       eventManager->emitEvent<ClickEvent>(event.button.button, event.button.x,
                                           event.button.y);
       break;
     case SDL_MOUSEBUTTONUP:
       controllerManager->setMousePos(event.button.x, event.button.y);
-      controllerManager->mouseButtonUpEvent(event.button.button);
+      controllerManager->mouseButtonUpEvent(
+          static_cast<int>(event.button.button));
       break;
     default:
       break;
@@ -167,25 +169,15 @@ void Game::render() {
 }
 
 void Game::update() {
-  Uint32 miliCurrentFrame = SDL_GetTicks();
+  int timeToWait = MILLI_PER_FRAME - (SDL_GetTicks() - miliPreviousFrame);
 
-  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;
-
-  // milliseconds to sleep -> the frame delay to maintain the FPS constant rate
-  int miliSleep = MILLI_PER_FRAME - miliFrameTime;
-
-  // if the frame time is less than the frame delay, sleep the difference
-  // to maintain the FPS constant rate
-  if (miliSleep > 0 && miliSleep <= MILLI_PER_FRAME) {
-    SDL_Delay(miliSleep);
+  if (0 < timeToWait && timeToWait <= MILLI_PER_FRAME) {
+    SDL_Delay(timeToWait);
   }
 
-  // time between frames in seconds
-  // is used to calculate the movement of the image in function of the time
-  double deltaTime = miliFrameTime / 1000.0;
+  double deltaTime = (SDL_GetTicks() - miliPreviousFrame) / 1000.0;
 
-  // update the previous frame time to the current frame time
-  this->miliPreviousFrame = miliCurrentFrame;
+  miliPreviousFrame = SDL_GetTicks();
 
   // TODO: Add deltaTime to LUA
 

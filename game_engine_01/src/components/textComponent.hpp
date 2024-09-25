@@ -25,11 +25,13 @@ struct TextComponent {
    * @param height The height of the text
    */
   TextComponent(const std::string& text = "",
-                const std::string& fontAssetId = "", u_char r = 255,
-                u_char g = 255, u_char b = 255, u_char a = 255, int width = 0,
-                int height = 0)
-      : text(text), fontAssetId(fontAssetId), width(width), height(height) {
+                const std::string& fontAssetId = "", u_char r = 0, u_char g = 0,
+                u_char b = 0, u_char a = 0) {
+    this->text = text;
+    this->fontAssetId = fontAssetId;
     this->color = {r, g, b, a};
+    this->width = 0;
+    this->height = 0;
   }
 };
 

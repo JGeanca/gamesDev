@@ -54,13 +54,8 @@ void AssetManager::clearAssets() {
   }
   textures.clear();
 
-  // TODO: Verify segfault
-  // for (auto& font : fonts) {
-  //   TTF_Font* fontPtr = font.second;
-  //   std::string fontId = font.first;
-  //   std::cout << "Destroying font: " << fontId << std::endl;
-  //   std::cout << "Font pointer: " << fontPtr << std::endl;
-  //   TTF_CloseFont(fontPtr);
-  // }
+  for (auto& font : fonts) {
+    TTF_CloseFont(font.second);
+  }
   fonts.clear();
 }

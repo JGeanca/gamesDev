@@ -155,6 +155,7 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
 
         );
       }
+
       //* ClickableComponent
       sol::optional<sol::table> hasClickableComponent = components["clickable"];
       if (hasClickableComponent != sol::nullopt) {

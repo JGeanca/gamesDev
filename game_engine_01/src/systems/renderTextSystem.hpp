@@ -29,7 +29,7 @@ class RenderTextSystem : public System {
 
   void update(SDL_Renderer* renderer,
               const std::unique_ptr<AssetManager>& assetManager) {
-    for (auto& entity : getEntities()) {
+    for (auto entity : getEntities()) {
       auto& text = entity.getComponent<TextComponent>();
       auto& transform = entity.getComponent<TransformComponent>();
 
