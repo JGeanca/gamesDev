@@ -169,26 +169,25 @@ void Game::render() {
 void Game::update() {
   Uint32 miliCurrentFrame = SDL_GetTicks();
 
-  // Time between the current frame and the previous frame in seconds
-  // used to calculate the movement of the entities in function of the time
-  double deltaTime = (miliCurrentFrame - this->miliPreviousFrame) / 1000.0;
+  int miliFrameTime = miliCurrentFrame - this->miliPreviousFrame;
 
-  // Limit the maximum deltaTime to avoid large jumps
-  if (deltaTime > MAX_DELTA_TIME) {
-    deltaTime = MAX_DELTA_TIME;
+  // milliseconds to sleep -> the frame delay to maintain the FPS constant rate
+  int miliSleep = MILLI_PER_FRAME - miliFrameTime;
+
+  // if the frame time is less than the frame delay, sleep the difference
+  // to maintain the FPS constant rate
+  if (miliSleep > 0 && miliSleep <= MILLI_PER_FRAME) {
+    SDL_Delay(miliSleep);
   }
-  // TODO: Add deltaTime to LUA
 
-  // Update the previous frame time
+  // time between frames in seconds
+  // is used to calculate the movement of the image in function of the time
+  double deltaTime = miliFrameTime / 1000.0;
+
+  // update the previous frame time to the current frame time
   this->miliPreviousFrame = miliCurrentFrame;
 
-  // The time it took to render the frame
-  Uint32 frameTime = SDL_GetTicks() - miliCurrentFrame;
-
-  // Check if the rendering frame time was less than the frame delay
-  if (frameTime < MILLI_PER_FRAME) {  // if it was, wait the remaining time
-    SDL_Delay(MILLI_PER_FRAME - frameTime);
-  }
+  // TODO: Add deltaTime to LUA
 
   eventManager->reset();
   registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
