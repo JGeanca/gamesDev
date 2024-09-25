@@ -6,11 +6,11 @@
 #include "../utils/debug.hpp"
 
 SceneManager::SceneManager() {
-  DEBUG_MSG("SceneManager constructor");
+  DEBUG_MSG("[SceneManager] constructor");
   this->sceneLoader = std::make_unique<SceneLoader>();
 }
 
-SceneManager::~SceneManager() { DEBUG_MSG("SceneManager destructor"); }
+SceneManager::~SceneManager() { DEBUG_MSG("[SceneManager] destructor"); }
 
 void SceneManager::loadSceneFromScript(const std::string& scriptPath,
                                        sol::state& lua) {

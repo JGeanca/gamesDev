@@ -116,44 +116,46 @@ void Game::destroy() {
 
 void Game::handleEvents() {
   SDL_Event event;
-  SDL_PollEvent(&event);
-  switch (event.type) {
-    case SDL_QUIT:
-      sceneManager->stopScene();
-      this->isRunning = false;
-      break;
 
-    case SDL_KEYDOWN:
-      if (event.key.keysym.sym == SDLK_ESCAPE) {
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      case SDL_QUIT:
         sceneManager->stopScene();
         this->isRunning = false;
         break;
-      }
-      controllerManager->keyDownEvent(event.key.keysym.sym);
-      break;
 
-    case SDL_KEYUP:
-      controllerManager->keyUpEvent(event.key.keysym.sym);
-      break;
-    case SDL_MOUSEMOTION:
-      int x, y;
-      SDL_GetMouseState(&x, &y);
-      controllerManager->setMousePos(x, y);
-      break;
-    case SDL_MOUSEBUTTONDOWN:
-      controllerManager->setMousePos(event.button.x, event.button.y);
-      controllerManager->mouseButtonDownEvent(
-          static_cast<int>(event.button.button));
-      eventManager->emitEvent<ClickEvent>(event.button.button, event.button.x,
-                                          event.button.y);
-      break;
-    case SDL_MOUSEBUTTONUP:
-      controllerManager->setMousePos(event.button.x, event.button.y);
-      controllerManager->mouseButtonUpEvent(
-          static_cast<int>(event.button.button));
-      break;
-    default:
-      break;
+      case SDL_KEYDOWN:
+        if (event.key.keysym.sym == SDLK_ESCAPE) {
+          sceneManager->stopScene();
+          this->isRunning = false;
+          break;
+        }
+        controllerManager->keyDownEvent(event.key.keysym.sym);
+        break;
+
+      case SDL_KEYUP:
+        controllerManager->keyUpEvent(event.key.keysym.sym);
+        break;
+      case SDL_MOUSEMOTION:
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        controllerManager->setMousePos(x, y);
+        break;
+      case SDL_MOUSEBUTTONDOWN:
+        controllerManager->setMousePos(event.button.x, event.button.y);
+        controllerManager->mouseButtonDownEvent(
+            static_cast<int>(event.button.button));
+        eventManager->emitEvent<ClickEvent>(event.button.button, event.button.x,
+                                            event.button.y);
+        break;
+      case SDL_MOUSEBUTTONUP:
+        controllerManager->setMousePos(event.button.x, event.button.y);
+        controllerManager->mouseButtonUpEvent(
+            static_cast<int>(event.button.button));
+        break;
+      default:
+        break;
+    }
   }
 }
 
