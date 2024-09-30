@@ -32,6 +32,9 @@ scene = {
     [0] =
     {
       components = {
+        player = {
+
+        },
         circle_collider = {
           radius = 8,
           width = 16,
@@ -58,6 +61,9 @@ scene = {
     },
     { -- Enemy
       components = {
+        enemy = {
+
+        },
         circle_collider = {
           radius = 8,
           width = 16,
@@ -81,6 +87,34 @@ scene = {
         },
         rg_body = {
           velocity = {x = 100.0, y = 0.0},
+        },           
+      }
+    },
+    { -- Enemy
+      components = {
+        circle_collider = {
+          radius = 8,
+          width = 16,
+          height = 16,
+        },
+        sprite = {
+          assetId = "enemy_1",
+          width = 16,
+          height = 16,
+          src_rect = {x = 16, y = 0},
+        },
+        animation = {
+          num_frames = 6,
+          speed_rate = 10,
+          is_loop = true,
+        },
+        transform = {
+          position = {x = 400.0, y = 300.0},
+          scale = {x = 2.0, y = 2.0},
+          rotation = 0.0,
+        },
+        rg_body = {
+          velocity = {x = -100.0, y = 0.0},
         },           
       }
     },

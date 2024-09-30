@@ -5,6 +5,8 @@
 #include <string>
 
 #include "../components/circleColliderComponent.hpp"
+#include "../components/enemyComponent.hpp"
+#include "../components/playerComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 #include "../events/collisionEvent.hpp"
@@ -40,12 +42,30 @@ class DamageSystem : public System {
    * @details This is the callback function that is called when a collision
    */
   void onCollision(CollisionEvent& event) {
+    Entity& entityA = event.entityA;
+    Entity& entityB = event.entityB;
+
+    bool isPlayerEnemyCollision = (entityA.hasComponent<PlayerComponent>() &&
+                                   entityB.hasComponent<EnemyComponent>()) ||
+                                  (entityA.hasComponent<EnemyComponent>() &&
+                                   entityB.hasComponent<PlayerComponent>());
+
+    if (isPlayerEnemyCollision) {
+      Entity& player =
+          entityA.hasComponent<PlayerComponent>() ? entityA : entityB;
+      Entity& enemy =
+          entityA.hasComponent<EnemyComponent>() ? entityA : entityB;
+
+      DEBUG_MSG("[Game] Player collided with enemy. Player ID: " +
+                std::to_string(player.getId()) +
+                ", Enemy ID: " + std::to_string(enemy.getId()));
+
+      player.killEntity();
+    }
+
     DEBUG_MSG("[Game] Collision detected between " +
               std::to_string(event.entityA.getId()) + " and " +
               std::to_string(event.entityB.getId()));
-
-    event.entityA.killEntity();
-    event.entityB.killEntity();
   }
 };
 

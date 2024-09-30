@@ -6,6 +6,8 @@
 #include "../components/animationComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
 #include "../components/clickableComponent.hpp"
+#include "../components/enemyComponent.hpp"
+#include "../components/playerComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
@@ -201,6 +203,18 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
           update = lua["update"];
         }
         newEntity.addComponent<ScriptComponent>(update, onClick);
+      }
+
+      //* PlayerComponent
+      sol::optional<sol::table> hasPlayerComponent = components["player"];
+      if (hasPlayerComponent != sol::nullopt) {
+        newEntity.addComponent<PlayerComponent>();
+      }
+
+      //* EnemyComponent
+      sol::optional<sol::table> hasEnemyComponent = components["enemy"];
+      if (hasEnemyComponent != sol::nullopt) {
+        newEntity.addComponent<EnemyComponent>();
       }
     }
     index++;
