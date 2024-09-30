@@ -208,7 +208,7 @@ void SceneLoader::loadScene(
   sol::load_result script_result = lua.load_file(scenePath);
   if (!script_result.valid()) {
     sol::error error = script_result;
-    std::cerr << "[ScreenLoader] Error loading script: " << error.what()
+    std::cerr << "[SceneLoader] Error loading script: " << error.what()
               << std::endl;
     return;
   }

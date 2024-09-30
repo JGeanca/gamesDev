@@ -47,42 +47,19 @@ scene = {
           rotation = 0.0,
         },
         script = {
-          path = "./assets/scripts/player.lua"
+          path = "./assets/scripts/player_scripts/movement.lua"
         },
         rg_body = {
           velocity = {x = 0.0, y = 0.0},
         },            
       },
     },
-    { -- Enemy
-      components = {
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        sprite = {
-          assetId = "enemy_1",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        transform = {
-          position = {x = 100.0, y = 100.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        rg_body = {
-          velocity = {x = 200.0, y = 0.0},
-        },           
-      }
-    },
     {
       components = {
         clickable = {
         },
         text = {
-          text = "LEVEL 2",
+          text = "Level 1",
           fontId = "highway_gothic",
           r = 150, g = 0, b = 150, a = 255,
         },
