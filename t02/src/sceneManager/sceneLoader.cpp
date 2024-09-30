@@ -115,6 +115,13 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
       sol::table components = entity["components"];
 
       //* AnimateComponent
+      sol::optional<sol::table> hasAnimateComponent = components["animation"];
+      if (hasAnimateComponent != sol::nullopt) {
+        newEntity.addComponent<AnimationComponent>(
+            components["animation"]["num_frames"],
+            components["animation"]["speed_rate"],
+            components["animation"]["is_loop"]);
+      }
 
       //* ColliderComponent
       sol::optional<sol::table> hasColliderComponent =
@@ -217,6 +224,8 @@ void SceneLoader::loadScene(
 
   sol::table sprites = scene["sprites"];
   loadSprites(renderer, sprites, assetManager);
+
+  // sol::table fonts = scene["animation"];
 
   sol::table fonts = scene["fonts"];
   loadFonts(fonts, assetManager);

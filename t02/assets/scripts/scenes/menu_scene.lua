@@ -1,10 +1,13 @@
 scene = {
-  sprites = {},
+  sprites = {
+    [0] =
+    {assetId = "start", filePath = "./assets/images/start.png"},
+  },
 
   fonts = {
     [0] = 
-    {fontId = "highway_gothic_24", filePath = "./assets/fonts/highway_gothic.ttf", fontSize = 24},
-    {fontId = "highway_gothic_32", filePath = "./assets/fonts/highway_gothic.ttf", fontSize = 32},
+    {fontId = "press_start_2p_24", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 24},
+    {fontId = "press_start_2p_20", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 20},
   },
 
   keys = {
@@ -25,11 +28,11 @@ scene = {
         },
         text = {
           text = "Jogo Bonito kkk",
-          fontId = "highway_gothic_32",
+          fontId = "press_start_2p_24",
           r = 150, g = 0, b = 150, a = 255,
         },
         transform = {
-          position = {x = (600.0) / 2.0, y = 0.0},
+          position = {x = 550.0 / 2.0, y = 10.0},
           scale = {x = 1.0, y = 1.0},
           rotation = 0.0,
         },         
@@ -44,7 +47,7 @@ scene = {
         },
         text = {
           text = "Level 1",
-          fontId = "highway_gothic_24",
+          fontId = "press_start_2p_20",
           r = 150, g = 150, b = 0, a = 255,
         },
         transform = {
@@ -63,14 +66,14 @@ scene = {
         },
         text = {
           text = "Level 2",
-          fontId = "highway_gothic_24",
+          fontId = "press_start_2p_20",
           r = 150, g = 150, b = 0, a = 255,
         },
         transform = {
-          position = {x = 50.0, y = 250.0},
+          position = {x = 50.0, y = 200.0},
           scale = {x = 1.0, y = 1.0},
           rotation = 0.0,
-        },    
+        },
       }
     },
     { -- Level 3
@@ -82,11 +85,11 @@ scene = {
         },
         text = {
           text = "Level 3",
-          fontId = "highway_gothic_24",
+          fontId = "press_start_2p_20",
           r = 150, g = 150, b = 0, a = 255,
         },
         transform = {
-          position = {x = 50.0, y = 350.0},
+          position = {x = 50.0, y = 250.0},
           scale = {x = 1.0, y = 1.0},
           rotation = 0.0,
         },    
