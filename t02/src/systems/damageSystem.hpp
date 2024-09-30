@@ -37,33 +37,43 @@ class DamageSystem : public System {
   }
 
   /**
+   * @brief Check if the collision is between a player and an enemy
+   * @param entityA Entity A in the collision
+   * @param entityB Entity B in the collision
+   * @return true if the collision is between a player and an enemy, false
+   * otherwise
+   */
+  bool isPlayerEnemyCollision(Entity& entityA, Entity& entityB) {
+    return (entityA.hasComponent<PlayerComponent>() &&
+            entityB.hasComponent<EnemyComponent>()) ||
+           (entityA.hasComponent<EnemyComponent>() &&
+            entityB.hasComponent<PlayerComponent>());
+  }
+
+  /**
    * @brief Callback for the collision event
    * @param eventManager Event manager
-   * @details This is the callback function that is called when a collision
+   * @details This is the callback function that is called when a collision.
+   * If the collision is between a player and an enemy, the player is killed.
    */
   void onCollision(CollisionEvent& event) {
     Entity& entityA = event.entityA;
     Entity& entityB = event.entityB;
 
-    bool isPlayerEnemyCollision = (entityA.hasComponent<PlayerComponent>() &&
-                                   entityB.hasComponent<EnemyComponent>()) ||
-                                  (entityA.hasComponent<EnemyComponent>() &&
-                                   entityB.hasComponent<PlayerComponent>());
-
-    if (isPlayerEnemyCollision) {
+    if (isPlayerEnemyCollision(entityA, entityB)) {
       Entity& player =
           entityA.hasComponent<PlayerComponent>() ? entityA : entityB;
       Entity& enemy =
           entityA.hasComponent<EnemyComponent>() ? entityA : entityB;
 
-      DEBUG_MSG("[Game] Player collided with enemy. Player ID: " +
+      DEBUG_MSG("[DamageSystem] Player collided with enemy. Player ID: " +
                 std::to_string(player.getId()) +
                 ", Enemy ID: " + std::to_string(enemy.getId()));
-
+      (void)enemy;  // Enemy is just for debugging purposes
       player.killEntity();
     }
 
-    DEBUG_MSG("[Game] Collision detected between " +
+    DEBUG_MSG("[DamageSystem] Collision detected between " +
               std::to_string(event.entityA.getId()) + " and " +
               std::to_string(event.entityB.getId()));
   }
