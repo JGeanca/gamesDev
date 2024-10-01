@@ -13,6 +13,7 @@
 #include "../components/spriteComponent.hpp"
 #include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
+#include "../components/victoryComponent.hpp"
 #include "../utils/debug.hpp"
 
 SceneLoader::SceneLoader() { DEBUG_MSG("[SceneLoader] SceneLoader created"); }
@@ -215,6 +216,13 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
       sol::optional<sol::table> hasEnemyComponent = components["enemy"];
       if (hasEnemyComponent != sol::nullopt) {
         newEntity.addComponent<EnemyComponent>();
+      }
+
+      //* VictoryComponent
+      sol::optional<sol::table> hasVictoryComponent = components["victory"];
+      if (hasVictoryComponent != sol::nullopt) {
+        std::string nextLevel = components["victory"]["next_level"];
+        newEntity.addComponent<VictoryComponent>(nextLevel);
       }
     }
     index++;

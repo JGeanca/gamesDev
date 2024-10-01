@@ -97,6 +97,9 @@ scene = {
           width = 16,
           height = 16,
         },
+        victory = {
+          next_level = "level_02"
+        },
         sprite = {
           assetId = "enemy_1",
           width = 16,
@@ -109,12 +112,12 @@ scene = {
           is_loop = true,
         },
         transform = {
-          position = {x = 400.0, y = 300.0},
+          position = {x = 500.0, y = 500.0},
           scale = {x = 2.0, y = 2.0},
           rotation = 0.0,
         },
         rg_body = {
-          velocity = {x = -100.0, y = 0.0},
+          velocity = {x = 0.0, y = 0.0},
         },           
       }
     },

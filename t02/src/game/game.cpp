@@ -6,6 +6,7 @@
 #include "../events/clickEvent.hpp"
 #include "../sceneManager/sceneManager.hpp"
 #include "../systems/animationSystem.hpp"
+#include "../systems/collisionHandlerSystem.hpp"
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
 #include "../systems/movementSystem.hpp"
@@ -76,9 +77,10 @@ void Game::setUp() {
   registry->addSystem<MovementSystem>();
   registry->addSystem<AnimationSystem>();
   registry->addSystem<CollisionSystem>();
-  registry->addSystem<DamageSystem>();
+  // registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
+  registry->addSystem<CollisionHandlerSystem>();
 
   sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
 
@@ -184,7 +186,9 @@ void Game::update() {
   // TODO: Add deltaTime to LUA
 
   eventManager->reset();
-  registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
+  // registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
+  registry->getSystem<CollisionHandlerSystem>().suscribeToCollisionEvent(
+      eventManager);
   registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
   registry->update();
   registry->getSystem<ScriptSystem>().update(lua);
