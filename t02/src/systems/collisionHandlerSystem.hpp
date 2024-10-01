@@ -11,6 +11,7 @@
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 #include "../events/collisionEvent.hpp"
+#include "../events/playerKilledEvent.hpp"
 #include "../game/game.hpp"
 #include "../utils/debug.hpp"
 
@@ -48,7 +49,7 @@ class CollisionHandlerSystem : public System {
   }
 
   void onCollision(CollisionEvent& event) {
-    DEBUG_MSG("[DamageSystem] Collision detected between " +
+    DEBUG_MSG("[CollisionHandlerSystem] Collision detected between " +
               std::to_string(event.entityA.getId()) + " and " +
               std::to_string(event.entityB.getId()));
     handlePlayerEnemyCollision(event.entityA, event.entityB);
@@ -59,9 +60,12 @@ class CollisionHandlerSystem : public System {
     if (isPlayerEnemyCollision(entityA, entityB)) {
       Entity& player =
           entityA.hasComponent<PlayerComponent>() ? entityA : entityB;
-      DEBUG_MSG("[Game] Player collided with enemy. Player ID: " +
-                std::to_string(player.getId()));
-      player.killEntity();
+      DEBUG_MSG(
+          "[CollisionHandlerSystem] Player collided with enemy. Player ID: " +
+          std::to_string(player.getId()));
+
+      Game& game = Game::getInstance();
+      game.eventManager->emitEvent<PlayerKilledEvent>(player);
     }
   }
 

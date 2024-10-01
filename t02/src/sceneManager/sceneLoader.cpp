@@ -209,7 +209,9 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
       //* PlayerComponent
       sol::optional<sol::table> hasPlayerComponent = components["player"];
       if (hasPlayerComponent != sol::nullopt) {
-        newEntity.addComponent<PlayerComponent>();
+        newEntity.addComponent<PlayerComponent>(
+            glm::vec2(components["player"]["reset_pos"]["x"],
+                      components["player"]["reset_pos"]["y"]));
       }
 
       //* EnemyComponent

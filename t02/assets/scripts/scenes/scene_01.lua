@@ -33,7 +33,7 @@ scene = {
     {
       components = {
         player = {
-
+          reset_pos = {x = 400.0, y = 300.0},
         },
         circle_collider = {
           radius = 8,

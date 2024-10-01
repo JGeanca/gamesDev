@@ -10,6 +10,7 @@
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
 #include "../systems/movementSystem.hpp"
+#include "../systems/playerSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../systems/renderTextSystem.hpp"
 #include "../systems/scriptSystem.hpp"
@@ -81,7 +82,7 @@ void Game::setUp() {
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
   registry->addSystem<CollisionHandlerSystem>();
-
+  registry->addSystem<PlayerSystem>();
   sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
 
   lua.open_libraries(sol::lib::base, sol::lib::math);
@@ -190,6 +191,8 @@ void Game::update() {
   registry->getSystem<CollisionHandlerSystem>().suscribeToCollisionEvent(
       eventManager);
   registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
+  registry->getSystem<PlayerSystem>().subscribeToPlayerKilledEvent(
+      eventManager);
   registry->update();
   registry->getSystem<ScriptSystem>().update(lua);
   registry->getSystem<MovementSystem>().update(deltaTime);

@@ -18,7 +18,7 @@ bool isActionActivated(const std::string& action) {
   return Game::getInstance().controllerManager->isActionActivated(action);
 }
 
-//* RegidBodyComponent
+//* RigidBodyComponent
 
 /**
  * @brief Set the velocity of the entity.
