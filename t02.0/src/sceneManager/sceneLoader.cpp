@@ -9,6 +9,7 @@
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
+#include "../components/tagComponent.hpp"
 #include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../utils/debug.hpp"
@@ -113,6 +114,13 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
     sol::optional<sol::table> hasComponents = entity["components"];
     if (hasComponents != sol::nullopt) {
       sol::table components = entity["components"];
+
+      //* TagComponent
+      sol::optional<sol::table> hasTagComponent = components["tag"];
+      if (hasTagComponent != sol::nullopt) {
+        std::string tag = components["tag"]["tag"];
+        newEntity.addComponent<TagComponent>(tag);
+      }
 
       //* AnimateComponent
       sol::optional<sol::table> hasAnimateComponent = components["animation"];

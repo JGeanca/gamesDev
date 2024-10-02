@@ -30,55 +30,6 @@ scene = {
     [0] =
     {
       components = {
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        sprite = {
-          assetId = "player_ship",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        transform = {
-          position = {x = 400.0, y = 300.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        script = {
-          path = "./assets/scripts/player_scripts/movement.lua"
-        },
-        rg_body = {
-          velocity = {x = 0.0, y = 0.0},
-        },            
-      },
-    },
-    { -- Enemy
-      components = {
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        sprite = {
-          assetId = "enemy_1",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        transform = {
-          position = {x = 100.0, y = 100.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        rg_body = {
-          velocity = {x = 500.0, y = 0.0},
-        },           
-      }
-    },
-    {
-      components = {
         clickable = {
         },
         text = {

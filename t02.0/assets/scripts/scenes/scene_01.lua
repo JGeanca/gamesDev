@@ -28,10 +28,12 @@ scene = {
   },
 
   entities = {
-    -- Player
     [0] =
-    {
+    { 
       components = {
+        tag = {
+          tag = "player",
+        },
         circle_collider = {
           radius = 8,
           width = 16,
@@ -58,6 +60,9 @@ scene = {
     },
     { -- Enemy
       components = {
+        tag = {
+          tag = "enemy",
+        },
         circle_collider = {
           radius = 8,
           width = 16,
@@ -86,6 +91,9 @@ scene = {
     },
     { -- Enemy
       components = {
+        tag = {
+          tag = "enemy",
+        },
         circle_collider = {
           radius = 8,
           width = 16,

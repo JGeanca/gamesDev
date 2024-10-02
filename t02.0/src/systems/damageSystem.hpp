@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../components/circleColliderComponent.hpp"
+#include "../components/tagComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 #include "../events/collisionEvent.hpp"
@@ -44,6 +45,10 @@ class DamageSystem : public System {
     Entity& entityA = event.entityA;
     Entity& entityB = event.entityB;
 
+    std::string tagA = entityA.getComponent<TagComponent>().tag;
+    std::string tagB = entityB.getComponent<TagComponent>().tag;
+
+    DEBUG_MSG("[DamageSystem] Collision between: " + tagA + " and " + tagB);
     // TODO: Change this
     entityA.killEntity();
     entityB.killEntity();
