@@ -5,6 +5,7 @@
 #include <string>
 
 #include "../components/circleColliderComponent.hpp"
+#include "../components/healthComponent.hpp"
 #include "../components/tagComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
@@ -35,6 +36,14 @@ class DamageSystem : public System {
         this, &DamageSystem::onCollision);
   }
 
+  bool isPlayerEnemyCollision(Entity& entityA, Entity& entityB) {
+    std::string tagA = entityA.getComponent<TagComponent>().tag;
+    std::string tagB = entityB.getComponent<TagComponent>().tag;
+
+    return (tagA == "player" && tagB == "enemy") ||
+           (tagA == "enemy" && tagB == "player");
+  }
+
   /**
    * @brief Callback for the collision event
    * @param eventManager Event manager
@@ -45,13 +54,27 @@ class DamageSystem : public System {
     Entity& entityA = event.entityA;
     Entity& entityB = event.entityB;
 
-    std::string tagA = entityA.getComponent<TagComponent>().tag;
-    std::string tagB = entityB.getComponent<TagComponent>().tag;
+    // TODO: Refactor this code
+    if (entityA.hasComponent<HealthComponent>() ||
+        entityB.hasComponent<HealthComponent>()) {
+      if (isPlayerEnemyCollision(entityA, entityB)) {
+        Entity& player = entityA.getComponent<TagComponent>().tag == "player"
+                             ? entityA
+                             : entityB;
+        Entity& enemy = entityA.getComponent<TagComponent>().tag == "enemy"
+                            ? entityA
+                            : entityB;
 
-    DEBUG_MSG("[DamageSystem] Collision between: " + tagA + " and " + tagB);
-    // TODO: Change this
-    entityA.killEntity();
-    entityB.killEntity();
+        auto& health = player.getComponent<HealthComponent>();
+        health.takeDamage(1);
+        std::string healthLeft = std::to_string(health.currentHealth);
+        DEBUG_MSG("Player took 1 damage, Health: " + healthLeft);
+        if (health.isDead()) {
+          DEBUG_MSG("Player is dead");
+          player.killEntity();
+        }
+      }
+    }
   }
 };
 

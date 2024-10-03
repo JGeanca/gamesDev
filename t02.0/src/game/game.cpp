@@ -8,6 +8,7 @@
 #include "../systems/animationSystem.hpp"
 #include "../systems/collisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
+#include "../systems/healthSystem.hpp"
 #include "../systems/movementSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../systems/renderTextSystem.hpp"
@@ -79,6 +80,7 @@ void Game::setUp() {
   registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
+  registry->addSystem<HealthSystem>();
 
   sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
 
@@ -191,6 +193,7 @@ void Game::update() {
   registry->update();
   registry->getSystem<ScriptSystem>().update(lua);
   registry->getSystem<MovementSystem>().update(deltaTime);
+  registry->getSystem<HealthSystem>().update(deltaTime);
   registry->getSystem<CollisionSystem>().update(eventManager);
   registry->getSystem<AnimationSystem>().update();
 }

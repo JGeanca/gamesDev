@@ -6,6 +6,7 @@
 #include "../components/animationComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
 #include "../components/clickableComponent.hpp"
+#include "../components/healthComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
 #include "../components/scriptComponent.hpp"
 #include "../components/spriteComponent.hpp"
@@ -209,6 +210,14 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
           update = lua["update"];
         }
         newEntity.addComponent<ScriptComponent>(update, onClick);
+      }
+
+      //* HealthComponent
+      sol::optional<sol::table> hasHealthComponent = components["health"];
+      if (hasHealthComponent != sol::nullopt) {
+        newEntity.addComponent<HealthComponent>(
+            components["health"]["max_health"],
+            components["health"]["regeneration_rate"]);
       }
     }
     index++;
