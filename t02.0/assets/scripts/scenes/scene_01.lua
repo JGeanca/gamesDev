@@ -9,6 +9,7 @@ scene = {
     [0] =
     { fontId = "press_start_2p_20", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 20 },
     { fontId = "press_start_2p_18", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 18 },
+    { fontId = "press_start_2p_x",  filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 32 },
 
   },
 
@@ -24,6 +25,8 @@ scene = {
     [0] =
     { name = "left", key = 1 },
   },
+
+  is_paused = false,
 
   entities = {
     [0] =
@@ -165,6 +168,27 @@ scene = {
           rotation = 0.0,
         },
       }
-    }
+    },
+    { -- Texto de pausa
+      components = {
+        text = {
+          text = "Game Paused",
+          fontId = "press_start_2p_x",
+          r = 97,
+          g = 0,
+          b = 250,
+          a = 1,
+        },
+        transform = {
+          position = { x = 230, y = 200.0 },
+          scale = { x = 1.0, y = 1.0 },
+          rotation = 0.0,
+        },
+        script = {
+          path = "./assets/scripts/general/pause_text.lua"
+        },
+
+      }
+    },
   }
 }

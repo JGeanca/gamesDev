@@ -18,6 +18,7 @@
 
 Game::Game() {
   DEBUG_MSG("[Game] Game constructor called");
+  this->isPaused = false;
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
@@ -132,6 +133,10 @@ void Game::handleEvents() {
           this->isRunning = false;
           break;
         }
+        if (event.key.keysym.sym == SDLK_p) {
+          togglePause();
+          break;
+        }
         controllerManager->keyDownEvent(event.key.keysym.sym);
         break;
 
@@ -184,16 +189,26 @@ void Game::update() {
   miliPreviousFrame = SDL_GetTicks();
 
   // TODO: Add deltaTime to LUA
+  if (!isPaused) {
+    eventManager->reset();
+    registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
 
-  eventManager->reset();
-  registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
-
-  registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
-
-  registry->update();
+    registry->update();
+    registry->getSystem<MovementSystem>().update(deltaTime);
+    registry->getSystem<HealthSystem>().update(deltaTime);
+    registry->getSystem<CollisionSystem>().update(eventManager);
+    registry->getSystem<AnimationSystem>().update();
+  }
   registry->getSystem<ScriptSystem>().update(lua);
-  registry->getSystem<MovementSystem>().update(deltaTime);
-  registry->getSystem<HealthSystem>().update(deltaTime);
-  registry->getSystem<CollisionSystem>().update(eventManager);
-  registry->getSystem<AnimationSystem>().update();
+  registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
+}
+
+void Game::togglePause() {
+  isPaused = !isPaused;
+  if (isPaused) {
+    DEBUG_MSG("[Game] Game paused");
+  } else {
+    DEBUG_MSG("[Game] Game resumed");
+  }
+  lua["scene"]["is_paused"] = isPaused;
 }

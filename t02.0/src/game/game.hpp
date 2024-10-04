@@ -34,6 +34,7 @@ class Game {
   int windowWidth;        // Window width
   int windowHeight;       // Window height
   int miliPreviousFrame;  // Milliseconds per frame (previous frame)
+  bool isPaused;          // Flag to control the pause state
 
  public:
   std::unique_ptr<Register> registry;                    // ECS registry
@@ -107,6 +108,8 @@ class Game {
    * @details Free all the resources used by the game.
    */
   void destroy();
+
+  void togglePause();
 };
 
 #endif  // GAME_HPP

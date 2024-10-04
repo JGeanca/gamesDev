@@ -32,6 +32,7 @@ class ScriptSystem : public System {
     lua.set_function("is_action_activated", isActionActivated);
     lua.set_function("set_velocity", setVelocity);
     lua.set_function("go_to_scene", goToScene);
+    lua.set_function("set_text_visibility", setTextVisibility);
   }
 
   /**

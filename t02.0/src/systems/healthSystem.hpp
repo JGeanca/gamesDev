@@ -16,7 +16,8 @@ class HealthSystem : public System {
       // Handle regeneration
       if (health.regenerationRate > 0) {
         health.regenerationTimer += deltaTime;
-        if (health.regenerationTimer >= 1.0) {  // Regenerate every second
+        if (health.regenerationTimer >= 1.0 &&
+            health.currentHealth < health.maxHealth) {
           health.regenerationTimer = 0;
           health.heal(health.regenerationRate);
           DEBUG_MSG("Entity " + std::to_string(entity.getId()) +

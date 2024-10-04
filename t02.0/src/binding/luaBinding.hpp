@@ -4,6 +4,7 @@
 #include <string>
 
 #include "../components/rigidBodyComponent.hpp"
+#include "../components/textComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../game/game.hpp"
 
@@ -41,6 +42,20 @@ void setVelocity(const Entity& entity, float x, float y) {
 void goToScene(const std::string& scene) {
   Game::getInstance().sceneManager->setNextScene(scene);
   Game::getInstance().sceneManager->stopScene();
+}
+
+//* Text
+
+/**
+ * @brief Show or hide the text.
+ * @param entity The entity.
+ * @param isVisible The visibility of the text.
+ */
+void setTextVisibility(const Entity& entity, bool isVisible) {
+  if (entity.hasComponent<TextComponent>()) {
+    auto& textComponent = entity.getComponent<TextComponent>();
+    textComponent.color.a = isVisible ? 255 : 1;
+  }
 }
 
 #endif  // LUA_BINDING_HPP

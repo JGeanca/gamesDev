@@ -61,9 +61,6 @@ class DamageSystem : public System {
         Entity& player = entityA.getComponent<TagComponent>().tag == "player"
                              ? entityA
                              : entityB;
-        Entity& enemy = entityA.getComponent<TagComponent>().tag == "enemy"
-                            ? entityA
-                            : entityB;
 
         auto& health = player.getComponent<HealthComponent>();
         health.takeDamage(1);
