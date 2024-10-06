@@ -81,4 +81,15 @@ void playMusic(const std::string& name) {
  */
 void stopMusic() { Game::getInstance().audioManager->stopMusic(); }
 
+//* Tags
+
+/**
+ * @brief Get the tag of the entity.
+ * @param entity The entity.
+ * @return The tag of the entity.
+ */
+std::string getTag(const Entity& entity) {
+  return entity.getComponent<TagComponent>().tag;
+}
+
 #endif  // LUA_BINDING_HPP

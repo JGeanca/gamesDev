@@ -215,7 +215,7 @@ void Game::update() {
     registry->getSystem<CameraMovementSystem>().update(camera);
     registry->getSystem<HealthSystem>().update(deltaTime);
     registry->getSystem<CircleCollisionSystem>().update(eventManager);
-    registry->getSystem<BoxCollisionSystem>().update();
+    registry->getSystem<BoxCollisionSystem>().update(lua);
     registry->getSystem<AnimationSystem>().update();
   }
   registry->getSystem<ScriptSystem>().update(lua);

@@ -37,6 +37,7 @@ class ScriptSystem : public System {
     lua.set_function("play_sound", playSound);
     lua.set_function("play_music", playMusic);
     lua.set_function("stop_music", stopMusic);
+    lua.set_function("get_tag", getTag);
   }
 
   /**

@@ -2,6 +2,7 @@
 #define BOX_COLLISION_SYSTEM_HPP
 
 #include "../components/boxColliderComponent.hpp"
+#include "../components/scriptComponent.hpp"
 #include "../components/transformComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../utils/debug.hpp"
@@ -35,7 +36,7 @@ class BoxCollisionSystem : public System {
    * @brief Update the collision system.
    * @details This method detects box collisions between entities of the game
    */
-  void update() {
+  void update(sol::state& lua) {
     auto entities = getEntities();
     for (auto i = entities.begin(); i != entities.end(); ++i) {
       auto& entityA = *i;
@@ -64,6 +65,22 @@ class BoxCollisionSystem : public System {
               "[BoxCollisionSys] Box Collision detected between entities: " +
               std::to_string(entityA.getId()) + " and " +
               std::to_string(entityB.getId()));
+
+          if (entityA.hasComponent<ScriptComponent>()) {
+            const auto& scriptA = entityA.getComponent<ScriptComponent>();
+            if (scriptA.onCollision != sol::nil) {
+              lua["this"] = entityA;
+              scriptA.onCollision(entityB);
+            }
+          }
+
+          if (entityB.hasComponent<ScriptComponent>()) {
+            const auto& scriptB = entityB.getComponent<ScriptComponent>();
+            if (scriptB.onCollision != sol::nil) {
+              lua["this"] = entityB;
+              scriptB.onCollision(entityA);
+            }
+          }
         }
       }
     }

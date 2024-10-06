@@ -206,6 +206,7 @@ void SceneLoader::addTagComponent(Entity& entity,
     entity.addComponent<TagComponent>(tag);
   }
 }
+
 void SceneLoader::addAnimationComponent(Entity& entity,
                                         const sol::table& components) {
   sol::optional<sol::table> hasAnimateComponent = components["animation"];
@@ -216,6 +217,7 @@ void SceneLoader::addAnimationComponent(Entity& entity,
         components["animation"]["is_loop"]);
   }
 }
+
 void SceneLoader::addCircleColliderComponent(Entity& entity,
                                              const sol::table& components) {
   sol::optional<sol::table> hasColliderComponent =
@@ -227,6 +229,7 @@ void SceneLoader::addCircleColliderComponent(Entity& entity,
         components["circle_collider"]["height"]);
   }
 }
+
 void SceneLoader::addBoxColliderComponent(Entity& entity,
                                           const sol::table& components) {
   sol::optional<sol::table> hasBoxColliderComponent =
@@ -239,6 +242,7 @@ void SceneLoader::addBoxColliderComponent(Entity& entity,
                   components["box_collider"]["offset"]["y"]));
   }
 }
+
 void SceneLoader::addRigidBodyComponent(Entity& entity,
                                         const sol::table& components) {
   sol::optional<sol::table> hasRigidBodyComponent = components["rg_body"];
@@ -249,6 +253,7 @@ void SceneLoader::addRigidBodyComponent(Entity& entity,
                   components["rg_body"]["velocity"]["y"]));
   }
 }
+
 void SceneLoader::addSpriteComponent(Entity& entity,
                                      const sol::table& components) {
   sol::optional<sol::table> hasSpriteComponent = components["sprite"];
@@ -259,6 +264,7 @@ void SceneLoader::addSpriteComponent(Entity& entity,
         components["sprite"]["src_rect"]["y"]);
   }
 }
+
 void SceneLoader::addTextComponent(Entity& entity,
                                    const sol::table& components) {
   sol::optional<sol::table> hasTextComponent = components["text"];
@@ -271,6 +277,7 @@ void SceneLoader::addTextComponent(Entity& entity,
     );
   }
 }
+
 void SceneLoader::addClickableComponent(Entity& entity,
                                         const sol::table& components) {
   sol::optional<sol::table> hasClickableComponent = components["clickable"];
@@ -278,6 +285,7 @@ void SceneLoader::addClickableComponent(Entity& entity,
     entity.addComponent<ClickableComponent>();
   }
 }
+
 void SceneLoader::addTransformComponent(Entity& entity,
                                         const sol::table& components) {
   sol::optional<sol::table> hasTransformComponent = components["transform"];
@@ -290,13 +298,16 @@ void SceneLoader::addTransformComponent(Entity& entity,
         components["transform"]["rotation"]);
   }
 }
+
 void SceneLoader::addScriptComponent(Entity& entity,
                                      const sol::table& components,
                                      sol::state& lua) {
   sol::optional<sol::table> hasScriptComponent = components["script"];
   if (hasScriptComponent != sol::nullopt) {
-    lua["on_click"] = sol::nil;  // Clear the update function
-    lua["update"] = sol::nil;    // Clear the update function
+    lua["on_click"] = sol::nil;      // Clear the update function
+    lua["update"] = sol::nil;        // Clear the update function
+    lua["init"] = sol::nil;          // Clear the update function
+    lua["on_collision"] = sol::nil;  // Clear the update function
 
     std::string path = components["script"]["path"];
     lua.script_file(path);
@@ -319,9 +330,16 @@ void SceneLoader::addScriptComponent(Entity& entity,
       init = lua["init"];
     }
 
-    entity.addComponent<ScriptComponent>(update, onClick, init);
+    sol::optional<sol::function> hasCollision = lua["on_collision"];
+    sol::function onCollision = sol::nil;  // Clear the update function
+    if (hasCollision != sol::nullopt) {
+      onCollision = lua["on_collision"];
+    }
+
+    entity.addComponent<ScriptComponent>(update, onClick, init, onCollision);
   }
 }
+
 void SceneLoader::addHealthComponent(Entity& entity,
                                      const sol::table& components) {
   sol::optional<sol::table> hasHealthComponent = components["health"];
@@ -331,6 +349,7 @@ void SceneLoader::addHealthComponent(Entity& entity,
         components["health"]["regeneration_rate"]);
   }
 }
+
 void SceneLoader::addCameraFollowComponent(Entity& entity,
                                            const sol::table& components) {
   sol::optional<sol::table> hasCameraFollowComponent =

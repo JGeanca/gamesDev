@@ -11,7 +11,7 @@
 struct TagComponent {
   std::string tag;
 
-  TagComponent() = default;
+  TagComponent() : tag("") {};
   explicit TagComponent(const std::string& tag) : tag(tag) {}
 };
 

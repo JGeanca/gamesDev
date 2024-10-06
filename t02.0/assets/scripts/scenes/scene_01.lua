@@ -123,6 +123,9 @@ scene = {
         rg_body = {
           velocity = { x = 100.0, y = 0.0 },
         },
+        script = {
+          path = "./assets/scripts/enemy_scripts/basic_enemy.lua"
+        },
       }
     },
     { -- Enemy
@@ -157,6 +160,9 @@ scene = {
         },
         rg_body = {
           velocity = { x = 0.0, y = 0.0 },
+        },
+        script = {
+          path = "./assets/scripts/enemy_scripts/basic_enemy.lua"
         },
       }
     },
