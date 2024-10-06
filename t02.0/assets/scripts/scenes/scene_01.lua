@@ -3,7 +3,8 @@ scene = {
     [0] =
     { assetId = "enemy_1", filePath = "./assets/images/enemy_1.png" },
     { assetId = "player_ship", filePath = "./assets/images/player_ship.png" },
-    { assetId = "background",  filePath = "./assets/images/backgroun_space_ammo_8.png" },
+    { assetId = "background",  filePath = "./assets/images/background_space_ammo_8.png" },
+    { assetId = "barrier",     filePath = "./assets/images/barrier.png" },
   },
 
   fonts = {
@@ -82,7 +83,7 @@ scene = {
           rotation = 0.0,
         },
         script = {
-          path = "./assets/scripts/player_scripts/movement.lua"
+          path = "./assets/scripts/player_scripts/movement.lua",
         },
         rg_body = {
           velocity = { x = 0.0, y = 0.0 },
@@ -116,7 +117,7 @@ scene = {
           is_loop = true,
         },
         transform = {
-          position = { x = 100.0, y = 100.0 },
+          position = { x = 400.0, y = 100.0 },
           scale = { x = 2.0, y = 2.0 },
           rotation = 0.0,
         },
@@ -163,6 +164,29 @@ scene = {
         },
         script = {
           path = "./assets/scripts/enemy_scripts/basic_enemy.lua"
+        },
+      }
+    },
+    { -- Barrier
+      components = {
+        tag = {
+          tag = "barrier",
+        },
+        box_collider = {
+          width = 80 * 2,
+          height = 80 * 2,
+          offset = { x = 0, y = 0 },
+        },
+        sprite = {
+          assetId = "barrier",
+          width = 80,
+          height = 80,
+          src_rect = { x = 0, y = 0 },
+        },
+        transform = {
+          position = { x = 100.0, y = 100.0 },
+          scale = { x = 2.0, y = 2.0 },
+          rotation = 0.0,
         },
       }
     },

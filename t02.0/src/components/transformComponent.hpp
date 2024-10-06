@@ -10,9 +10,10 @@
  * rotation of an entity.
  */
 struct TransformComponent {
-  glm::vec2 position;  // Position of the entity
-  glm::vec2 scale;     // Scale of the entity
-  double rotation;     // Rotation of the entity
+  glm::vec2 position;          // Position of the entity
+  glm::vec2 scale;             // Scale of the entity
+  glm::vec2 previousPosition;  // Previous position of the entity
+  double rotation;             // Rotation of the entity
 
   /**
    * @brief TransformComponent constructor
@@ -23,7 +24,9 @@ struct TransformComponent {
   TransformComponent(glm::vec2 position = glm::vec2(0.0, 0.0),
                      glm::vec2 scale = glm::vec2(1.0, 1.0),
                      double rotation = 0.0)
-      : position(position), scale(scale), rotation(rotation) {}
+      : position(position),
+        scale(scale),
+        previousPosition(position),
+        rotation(rotation) {}
 };
-
 #endif  // TRANSFORM_COMPONENT_HPP

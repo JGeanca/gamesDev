@@ -2,9 +2,14 @@
 #define LUA_BINDING_HPP
 
 #include <string>
+#include <tuple>
 
+#include "../components/boxColliderComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
+#include "../components/spriteComponent.hpp"
+#include "../components/tagComponent.hpp"
 #include "../components/textComponent.hpp"
+#include "../components/transformComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../game/game.hpp"
 
@@ -31,6 +36,17 @@ void setVelocity(const Entity& entity, float x, float y) {
   auto& rigidBody = entity.getComponent<RigidBodyComponent>();
   rigidBody.velocity.x = x;
   rigidBody.velocity.y = y;
+}
+
+/**
+ * @brief Get the velocity of the entity.
+ * @param entity The entity.
+ * @return The velocity of the entity.
+ */
+std::tuple<int, int> getVelocity(const Entity& entity) {
+  auto& rigidBody = entity.getComponent<RigidBodyComponent>();
+  return {static_cast<int>(rigidBody.velocity.x),
+          static_cast<int>(rigidBody.velocity.y)};
 }
 
 //* Scenes
@@ -90,6 +106,105 @@ void stopMusic() { Game::getInstance().audioManager->stopMusic(); }
  */
 std::string getTag(const Entity& entity) {
   return entity.getComponent<TagComponent>().tag;
+}
+
+//* Collisions
+
+/**
+ * @brief Verify if the left side of the entity is colliding with the right side
+ * of the other entity.
+ * @param entity The entity.
+ * @param other The other entity.
+ * @return true If the left side of the entity is colliding with the right side
+ * of the other entity, false otherwise.
+ */
+bool leftCollision(const Entity& entity, const Entity& other) {
+  auto& eBoxCollider = entity.getComponent<BoxColliderComponent>();
+  auto& otherBoxCollider = other.getComponent<BoxColliderComponent>();
+
+  auto& eTransform = entity.getComponent<TransformComponent>();
+  auto& otherTransform = other.getComponent<TransformComponent>();
+
+  float entityX = eTransform.position.x;
+  float entityY = eTransform.position.y;
+  float entityH = static_cast<float>(eBoxCollider.height);
+
+  float otherX = otherTransform.position.x;
+  float otherY = otherTransform.position.y;
+  float otherH = static_cast<float>(otherBoxCollider.height);
+
+  // If the left side of the entity is colliding with the right side of the
+  // other
+
+  return (otherY < entityY + entityH && otherY + otherH > entityY &&
+          otherX < entityX);
+}
+
+/**
+ * @brief Verify if the right side of the entity is colliding with the left side
+ * of the other entity.
+ * @param entity The entity.
+ * @param other The other entity.
+ * @return true If the right side of the entity is colliding with the left side
+ * of the other entity, false otherwise.
+ */
+bool rightCollision(const Entity& entity, const Entity& other) {
+  auto& eBoxCollider = entity.getComponent<BoxColliderComponent>();
+  auto& otherBoxCollider = other.getComponent<BoxColliderComponent>();
+
+  auto& eTransform = entity.getComponent<TransformComponent>();
+  auto& otherTransform = other.getComponent<TransformComponent>();
+
+  float entityX = eTransform.position.x;
+  float entityY = eTransform.position.y;
+  float entityH = static_cast<float>(eBoxCollider.height);
+
+  float otherX = otherTransform.position.x;
+  float otherY = otherTransform.position.y;
+  float otherH = static_cast<float>(otherBoxCollider.height);
+
+  // If the right side of the entity is colliding with the left side of the
+  // other
+
+  return (otherY < entityY + entityH && otherY + otherH > entityY &&
+          otherX > entityX);
+}
+
+//* Position
+
+/**
+ * @brief Get the position of the entity.
+ * @param entity The entity.
+ * @return The position of the entity.
+ */
+std::tuple<int, int> getPosition(const Entity& entity) {
+  auto& transform = entity.getComponent<TransformComponent>();
+  return {static_cast<int>(transform.position.x),
+          static_cast<int>(transform.position.y)};
+}
+
+/**
+ * @brief Set the position of the entity.
+ * @param entity The entity.
+ * @param x The x position.
+ * @param y The y position.
+ */
+void setPosition(Entity& entity, int x, int y) {
+  auto& transform = entity.getComponent<TransformComponent>();
+  transform.position.x = static_cast<float>(x);
+  transform.position.y = static_cast<float>(y);
+}
+
+/**
+ * @brief Get the size of the entity.
+ * @param entity The entity.
+ * @return The size of the entity.
+ */
+std::tuple<int, int> getSize(const Entity& entity) {
+  auto& spriteComponent = entity.getComponent<SpriteComponent>();
+  auto& transform = entity.getComponent<TransformComponent>();
+  return {static_cast<int>(spriteComponent.width * transform.scale.x),
+          static_cast<int>(spriteComponent.height * transform.scale.y)};
 }
 
 #endif  // LUA_BINDING_HPP
