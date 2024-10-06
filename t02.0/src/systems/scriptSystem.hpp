@@ -1,6 +1,7 @@
 #ifndef SCRIPT_SYSTEM_HPP
 #define SCRIPT_SYSTEM_HPP
 
+#include <iostream>
 #include <memory>
 #include <sol/sol.hpp>
 
@@ -33,6 +34,9 @@ class ScriptSystem : public System {
     lua.set_function("set_velocity", setVelocity);
     lua.set_function("go_to_scene", goToScene);
     lua.set_function("set_text_visibility", setTextVisibility);
+    lua.set_function("play_sound", playSound);
+    lua.set_function("play_music", playMusic);
+    lua.set_function("stop_music", stopMusic);
   }
 
   /**
@@ -41,7 +45,15 @@ class ScriptSystem : public System {
    */
   void update(sol::state& lua) {
     for (auto& entity : getEntities()) {
-      const auto& script = entity.getComponent<ScriptComponent>();
+      auto& script = entity.getComponent<ScriptComponent>();
+
+      if (!script.initialized) {
+        if (script.init != sol::lua_nil) {
+          script.init();
+        }
+        script.initialized = true;
+      }
+
       if (script.update != sol::lua_nil) {
         lua["this"] = entity;
         script.update();

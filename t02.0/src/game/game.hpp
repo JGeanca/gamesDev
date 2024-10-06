@@ -9,6 +9,7 @@
 #include <sol/sol.hpp>
 
 #include "../assetManager/assetManager.hpp"
+#include "../audioManager/audioManager.hpp"
 #include "../controllerManager/controllerManager.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
@@ -42,6 +43,8 @@ class Game {
   std::unique_ptr<EventManager> eventManager;            // Event manager
   std::unique_ptr<ControllerManager> controllerManager;  // Controller manager
   std::unique_ptr<SceneManager> sceneManager;            // Scene manager
+  std::unique_ptr<AudioManager> audioManager;            // Audio manager
+
   SDL_Renderer *renderer;  // SDL renderer pointer+
   sol::state lua;          // Lua state
 

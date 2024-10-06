@@ -21,6 +21,15 @@ scene = {
     { name = "right", key = 100 }, -- d
   },
 
+  audio = {
+    sound_effects = {
+      shoot = "./assets/audio/sfx/shoot_01.wav",
+    },
+    music = {
+      menu = "./assets/audio/music/Donkey Kong Country GB.mp3",
+    }
+  },
+
   mouse_buttons = {
     [0] =
     { name = "left", key = 1 },

@@ -8,6 +8,7 @@
 #include <string>
 
 #include "../assetManager/assetManager.hpp"
+#include "../audioManager/audioManager.hpp"
 #include "../controllerManager/controllerManager.hpp"
 #include "../ecs/ecs.hpp"
 
@@ -33,6 +34,14 @@ class SceneLoader {
    */
   void loadFonts(const sol::table& fonts,
                  std::unique_ptr<AssetManager>& assetManager);
+
+  /**
+   * @brief Load the sounds from the lua table
+   * @param sounds Lua table containing the sounds
+   * @param audioManager Audio manager pointer
+   */
+  void loadSounds(const sol::table& sounds,
+                  std::unique_ptr<AudioManager>& audioManager);
 
   /**
    * @brief Load the key bindings from the lua table
@@ -72,12 +81,14 @@ class SceneLoader {
    * @param renderer SDL renderer pointer
    * @param assetManager Asset manager pointer
    * @param controllerManager Controller manager pointer
+   * @param audioManager Audio manager pointer
    * @param registry Registry pointer
    */
   void loadScene(const std::string& scenePath, sol::state& lua,
                  SDL_Renderer* renderer,
                  std::unique_ptr<AssetManager>& assetManager,
                  std::unique_ptr<ControllerManager>& controllerManager,
+                 std::unique_ptr<AudioManager>& audioManager,
                  std::unique_ptr<Register>& registry);
 };
 

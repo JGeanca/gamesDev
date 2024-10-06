@@ -58,4 +58,25 @@ void setTextVisibility(const Entity& entity, bool isVisible) {
   }
 }
 
+/**
+ * @brief Play a sound effect.
+ * @param name
+ */
+void playSound(const std::string& name) {
+  Game::getInstance().audioManager->playSoundEffect(name);
+}
+
+/**
+ * @brief Play a music.
+ * @param name
+ */
+void playMusic(const std::string& name) {
+  Game::getInstance().audioManager->playMusic(name);
+}
+
+/**
+ * @brief Stop the music.
+ */
+void stopMusic() { Game::getInstance().audioManager->stopMusic(); }
+
 #endif  // LUA_BINDING_HPP

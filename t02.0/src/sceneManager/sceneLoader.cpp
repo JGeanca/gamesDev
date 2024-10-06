@@ -60,6 +60,24 @@ void SceneLoader::loadFonts(const sol::table& fonts,
   }
 }
 
+void SceneLoader::loadSounds(const sol::table& sounds,
+                             std::unique_ptr<AudioManager>& audioManager) {
+  sol::table soundEffects = sounds["sound_effects"];
+  sol::table music = sounds["music"];
+
+  for (const auto& sound : soundEffects) {
+    std::string name = sound.first.as<std::string>();
+    std::string path = sound.second.as<std::string>();
+    audioManager->loadSoundEffect(name, path);
+  }
+
+  for (const auto& song : music) {
+    std::string name = song.first.as<std::string>();
+    std::string path = song.second.as<std::string>();
+    audioManager->loadMusic(name, path);
+  }
+}
+
 void SceneLoader::loadKeyBindings(
     const sol::table& keyBindings,
     std::unique_ptr<ControllerManager>& controllerManager) {
@@ -209,7 +227,14 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
         if (hasUpdate != sol::nullopt) {
           update = lua["update"];
         }
-        newEntity.addComponent<ScriptComponent>(update, onClick);
+
+        sol::optional<sol::function> hasInit = lua["init"];
+        sol::function init = sol::nil;  // Clear the update function
+        if (hasInit != sol::nullopt) {
+          init = lua["init"];
+        }
+
+        newEntity.addComponent<ScriptComponent>(update, onClick, init);
       }
 
       //* HealthComponent
@@ -228,6 +253,7 @@ void SceneLoader::loadScene(
     const std::string& scenePath, sol::state& lua, SDL_Renderer* renderer,
     std::unique_ptr<AssetManager>& assetManager,
     std::unique_ptr<ControllerManager>& controllerManager,
+    std::unique_ptr<AudioManager>& audioManager,
     std::unique_ptr<Register>& registry) {
   sol::load_result script_result = lua.load_file(scenePath);
   if (!script_result.valid()) {
@@ -242,7 +268,8 @@ void SceneLoader::loadScene(
   sol::table sprites = scene["sprites"];
   loadSprites(renderer, sprites, assetManager);
 
-  // sol::table fonts = scene["animation"];
+  sol::table audio = scene["audio"];
+  loadSounds(audio, audioManager);
 
   sol::table fonts = scene["fonts"];
   loadFonts(fonts, assetManager);
@@ -255,4 +282,13 @@ void SceneLoader::loadScene(
 
   sol::table entities = scene["entities"];
   loadEntities(lua, entities, registry);
+
+  sol::protected_function init_level = lua["init_level"];
+  if (init_level.valid()) {
+    auto result = init_level();
+    if (!result.valid()) {
+      sol::error err = result;
+      std::cerr << "Error executing init_level: " << err.what() << std::endl;
+    }
+  }
 }

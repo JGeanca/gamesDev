@@ -28,17 +28,13 @@ Game::Game() {
   this->eventManager = std::make_unique<EventManager>();
   this->controllerManager = std::make_unique<ControllerManager>();
   this->sceneManager = std::make_unique<SceneManager>();
+  this->audioManager = std::make_unique<AudioManager>();
   init();
 }
 
 Game::~Game() {
   DEBUG_MSG("[Game] Game destructor called");
   destroy();
-  this->assetManager.reset();
-  this->controllerManager.reset();
-  this->eventManager.reset();
-  this->registry.reset();
-  this->sceneManager.reset();
 }
 
 Game &Game::getInstance() {
@@ -70,6 +66,9 @@ void Game::init() {
 
   this->renderer = SDL_CreateRenderer(this->window, SDL_DEFAULT_SCREEN_DRIVER,
                                       SDL_WITHOUT_FLAGS);
+  // audioManager->loadMusic("background",
+  //                         "./assets/audio/music/Donkey Kong Country GB.mp3");
+  // audioManager->playMusic("background", -1);
 }
 
 void Game::setUp() {
@@ -113,6 +112,12 @@ void Game::destroy() {
   DEBUG_MSG("[Game] Destroying game");
   SDL_DestroyRenderer(this->renderer);
   SDL_DestroyWindow(this->window);
+  this->assetManager.reset();
+  this->controllerManager.reset();
+  this->eventManager.reset();
+  this->sceneManager.reset();
+  this->audioManager.reset();
+  this->registry.reset();
   TTF_Quit();
   SDL_Quit();
 }
@@ -135,6 +140,10 @@ void Game::handleEvents() {
         }
         if (event.key.keysym.sym == SDLK_p) {
           togglePause();
+          break;
+        }
+        if (event.key.keysym.sym == SDLK_m) {
+          this->audioManager->toggleMusic();
           break;
         }
         controllerManager->keyDownEvent(event.key.keysym.sym);
@@ -205,10 +214,8 @@ void Game::update() {
 
 void Game::togglePause() {
   isPaused = !isPaused;
-  if (isPaused) {
-    DEBUG_MSG("[Game] Game paused");
-  } else {
-    DEBUG_MSG("[Game] Game resumed");
-  }
+  isPaused ? audioManager->pauseMusic() : audioManager->resumeMusic();
+  std::string pauseText = isPaused ? "PAUSED" : "RESUMED";
+  DEBUG_MSG("[Game] " + pauseText);
   lua["scene"]["is_paused"] = isPaused;
 }
