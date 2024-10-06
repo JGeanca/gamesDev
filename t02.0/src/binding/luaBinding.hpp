@@ -170,6 +170,63 @@ bool rightCollision(const Entity& entity, const Entity& other) {
           otherX > entityX);
 }
 
+/**
+ * @brief Verify if the top side of the entity is colliding with the bottom side
+ * of the other entity.
+ * @param entity The entity.
+ * @param other The other entity.
+ * @return true If the top side of the entity is colliding with the bottom side
+ * of the other entity, false otherwise.
+ */
+bool topCollision(const Entity& entity, const Entity& other) {
+  auto& eBoxCollider = entity.getComponent<BoxColliderComponent>();
+  auto& otherBoxCollider = other.getComponent<BoxColliderComponent>();
+
+  auto& eTransform = entity.getComponent<TransformComponent>();
+  auto& otherTransform = other.getComponent<TransformComponent>();
+
+  float entityX = eTransform.position.x;
+  float entityY = eTransform.position.y;
+  float entityW = static_cast<float>(eBoxCollider.width);
+
+  float otherX = otherTransform.position.x;
+  float otherY = otherTransform.position.y;
+  float otherW = static_cast<float>(otherBoxCollider.width);
+
+  // If the top side of the entity is colliding with the bottom side of the
+  // other
+
+  return (otherX < entityX + entityW && otherX + otherW > entityX &&
+          otherY < entityY);
+}
+
+/**
+ * @brief Verify if the bottom side of the entity is colliding with the top side
+ * of the other entity.
+ * @param entity The entity.
+ * @param other The other entity.
+ * @return true If the bottom side of the entity is colliding with the top side
+ * of the other entity, false otherwise.
+ */
+bool bottomCollision(const Entity& entity, const Entity& other) {
+  auto& eBoxCollider = entity.getComponent<BoxColliderComponent>();
+  auto& otherBoxCollider = other.getComponent<BoxColliderComponent>();
+
+  auto& eTransform = entity.getComponent<TransformComponent>();
+  auto& otherTransform = other.getComponent<TransformComponent>();
+
+  float entityX = eTransform.position.x;
+  float entityY = eTransform.position.y;
+  float entityW = static_cast<float>(eBoxCollider.width);
+
+  float otherX = otherTransform.position.x;
+  float otherY = otherTransform.position.y;
+  float otherW = static_cast<float>(otherBoxCollider.width);
+
+  return (otherX < entityX + entityW && otherX + otherW > entityX &&
+          otherY > entityY);
+}
+
 //* Position
 
 /**

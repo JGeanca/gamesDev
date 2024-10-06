@@ -170,21 +170,44 @@ scene = {
     { -- Barrier
       components = {
         tag = {
-          tag = "barrier",
+          tag = "barrier_horizontal",
         },
         box_collider = {
-          width = 80 * 2,
-          height = 80 * 2,
+          width = 16 * 2,
+          height = 16 * 2,
           offset = { x = 0, y = 0 },
         },
         sprite = {
           assetId = "barrier",
-          width = 80,
-          height = 80,
+          width = 16,
+          height = 16,
           src_rect = { x = 0, y = 0 },
         },
         transform = {
-          position = { x = 100.0, y = 100.0 },
+          position = { x = 128.0, y = 100.0 },
+          scale = { x = 2.0, y = 2.0 },
+          rotation = 0.0,
+        },
+      }
+    },
+    { -- Barrier
+      components = {
+        tag = {
+          tag = "barrier_vertical",
+        },
+        box_collider = {
+          width = 16 * 2,
+          height = 16 * 2,
+          offset = { x = 0, y = 0 },
+        },
+        sprite = {
+          assetId = "barrier",
+          width = 16,
+          height = 16,
+          src_rect = { x = 0, y = 0 },
+        },
+        transform = {
+          position = { x = 100.0, y = 68.0 },
           scale = { x = 2.0, y = 2.0 },
           rotation = 0.0,
         },
