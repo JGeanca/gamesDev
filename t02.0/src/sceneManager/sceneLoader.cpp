@@ -5,6 +5,7 @@
 
 #include "../components/animationComponent.hpp"
 #include "../components/boxColliderComponent.hpp"
+#include "../components/cameraFollowComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
 #include "../components/clickableComponent.hpp"
 #include "../components/healthComponent.hpp"
@@ -256,7 +257,15 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
             components["health"]["max_health"],
             components["health"]["regeneration_rate"]);
       }
+
+      //* CameraFollowComponent
+      sol::optional<sol::table> hasCameraFollowComponent =
+          components["camera_follow"];
+      if (hasCameraFollowComponent != sol::nullopt) {
+        newEntity.addComponent<CameraFollowComponent>();
+      }
     }
+
     index++;
   }
 }

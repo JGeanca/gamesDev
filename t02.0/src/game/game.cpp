@@ -7,6 +7,7 @@
 #include "../sceneManager/sceneManager.hpp"
 #include "../systems/animationSystem.hpp"
 #include "../systems/boxCollisionSystem.hpp"
+#include "../systems/cameraMovementSystem.hpp"
 #include "../systems/circleCollisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
 #include "../systems/healthSystem.hpp"
@@ -46,6 +47,10 @@ Game &Game::getInstance() {
 void Game::init() {
   this->windowWidth = 800;
   this->windowHeight = 600;
+  this->mapWidth = 2000;
+  this->mapHeight = 2000;
+
+  this->camera = {0, 0, windowWidth, windowHeight};
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
     return;
@@ -83,6 +88,7 @@ void Game::setUp() {
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
   registry->addSystem<HealthSystem>();
+  registry->addSystem<CameraMovementSystem>();
 
   sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
 
@@ -181,7 +187,7 @@ void Game::render() {
   SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
   SDL_RenderClear(this->renderer);
 
-  registry->getSystem<RenderSystem>().update(this->renderer,
+  registry->getSystem<RenderSystem>().update(this->renderer, this->camera,
                                              this->assetManager);
   registry->getSystem<RenderTextSystem>().update(this->renderer,
                                                  this->assetManager);
@@ -206,6 +212,7 @@ void Game::update() {
 
     registry->update();
     registry->getSystem<MovementSystem>().update(deltaTime);
+    registry->getSystem<CameraMovementSystem>().update(camera);
     registry->getSystem<HealthSystem>().update(deltaTime);
     registry->getSystem<CircleCollisionSystem>().update(eventManager);
     registry->getSystem<BoxCollisionSystem>().update();

@@ -3,6 +3,7 @@ scene = {
     [0] =
     { assetId = "enemy_1", filePath = "./assets/images/enemy_1.png" },
     { assetId = "player_ship", filePath = "./assets/images/player_ship.png" },
+    { assetId = "background",  filePath = "./assets/images/backgroun_space_ammo_8.png" },
   },
 
   fonts = {
@@ -39,11 +40,27 @@ scene = {
 
   entities = {
     [0] =
+    { -- BACKGROUND
+      components = {
+        sprite = {
+          assetId = "background",
+          width = 2000,
+          height = 2000,
+          src_rect = { x = 500, y = 0 },
+        },
+        transform = {
+          position = { x = 0.0, y = 0.0 },
+          scale = { x = 1.0, y = 1.0 },
+          rotation = 0.0,
+        },
+      }
+    },
     {
       components = {
         tag = {
           tag = "player",
         },
+        camera_follow = {},
         health = {
           max_health = 100,
           regeneration_rate = 1,
@@ -72,6 +89,7 @@ scene = {
         },
       },
     },
+
     { -- Enemy
       components = {
         tag = {
@@ -196,7 +214,6 @@ scene = {
         script = {
           path = "./assets/scripts/general/pause_text.lua"
         },
-
       }
     },
   }

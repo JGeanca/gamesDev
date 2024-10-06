@@ -29,15 +29,21 @@ const double MAX_DELTA_TIME = 0.05;
  * It has the main loop and the main methods to run the game.
  */
 class Game {
- private:                 // attributes
-  SDL_Window *window;     // SDL window pointer
-  bool isRunning;         // Flag to control the game loop.
-  int windowWidth;        // Window width
-  int windowHeight;       // Window height
+ private:              // attributes
+  SDL_Window *window;  // SDL window pointer
+  SDL_Rect camera;     // Camera rectangle
+  bool isRunning;      // Flag to control the game loop.
+
   int miliPreviousFrame;  // Milliseconds per frame (previous frame)
   bool isPaused;          // Flag to control the pause state
 
  public:
+  int windowWidth;   // Window width
+  int windowHeight;  // Window height
+
+  int mapWidth;   // Map width
+  int mapHeight;  // Map height
+
   std::unique_ptr<Register> registry;                    // ECS registry
   std::unique_ptr<AssetManager> assetManager;            // Asset manager
   std::unique_ptr<EventManager> eventManager;            // Event manager
