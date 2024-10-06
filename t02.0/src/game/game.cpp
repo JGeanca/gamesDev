@@ -6,7 +6,8 @@
 #include "../events/clickEvent.hpp"
 #include "../sceneManager/sceneManager.hpp"
 #include "../systems/animationSystem.hpp"
-#include "../systems/collisionSystem.hpp"
+#include "../systems/boxCollisionSystem.hpp"
+#include "../systems/circleCollisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
 #include "../systems/healthSystem.hpp"
 #include "../systems/movementSystem.hpp"
@@ -76,7 +77,8 @@ void Game::setUp() {
   registry->addSystem<RenderTextSystem>();
   registry->addSystem<MovementSystem>();
   registry->addSystem<AnimationSystem>();
-  registry->addSystem<CollisionSystem>();
+  registry->addSystem<CircleCollisionSystem>();
+  registry->addSystem<BoxCollisionSystem>();
   registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
@@ -205,7 +207,8 @@ void Game::update() {
     registry->update();
     registry->getSystem<MovementSystem>().update(deltaTime);
     registry->getSystem<HealthSystem>().update(deltaTime);
-    registry->getSystem<CollisionSystem>().update(eventManager);
+    registry->getSystem<CircleCollisionSystem>().update(eventManager);
+    registry->getSystem<BoxCollisionSystem>().update();
     registry->getSystem<AnimationSystem>().update();
   }
   registry->getSystem<ScriptSystem>().update(lua);

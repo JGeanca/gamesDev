@@ -48,10 +48,10 @@ scene = {
           max_health = 100,
           regeneration_rate = 1,
         },
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
+        box_collider = {
+          width = 16 * 2,
+          height = 16 * 2,
+          offset = { x = 0.0, y = 0.0 },
         },
         sprite = {
           assetId = "player_ship",
@@ -81,10 +81,10 @@ scene = {
           max_health = 100,
           regeneration_rate = 0,
         },
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
+        box_collider = {
+          width = 16 * 2,
+          height = 16 * 2,
+          offset = { x = 0.0, y = 0.0 },
         },
         sprite = {
           assetId = "enemy_1",
@@ -116,10 +116,10 @@ scene = {
           max_health = 100,
           regeneration_rate = 0,
         },
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
+        box_collider = {
+          width = 16 * 2,
+          height = 16 * 2,
+          offset = { x = 0, y = 0 },
         },
         sprite = {
           assetId = "enemy_1",

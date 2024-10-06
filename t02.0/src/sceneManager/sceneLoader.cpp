@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "../components/animationComponent.hpp"
+#include "../components/boxColliderComponent.hpp"
 #include "../components/circleColliderComponent.hpp"
 #include "../components/clickableComponent.hpp"
 #include "../components/healthComponent.hpp"
@@ -150,7 +151,7 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
             components["animation"]["is_loop"]);
       }
 
-      //* ColliderComponent
+      //* CircleColliderComponent
       sol::optional<sol::table> hasColliderComponent =
           components["circle_collider"];
       if (hasColliderComponent != sol::nullopt) {
@@ -158,6 +159,17 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
             components["circle_collider"]["radius"],
             components["circle_collider"]["width"],
             components["circle_collider"]["height"]);
+      }
+
+      //* BoxColliderComponent
+      sol::optional<sol::table> hasBoxColliderComponent =
+          components["box_collider"];
+      if (hasBoxColliderComponent != sol::nullopt) {
+        newEntity.addComponent<BoxColliderComponent>(
+            components["box_collider"]["width"],
+            components["box_collider"]["height"],
+            glm::vec2(components["box_collider"]["offset"]["x"],
+                      components["box_collider"]["offset"]["y"]));
       }
 
       //* RigidBodyComponent

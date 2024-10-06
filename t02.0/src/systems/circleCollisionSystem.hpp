@@ -1,5 +1,5 @@
-#ifndef COLLISION_SYSTEM_HPP
-#define COLLISION_SYSTEM_HPP
+#ifndef CIRCLE_COLLISION_SYSTEM_HPP
+#define CIRCLE_COLLISION_SYSTEM_HPP
 
 #include <iostream>
 #include <memory>
@@ -16,7 +16,7 @@
  * @details Collision system is responsible for detecting collisions between
  * entities of the game.
  */
-class CollisionSystem : public System {
+class CircleCollisionSystem : public System {
  public:
   /**
    * @brief CollisionSystem constructor
@@ -24,7 +24,7 @@ class CollisionSystem : public System {
    * TransformComponent to be present in the entity. **Requires means that the
    * entity must have these components to be processed by the system.
    */
-  CollisionSystem() {
+  CircleCollisionSystem() {
     requireComponent<CircleColliderComponent>();
     requireComponent<TransformComponent>();
   }
@@ -100,4 +100,4 @@ class CollisionSystem : public System {
   }
 };
 
-#endif  // COLLISION_SYSTEM_HPP
+#endif  // CIRCLE_COLLISION_SYSTEM_HPP

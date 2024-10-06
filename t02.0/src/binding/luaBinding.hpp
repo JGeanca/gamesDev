@@ -58,6 +58,8 @@ void setTextVisibility(const Entity& entity, bool isVisible) {
   }
 }
 
+//* Audio
+
 /**
  * @brief Play a sound effect.
  * @param name
