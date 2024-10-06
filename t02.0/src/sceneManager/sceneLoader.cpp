@@ -136,134 +136,18 @@ void SceneLoader::loadEntities(sol::state& lua, sol::table& entities,
     if (hasComponents != sol::nullopt) {
       sol::table components = entity["components"];
 
-      //* TagComponent
-      sol::optional<sol::table> hasTagComponent = components["tag"];
-      if (hasTagComponent != sol::nullopt) {
-        std::string tag = components["tag"]["tag"];
-        newEntity.addComponent<TagComponent>(tag);
-      }
-
-      //* AnimateComponent
-      sol::optional<sol::table> hasAnimateComponent = components["animation"];
-      if (hasAnimateComponent != sol::nullopt) {
-        newEntity.addComponent<AnimationComponent>(
-            components["animation"]["num_frames"],
-            components["animation"]["speed_rate"],
-            components["animation"]["is_loop"]);
-      }
-
-      //* CircleColliderComponent
-      sol::optional<sol::table> hasColliderComponent =
-          components["circle_collider"];
-      if (hasColliderComponent != sol::nullopt) {
-        newEntity.addComponent<CircleColliderComponent>(
-            components["circle_collider"]["radius"],
-            components["circle_collider"]["width"],
-            components["circle_collider"]["height"]);
-      }
-
-      //* BoxColliderComponent
-      sol::optional<sol::table> hasBoxColliderComponent =
-          components["box_collider"];
-      if (hasBoxColliderComponent != sol::nullopt) {
-        newEntity.addComponent<BoxColliderComponent>(
-            components["box_collider"]["width"],
-            components["box_collider"]["height"],
-            glm::vec2(components["box_collider"]["offset"]["x"],
-                      components["box_collider"]["offset"]["y"]));
-      }
-
-      //* RigidBodyComponent
-      sol::optional<sol::table> hasRigidBodyComponent = components["rg_body"];
-
-      if (hasRigidBodyComponent != sol::nullopt) {
-        newEntity.addComponent<RigidBodyComponent>(
-            glm::vec2(components["rg_body"]["velocity"]["x"],
-                      components["rg_body"]["velocity"]["y"]));
-      }
-
-      //* SpriteComponent
-      sol::optional<sol::table> hasSpriteComponent = components["sprite"];
-      if (hasSpriteComponent != sol::nullopt) {
-        newEntity.addComponent<SpriteComponent>(
-            components["sprite"]["assetId"], components["sprite"]["width"],
-            components["sprite"]["height"],
-            components["sprite"]["src_rect"]["x"],
-            components["sprite"]["src_rect"]["y"]);
-      }
-
-      //* TextComponent
-      sol::optional<sol::table> hasTextComponent = components["text"];
-      if (hasTextComponent != sol::nullopt) {
-        newEntity.addComponent<TextComponent>(
-            components["text"]["text"], components["text"]["fontId"],
-            components["text"]["r"], components["text"]["g"],
-            components["text"]["b"], components["text"]["a"]
-
-        );
-      }
-
-      //* ClickableComponent
-      sol::optional<sol::table> hasClickableComponent = components["clickable"];
-      if (hasClickableComponent != sol::nullopt) {
-        newEntity.addComponent<ClickableComponent>();
-      }
-
-      //* TransformComponent
-      sol::optional<sol::table> hasTransformComponent = components["transform"];
-      if (hasTransformComponent != sol::nullopt) {
-        newEntity.addComponent<TransformComponent>(
-            glm::vec2(components["transform"]["position"]["x"],
-                      components["transform"]["position"]["y"]),
-            glm::vec2(components["transform"]["scale"]["x"],
-                      components["transform"]["scale"]["y"]),
-            components["transform"]["rotation"]);
-      }
-
-      //* ScriptComponent
-      sol::optional<sol::table> hasScriptComponent = components["script"];
-      if (hasScriptComponent != sol::nullopt) {
-        lua["on_click"] = sol::nil;  // Clear the update function
-        lua["update"] = sol::nil;    // Clear the update function
-
-        std::string path = components["script"]["path"];
-        lua.script_file(path);
-
-        sol::optional<sol::function> hasOnClick = lua["on_click"];
-        sol::function onClick = sol::nil;  // Clear the update function
-        if (hasOnClick != sol::nullopt) {
-          onClick = lua["on_click"];
-        }
-
-        sol::optional<sol::function> hasUpdate = lua["update"];
-        sol::function update = sol::nil;  // Clear the update function
-        if (hasUpdate != sol::nullopt) {
-          update = lua["update"];
-        }
-
-        sol::optional<sol::function> hasInit = lua["init"];
-        sol::function init = sol::nil;  // Clear the update function
-        if (hasInit != sol::nullopt) {
-          init = lua["init"];
-        }
-
-        newEntity.addComponent<ScriptComponent>(update, onClick, init);
-      }
-
-      //* HealthComponent
-      sol::optional<sol::table> hasHealthComponent = components["health"];
-      if (hasHealthComponent != sol::nullopt) {
-        newEntity.addComponent<HealthComponent>(
-            components["health"]["max_health"],
-            components["health"]["regeneration_rate"]);
-      }
-
-      //* CameraFollowComponent
-      sol::optional<sol::table> hasCameraFollowComponent =
-          components["camera_follow"];
-      if (hasCameraFollowComponent != sol::nullopt) {
-        newEntity.addComponent<CameraFollowComponent>();
-      }
+      addTagComponent(newEntity, components);
+      addAnimationComponent(newEntity, components);
+      addCircleColliderComponent(newEntity, components);
+      addBoxColliderComponent(newEntity, components);
+      addRigidBodyComponent(newEntity, components);
+      addSpriteComponent(newEntity, components);
+      addTextComponent(newEntity, components);
+      addClickableComponent(newEntity, components);
+      addTransformComponent(newEntity, components);
+      addScriptComponent(newEntity, components, lua);
+      addHealthComponent(newEntity, components);
+      addCameraFollowComponent(newEntity, components);
     }
 
     index++;
@@ -311,5 +195,147 @@ void SceneLoader::loadScene(
       sol::error err = result;
       std::cerr << "Error executing init_level: " << err.what() << std::endl;
     }
+  }
+}
+
+void SceneLoader::addTagComponent(Entity& entity,
+                                  const sol::table& components) {
+  sol::optional<sol::table> hasTagComponent = components["tag"];
+  if (hasTagComponent != sol::nullopt) {
+    std::string tag = components["tag"]["tag"];
+    entity.addComponent<TagComponent>(tag);
+  }
+}
+void SceneLoader::addAnimationComponent(Entity& entity,
+                                        const sol::table& components) {
+  sol::optional<sol::table> hasAnimateComponent = components["animation"];
+  if (hasAnimateComponent != sol::nullopt) {
+    entity.addComponent<AnimationComponent>(
+        components["animation"]["num_frames"],
+        components["animation"]["speed_rate"],
+        components["animation"]["is_loop"]);
+  }
+}
+void SceneLoader::addCircleColliderComponent(Entity& entity,
+                                             const sol::table& components) {
+  sol::optional<sol::table> hasColliderComponent =
+      components["circle_collider"];
+  if (hasColliderComponent != sol::nullopt) {
+    entity.addComponent<CircleColliderComponent>(
+        components["circle_collider"]["radius"],
+        components["circle_collider"]["width"],
+        components["circle_collider"]["height"]);
+  }
+}
+void SceneLoader::addBoxColliderComponent(Entity& entity,
+                                          const sol::table& components) {
+  sol::optional<sol::table> hasBoxColliderComponent =
+      components["box_collider"];
+  if (hasBoxColliderComponent != sol::nullopt) {
+    entity.addComponent<BoxColliderComponent>(
+        components["box_collider"]["width"],
+        components["box_collider"]["height"],
+        glm::vec2(components["box_collider"]["offset"]["x"],
+                  components["box_collider"]["offset"]["y"]));
+  }
+}
+void SceneLoader::addRigidBodyComponent(Entity& entity,
+                                        const sol::table& components) {
+  sol::optional<sol::table> hasRigidBodyComponent = components["rg_body"];
+
+  if (hasRigidBodyComponent != sol::nullopt) {
+    entity.addComponent<RigidBodyComponent>(
+        glm::vec2(components["rg_body"]["velocity"]["x"],
+                  components["rg_body"]["velocity"]["y"]));
+  }
+}
+void SceneLoader::addSpriteComponent(Entity& entity,
+                                     const sol::table& components) {
+  sol::optional<sol::table> hasSpriteComponent = components["sprite"];
+  if (hasSpriteComponent != sol::nullopt) {
+    entity.addComponent<SpriteComponent>(
+        components["sprite"]["assetId"], components["sprite"]["width"],
+        components["sprite"]["height"], components["sprite"]["src_rect"]["x"],
+        components["sprite"]["src_rect"]["y"]);
+  }
+}
+void SceneLoader::addTextComponent(Entity& entity,
+                                   const sol::table& components) {
+  sol::optional<sol::table> hasTextComponent = components["text"];
+  if (hasTextComponent != sol::nullopt) {
+    entity.addComponent<TextComponent>(
+        components["text"]["text"], components["text"]["fontId"],
+        components["text"]["r"], components["text"]["g"],
+        components["text"]["b"], components["text"]["a"]
+
+    );
+  }
+}
+void SceneLoader::addClickableComponent(Entity& entity,
+                                        const sol::table& components) {
+  sol::optional<sol::table> hasClickableComponent = components["clickable"];
+  if (hasClickableComponent != sol::nullopt) {
+    entity.addComponent<ClickableComponent>();
+  }
+}
+void SceneLoader::addTransformComponent(Entity& entity,
+                                        const sol::table& components) {
+  sol::optional<sol::table> hasTransformComponent = components["transform"];
+  if (hasTransformComponent != sol::nullopt) {
+    entity.addComponent<TransformComponent>(
+        glm::vec2(components["transform"]["position"]["x"],
+                  components["transform"]["position"]["y"]),
+        glm::vec2(components["transform"]["scale"]["x"],
+                  components["transform"]["scale"]["y"]),
+        components["transform"]["rotation"]);
+  }
+}
+void SceneLoader::addScriptComponent(Entity& entity,
+                                     const sol::table& components,
+                                     sol::state& lua) {
+  sol::optional<sol::table> hasScriptComponent = components["script"];
+  if (hasScriptComponent != sol::nullopt) {
+    lua["on_click"] = sol::nil;  // Clear the update function
+    lua["update"] = sol::nil;    // Clear the update function
+
+    std::string path = components["script"]["path"];
+    lua.script_file(path);
+
+    sol::optional<sol::function> hasOnClick = lua["on_click"];
+    sol::function onClick = sol::nil;  // Clear the update function
+    if (hasOnClick != sol::nullopt) {
+      onClick = lua["on_click"];
+    }
+
+    sol::optional<sol::function> hasUpdate = lua["update"];
+    sol::function update = sol::nil;  // Clear the update function
+    if (hasUpdate != sol::nullopt) {
+      update = lua["update"];
+    }
+
+    sol::optional<sol::function> hasInit = lua["init"];
+    sol::function init = sol::nil;  // Clear the update function
+    if (hasInit != sol::nullopt) {
+      init = lua["init"];
+    }
+
+    entity.addComponent<ScriptComponent>(update, onClick, init);
+  }
+}
+void SceneLoader::addHealthComponent(Entity& entity,
+                                     const sol::table& components) {
+  sol::optional<sol::table> hasHealthComponent = components["health"];
+  if (hasHealthComponent != sol::nullopt) {
+    entity.addComponent<HealthComponent>(
+        components["health"]["max_health"],
+        components["health"]["regeneration_rate"]);
+  }
+}
+void SceneLoader::addCameraFollowComponent(Entity& entity,
+                                           const sol::table& components) {
+  sol::optional<sol::table> hasCameraFollowComponent =
+      components["camera_follow"];
+  if (hasCameraFollowComponent != sol::nullopt) {
+    entity.addComponent<CameraFollowComponent>();
   }
 }

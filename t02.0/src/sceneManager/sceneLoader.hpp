@@ -90,6 +90,22 @@ class SceneLoader {
                  std::unique_ptr<ControllerManager>& controllerManager,
                  std::unique_ptr<AudioManager>& audioManager,
                  std::unique_ptr<Register>& registry);
+
+ private:
+  // Add component methods
+  void addTagComponent(Entity& entity, const sol::table& components);
+  void addAnimationComponent(Entity& entity, const sol::table& components);
+  void addCircleColliderComponent(Entity& entity, const sol::table& components);
+  void addBoxColliderComponent(Entity& entity, const sol::table& components);
+  void addRigidBodyComponent(Entity& entity, const sol::table& components);
+  void addSpriteComponent(Entity& entity, const sol::table& components);
+  void addTextComponent(Entity& entity, const sol::table& components);
+  void addClickableComponent(Entity& entity, const sol::table& components);
+  void addTransformComponent(Entity& entity, const sol::table& components);
+  void addScriptComponent(Entity& entity, const sol::table& components,
+                          sol::state& lua);
+  void addHealthComponent(Entity& entity, const sol::table& components);
+  void addCameraFollowComponent(Entity& entity, const sol::table& components);
 };
 
 #endif  // SCENE_LOADER_HPP
