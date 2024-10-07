@@ -83,7 +83,9 @@ scene = {
           rotation = 0.0,
         },
         script = {
-          path = "./assets/scripts/player_scripts/movement.lua",
+          "./assets/scripts/player_scripts/movement.lua",
+          "./assets/scripts/player_scripts/player_collision.lua",
+
         },
         rg_body = {
           velocity = { x = 0.0, y = 0.0 },

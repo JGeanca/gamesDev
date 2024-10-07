@@ -45,7 +45,6 @@ class BoxCollisionSystem : public System {
 
       for (auto j = i; j != entities.end(); ++j) {
         auto& entityB = *j;
-
         if (entityA == entityB) {
           continue;
         }
@@ -67,18 +66,22 @@ class BoxCollisionSystem : public System {
               std::to_string(entityB.getId()));
 
           if (entityA.hasComponent<ScriptComponent>()) {
-            const auto& scriptA = entityA.getComponent<ScriptComponent>();
-            if (scriptA.onCollision != sol::nil) {
-              lua["this"] = entityA;
-              scriptA.onCollision(entityB);
+            auto& scriptA = entityA.getComponent<ScriptComponent>();
+            lua["this"] = entityA;
+            for (auto& onCollisionFunction : scriptA.onCollisionFunctions) {
+              if (onCollisionFunction != sol::nil) {
+                onCollisionFunction(entityB);
+              }
             }
           }
 
           if (entityB.hasComponent<ScriptComponent>()) {
-            const auto& scriptB = entityB.getComponent<ScriptComponent>();
-            if (scriptB.onCollision != sol::nil) {
-              lua["this"] = entityB;
-              scriptB.onCollision(entityA);
+            auto& scriptB = entityB.getComponent<ScriptComponent>();
+            lua["this"] = entityB;
+            for (auto& onCollisionFunction : scriptB.onCollisionFunctions) {
+              if (onCollisionFunction != sol::nil) {
+                onCollisionFunction(entityA);
+              }
             }
           }
         }

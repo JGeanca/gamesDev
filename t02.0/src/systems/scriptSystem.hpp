@@ -57,15 +57,20 @@ class ScriptSystem : public System {
       auto& script = entity.getComponent<ScriptComponent>();
 
       if (!script.initialized) {
-        if (script.init != sol::lua_nil) {
-          script.init();
+        for (auto& initFunction : script.initFunctions) {
+          if (initFunction != sol::nil) {
+            lua["this"] = entity;
+            initFunction();
+          }
         }
         script.initialized = true;
       }
 
-      if (script.update != sol::lua_nil) {
-        lua["this"] = entity;
-        script.update();
+      for (auto& updateFunction : script.updateFunctions) {
+        if (updateFunction != sol::nil) {
+          lua["this"] = entity;
+          updateFunction();
+        }
       }
     }
   }

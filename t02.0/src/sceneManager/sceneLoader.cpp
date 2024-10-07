@@ -304,39 +304,33 @@ void SceneLoader::addScriptComponent(Entity& entity,
                                      sol::state& lua) {
   sol::optional<sol::table> hasScriptComponent = components["script"];
   if (hasScriptComponent != sol::nullopt) {
-    lua["on_click"] = sol::nil;      // Clear the update function
-    lua["update"] = sol::nil;        // Clear the update function
-    lua["init"] = sol::nil;          // Clear the update function
-    lua["on_collision"] = sol::nil;  // Clear the update function
+    entity.addComponent<ScriptComponent>();
+    auto& scriptComponent = entity.getComponent<ScriptComponent>();
 
-    std::string path = components["script"]["path"];
-    lua.script_file(path);
+    sol::table scripts = components["script"];
+    for (auto& script : scripts) {
+      std::string path = script.second.as<std::string>();
+      lua.script_file(path);
 
-    sol::optional<sol::function> hasOnClick = lua["on_click"];
-    sol::function onClick = sol::nil;  // Clear the update function
-    if (hasOnClick != sol::nullopt) {
-      onClick = lua["on_click"];
+      if (lua["update"].valid()) {
+        scriptComponent.updateFunctions.push_back(lua["update"]);
+      }
+      if (lua["on_click"].valid()) {
+        scriptComponent.onClickFunctions.push_back(lua["on_click"]);
+      }
+      if (lua["init"].valid()) {
+        scriptComponent.initFunctions.push_back(lua["init"]);
+      }
+      if (lua["on_collision"].valid()) {
+        scriptComponent.onCollisionFunctions.push_back(lua["on_collision"]);
+      }
+
+      // Clear the global functions after adding them to the component
+      lua["update"] = sol::nil;
+      lua["on_click"] = sol::nil;
+      lua["init"] = sol::nil;
+      lua["on_collision"] = sol::nil;
     }
-
-    sol::optional<sol::function> hasUpdate = lua["update"];
-    sol::function update = sol::nil;  // Clear the update function
-    if (hasUpdate != sol::nullopt) {
-      update = lua["update"];
-    }
-
-    sol::optional<sol::function> hasInit = lua["init"];
-    sol::function init = sol::nil;  // Clear the update function
-    if (hasInit != sol::nullopt) {
-      init = lua["init"];
-    }
-
-    sol::optional<sol::function> hasCollision = lua["on_collision"];
-    sol::function onCollision = sol::nil;  // Clear the update function
-    if (hasCollision != sol::nullopt) {
-      onCollision = lua["on_collision"];
-    }
-
-    entity.addComponent<ScriptComponent>(update, onClick, init, onCollision);
   }
 }
 

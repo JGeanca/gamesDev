@@ -31,8 +31,7 @@ class UISystem : public System {
   }
 
   /**
-   * @brief Update the UI
-   * @param registry The registry
+   * @brief Subscribe to click events
    * @param eventManager The event manager
    */
   void subscribeToClickEvent(std::unique_ptr<EventManager>& eventManager) {
@@ -50,9 +49,11 @@ class UISystem : public System {
           event.posY > transform.position.y &&
           event.posY < transform.position.y + text.height) {
         if (entity.hasComponent<ScriptComponent>()) {
-          const auto& script = entity.getComponent<ScriptComponent>();
-          if (script.onClick != sol::lua_nil) {
-            script.onClick();
+          auto& script = entity.getComponent<ScriptComponent>();
+          for (auto& onClickFunction : script.onClickFunctions) {
+            if (onClickFunction != sol::nil) {
+              onClickFunction();
+            }
           }
         }
       }
