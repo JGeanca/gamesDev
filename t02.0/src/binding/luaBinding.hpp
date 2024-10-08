@@ -227,6 +227,84 @@ bool bottomCollision(const Entity& entity, const Entity& other) {
           otherY > entityY);
 }
 
+// Enum class for collision types
+enum class CollisionType { None, Left, Right, Top, Bottom };
+
+/**
+ * @brief Get the collision type between two entities.
+ * @param entity The first entity involved in the collision.
+ * @param other The second entity involved in the collision.
+ * @return The type of collision (Left, Right, Top, or Bottom).
+ */
+CollisionType getCollisionType(const Entity& entity, const Entity& other) {
+  // Get the BoxColliderComponent and TransformComponent for both entities
+  auto& eBoxCollider = entity.getComponent<BoxColliderComponent>();
+  auto& eTransform = entity.getComponent<TransformComponent>();
+
+  auto& otherBoxCollider = other.getComponent<BoxColliderComponent>();
+  auto& otherTransform = other.getComponent<TransformComponent>();
+
+  // Extract position and size information for both entities
+  float entityX = eTransform.position.x;
+  float entityY = eTransform.position.y;
+  float entityW = static_cast<float>(eBoxCollider.width);
+  float entityH = static_cast<float>(eBoxCollider.height);
+
+  float otherX = otherTransform.position.x;
+  float otherY = otherTransform.position.y;
+  float otherW = static_cast<float>(otherBoxCollider.width);
+  float otherH = static_cast<float>(otherBoxCollider.height);
+
+  // Calculate the overlap between the two entities on both axes
+  float overlapX =
+      std::min(entityX + entityW, otherX + otherW) - std::max(entityX, otherX);
+  float overlapY =
+      std::min(entityY + entityH, otherY + otherH) - std::max(entityY, otherY);
+
+  // Determine the collision type based on the overlap
+  if (overlapX < overlapY) {
+    // If the X overlap is smaller, it's a horizontal collision
+    if (entityX < otherX) {
+      return CollisionType::Right;  // The entity collided with the right side
+                                    // of the other
+    } else {
+      return CollisionType::Left;  // The entity collided with the left side of
+                                   // the other
+    }
+  } else {
+    // If the Y overlap is smaller or equal, it's a vertical collision
+    if (entityY < otherY) {
+      return CollisionType::Bottom;  // The entity collided with the bottom of
+                                     // the other
+    } else {
+      return CollisionType::Top;  // The entity collided with the top of the
+                                  // other
+    }
+  }
+}
+
+/**
+ * @brief Get the collision type as a string.
+ * @param entity The entity.
+ * @param other The other entity.
+ * @return The collision type as a string.
+ */
+std::string getCollisionTypeString(const Entity& entity, const Entity& other) {
+  CollisionType type = getCollisionType(entity, other);
+  switch (type) {
+    case CollisionType::Left:
+      return "left";
+    case CollisionType::Right:
+      return "right";
+    case CollisionType::Top:
+      return "top";
+    case CollisionType::Bottom:
+      return "bottom";
+    default:
+      return "none";
+  }
+}
+
 //* Position
 
 /**

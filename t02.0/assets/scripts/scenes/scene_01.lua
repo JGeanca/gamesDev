@@ -119,15 +119,16 @@ scene = {
           is_loop = true,
         },
         transform = {
-          position = { x = 400.0, y = 100.0 },
+          position = { x = 400.0, y = 70.0 },
           scale = { x = 2.0, y = 2.0 },
           rotation = 0.0,
         },
         rg_body = {
-          velocity = { x = 100.0, y = 0.0 },
+          velocity = { x = 0.0, y = 0.0 },
         },
         script = {
-          path = "./assets/scripts/enemy_scripts/basic_enemy.lua"
+          "./assets/scripts/enemy_scripts/basic_enemy.lua",
+          "./assets/scripts/player_scripts/player_collision.lua",
         },
       }
     },
@@ -165,14 +166,14 @@ scene = {
           velocity = { x = 0.0, y = 0.0 },
         },
         script = {
-          path = "./assets/scripts/enemy_scripts/basic_enemy.lua"
+          path = "./assets/scripts/enemy_scripts/basic_enemy.lua",
         },
       }
     },
     { -- Barrier
       components = {
         tag = {
-          tag = "barrier_horizontal",
+          tag = "barrier",
         },
         box_collider = {
           width = 16 * 2,
@@ -195,7 +196,7 @@ scene = {
     { -- Barrier
       components = {
         tag = {
-          tag = "barrier_vertical",
+          tag = "barrier",
         },
         box_collider = {
           width = 16 * 2,

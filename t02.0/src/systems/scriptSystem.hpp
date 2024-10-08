@@ -46,6 +46,7 @@ class ScriptSystem : public System {
     lua.set_function("get_position", getPosition);
     lua.set_function("set_position", setPosition);
     lua.set_function("get_size", getSize);
+    lua.set_function("get_collision_type", getCollisionTypeString);
   }
 
   /**
