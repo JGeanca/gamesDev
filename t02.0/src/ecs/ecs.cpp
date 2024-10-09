@@ -100,3 +100,19 @@ void Register::update() {
   }
   entitiesToBeRemoved.clear();
 }
+
+bool Register::entityExists(int entityId) const {
+  if (entityId < 0 || entityId >= numEntities) {
+    return false;
+  }
+
+  if (std::find(freeIds.begin(), freeIds.end(), entityId) != freeIds.end()) {
+    return false;
+  }
+
+  return !isEntityMarkedForRemoval(Entity(entityId));
+}
+
+bool Register::isEntityMarkedForRemoval(const Entity& entity) const {
+  return entitiesToBeRemoved.find(entity) != entitiesToBeRemoved.end();
+}

@@ -148,6 +148,58 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
   }
 end
 
+local function victory_point(x, y)
+  return {
+    components = {
+      tag = {
+        tag = "victory_point",
+      },
+      box_collider = {
+        width = 16 * 2,
+        height = 16 * 2,
+        offset = { x = 0.0, y = 0.0 },
+      },
+      transform = {
+        position = { x = x, y = y },
+        scale = { x = 2.0, y = 2.0 },
+        rotation = 0.0,
+      },
+      sprite = {
+        assetId = "flag_point",
+        width = 16,
+        height = 16,
+        src_rect = { x = 32, y = 0 },
+      },
+    }
+  }
+end
+
+function flag_point(x, y)
+  return {
+    components = {
+      tag = {
+        tag = "flag_point",
+      },
+      box_collider = {
+        width = 16 * 2,
+        height = 16 * 2,
+        offset = { x = 0.0, y = 0.0 },
+      },
+      transform = {
+        position = { x = x, y = y },
+        scale = { x = 2.0, y = 2.0 },
+        rotation = 0.0,
+      },
+      sprite = {
+        assetId = "flag_point",
+        width = 16,
+        height = 16,
+        src_rect = { x = 0, y = 0 },
+      },
+    }
+  }
+end
+
 local function init_component()
   return {
     components = {
@@ -162,13 +214,23 @@ local function init_component()
 end
 
 scene = {
+  collected_points = 0,
+  is_paused = false,
+  point_positions = {
+    { x = 400, y = 300 },
+    { x = 500, y = 300 },
+  },
+  total_points = 2,
+  point_entities = {},
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),
     sprite("player_ship", "./assets/images/player_ship.png"),
     sprite("background", "./assets/images/background_space_ammo_8.png"),
     sprite("barrier", "./assets/images/barrier.png"),
+    sprite("flag_point", "./assets/images/flag_point.png"),
   },
+
 
   fonts = {
     [0] =
@@ -199,12 +261,13 @@ scene = {
     { name = "left", key = 1 },
   },
 
-  is_paused = false,
+
 
   entities = {
     [0] =
         init_component(),
     background(2000, 2000, "background"),
+    victory_point(670, 300),
     player(),
     text("Level 1", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
@@ -226,9 +289,17 @@ local function create_vertical_barrier_column(num_barriers, x, init_y, sep)
   end
 end
 
-local function create_enemies(num_enemies, start_x, y, sep, vel_x, vel_y)
+function create_enemies(num_enemies, start_x, y, sep, vel_x, vel_y)
   for i = 0, num_enemies - 1 do
     scene.entities[#scene.entities + 1] = enemy(100, 0, "enemy_1", start_x + i * sep, y, vel_x, vel_y)
+  end
+end
+
+function create_points()
+  --TODO FIX TO GET ID
+  for i = 1, scene.total_points do
+    scene.entities[#scene.entities + 1] = flag_point(scene.point_positions[i].x, scene.point_positions[i].y)
+    scene.point_entities[#scene.point_entities + 1] = scene.entities[#scene.entities]
   end
 end
 
@@ -256,6 +327,7 @@ create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
 
 
-local speed = 250
+local speed = 0
 create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
 create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)
+create_points()

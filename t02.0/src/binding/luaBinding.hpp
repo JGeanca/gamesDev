@@ -1,8 +1,10 @@
 #ifndef LUA_BINDING_HPP
 #define LUA_BINDING_HPP
 
+#include <iostream>
 #include <string>
 #include <tuple>
+#include <vector>
 
 #include "../components/boxColliderComponent.hpp"
 #include "../components/rigidBodyComponent.hpp"
@@ -340,6 +342,25 @@ std::tuple<int, int> getSize(const Entity& entity) {
   auto& transform = entity.getComponent<TransformComponent>();
   return {static_cast<int>(spriteComponent.width * transform.scale.x),
           static_cast<int>(spriteComponent.height * transform.scale.y)};
+}
+
+// * Entities
+
+void killEntity(Entity& entity) { entity.killEntity(); }
+
+void createEntity(int x, int y, int width, int height,
+                  const std::string& textureId, const std::string& tag) {
+  Entity newEntity = Game::getInstance().registry->createEntity();
+  newEntity.addComponent<SpriteComponent>(textureId, width, height, 0.0, 0.0);
+  newEntity.addComponent<BoxColliderComponent>(width * 2, height * 2,
+                                               glm::vec2(0.0, 0.0));
+  newEntity.addComponent<TagComponent>(tag);
+  newEntity.addComponent<TransformComponent>(glm::vec2(x, y),
+                                             glm::vec2(2.0, 2.0), 0.0);
+}
+
+bool entityExists(Entity& entity) {
+  return Game::getInstance().registry->entityExists(entity.getId());
 }
 
 #endif  // LUA_BINDING_HPP

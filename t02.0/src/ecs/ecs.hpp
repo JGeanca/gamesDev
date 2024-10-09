@@ -361,6 +361,20 @@ class Register {
    * @brief Clears all entities from the register.
    */
   void clearAllEntities();
+
+  /**
+   * @brief Checks if an entity exists in the register.
+   * @param entityId The ID of the entity to check.
+   * @return True if the entity exists, false otherwise.
+   */
+  bool entityExists(int entityId) const;
+
+  /**
+   * @brief Checks if an entity is marked for removal.
+   * @param entity The entity to check.
+   * @return True if the entity is marked for removal, false otherwise.
+   */
+  bool isEntityMarkedForRemoval(const Entity& entity) const;
 };
 
 //* -----------------Implementation of template methods------------------------

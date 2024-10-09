@@ -47,6 +47,9 @@ class ScriptSystem : public System {
     lua.set_function("set_position", setPosition);
     lua.set_function("get_size", getSize);
     lua.set_function("get_collision_type", getCollisionTypeString);
+    lua.set_function("kill_entity", killEntity);
+    lua.set_function("create_entity", createEntity);
+    lua.set_function("entity_exists", entityExists);
   }
 
   /**

@@ -32,8 +32,29 @@ function on_collision(other)
     local initial_x = 90
     local initial_y = 300
 
-    set_position(this, initial_x, initial_y)
+    set_position(this, initial_x, initial_y) -- reset player position
+    play_sound("shoot")                      --TODO Change SOUND
+    reset_points()
+    --
+  elseif other_tag == "flag_point" then
+    kill_entity(other)
+    scene.collected_points = scene.collected_points + 1
+    print("Points: " .. scene.collected_points)
+    -- play_sound("point") --TODO
+    if currentPoints == totalPoints then
+      -- show_victory_point() --TODO
+    end
+  end
+end
 
-    play_sound("shoot")
+function reset_points()
+  scene.collected_points = 0
+  for _, point_entity in ipairs(scene.point_entities) do
+    print("Checking if entity exists")
+    if entity_exists(point_entity) then
+      print("Killing EXIST!!")
+      kill_entity(point_entity)
+    end
+    print("DOesnt exist")
   end
 end
