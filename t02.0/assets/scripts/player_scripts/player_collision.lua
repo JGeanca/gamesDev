@@ -53,23 +53,10 @@ function reset_points()
   scene.collected_points = 0
   for i = 0, scene.total_points - 1 do
     local point_id = scene.point_entities[i + 1]
-
-    if entity_exists_by_id(point_id) then
-      local exist = entity_exists_by_id(point_id)
-      print("BEFORE KILL. Hi im: " .. point_id .. " and I " .. exist)
-
+    if entity_exists_by_id(point_id) == 1 then
       kill_entity_by_id(point_id)
-
-      exist = entity_exists_by_id(point_id)
-      print("AFTER KILL. Hi im" .. point_id .. " and I " .. exist)
-    else
-      print("Hi im: " .. point_id .. " and I dont exist")
     end
-    --   print("Just BEFORE check if exists")
-    --   local exist = entity_exists(point_id)
-    --   print("AFTER Hi im" .. point_id .. " and I" .. exist)
-    -- else
-    --   print("DOesnt exist")
-    -- end
   end
+  scene.point_entities = {}
+  create_points()
 end

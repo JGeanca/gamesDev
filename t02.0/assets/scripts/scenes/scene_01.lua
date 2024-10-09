@@ -297,7 +297,6 @@ end
 
 function create_points()
   for i = 0, scene.total_points - 1 do
-    print("Creating point")
     local id = create_entity(400 + i * 64, 300, 16, 16, "flag_point", "flag_point")
     scene.point_entities[#scene.point_entities + 1] = id
   end
@@ -327,6 +326,6 @@ create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
 
 
-local speed = 0
+local speed = 250
 create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
 create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)
