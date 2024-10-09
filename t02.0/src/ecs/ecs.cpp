@@ -116,3 +116,21 @@ bool Register::entityExists(int entityId) const {
 bool Register::isEntityMarkedForRemoval(const Entity& entity) const {
   return entitiesToBeRemoved.find(entity) != entitiesToBeRemoved.end();
 }
+
+void Register::killEntityById(int entityId) {
+  if (entityExists(entityId)) {
+    destroyEntity(Entity(entityId));
+  }
+}
+
+std::set<Entity> Register::getEntities() {
+  std::set<Entity> allEntities;
+
+  for (int i = 0; i < numEntities; i++) {
+    if (entityExists(i)) {
+      allEntities.insert(Entity(i));
+    }
+  }
+
+  return allEntities;
+}

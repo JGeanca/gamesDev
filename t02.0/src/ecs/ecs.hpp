@@ -375,6 +375,18 @@ class Register {
    * @return True if the entity is marked for removal, false otherwise.
    */
   bool isEntityMarkedForRemoval(const Entity& entity) const;
+
+  /**
+   * @brief Kills an entity by its ID.
+   * @param entityId The ID of the entity to kill.
+   */
+  void killEntityById(int entityId);
+
+  /**
+   * @brief Get all entities in the register.
+   * @return All entities in the register.
+   */
+  std::set<Entity> getEntities();
 };
 
 //* -----------------Implementation of template methods------------------------

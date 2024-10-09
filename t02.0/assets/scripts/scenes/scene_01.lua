@@ -276,14 +276,14 @@ scene = {
 }
 
 local function create_horizontal_barrier_row(num_barriers, init_x, y, sep)
-  for i = 1, num_barriers do
+  for i = 0, num_barriers - 1 do
     scene.entities[#scene.entities + 1] = barrier(init_x + sep, y)
     init_x = init_x + sep
   end
 end
 
 local function create_vertical_barrier_column(num_barriers, x, init_y, sep)
-  for i = 1, num_barriers do
+  for i = 0, num_barriers - 1 do
     scene.entities[#scene.entities + 1] = barrier(x, init_y + sep)
     init_y = init_y + sep
   end
@@ -296,10 +296,10 @@ function create_enemies(num_enemies, start_x, y, sep, vel_x, vel_y)
 end
 
 function create_points()
-  --TODO FIX TO GET ID
-  for i = 1, scene.total_points do
-    scene.entities[#scene.entities + 1] = flag_point(scene.point_positions[i].x, scene.point_positions[i].y)
-    scene.point_entities[#scene.point_entities + 1] = scene.entities[#scene.entities]
+  for i = 0, scene.total_points - 1 do
+    print("Creating point")
+    local id = create_entity(400 + i * 64, 300, 16, 16, "flag_point", "flag_point")
+    scene.point_entities[#scene.point_entities + 1] = id
   end
 end
 
@@ -330,4 +330,3 @@ create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 local speed = 0
 create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
 create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)
-create_points()

@@ -345,11 +345,12 @@ std::tuple<int, int> getSize(const Entity& entity) {
 }
 
 // * Entities
+// TODO: ADD DOC
 
 void killEntity(Entity& entity) { entity.killEntity(); }
 
-void createEntity(int x, int y, int width, int height,
-                  const std::string& textureId, const std::string& tag) {
+int createEntity(int x, int y, int width, int height,
+                 const std::string& textureId, const std::string& tag) {
   Entity newEntity = Game::getInstance().registry->createEntity();
   newEntity.addComponent<SpriteComponent>(textureId, width, height, 0.0, 0.0);
   newEntity.addComponent<BoxColliderComponent>(width * 2, height * 2,
@@ -357,10 +358,22 @@ void createEntity(int x, int y, int width, int height,
   newEntity.addComponent<TagComponent>(tag);
   newEntity.addComponent<TransformComponent>(glm::vec2(x, y),
                                              glm::vec2(2.0, 2.0), 0.0);
+
+  return newEntity.getId();
 }
 
-bool entityExists(Entity& entity) {
+int entityExists(Entity& entity) {
   return Game::getInstance().registry->entityExists(entity.getId());
+}
+
+int entityExistsById(int entityId) {
+  return Game::getInstance().registry->entityExists(entityId);
+}
+
+int getEntityId(Entity& entity) { return entity.getId(); }
+
+void killEntityById(int entityId) {
+  Game::getInstance().registry->killEntityById(entityId);
 }
 
 #endif  // LUA_BINDING_HPP
