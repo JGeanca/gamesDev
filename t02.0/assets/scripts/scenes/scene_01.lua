@@ -1,23 +1,24 @@
 local pauseScript = "./assets/scripts/general/pause_text.lua"
+local menuScript = "./assets/scripts/menu/go_to_menu.lua"
 
 local function barrier(x, y)
   return {
     components = {
       tag = { tag = "barrier" },
       box_collider = {
-        width = 32,
-        height = 32,
+        width = 42,
+        height = 42,
         offset = { x = 0, y = 0 }
       },
       sprite = {
         assetId = "barrier",
-        width = 16,
-        height = 16,
+        width = 42,
+        height = 42,
         src_rect = { x = 0, y = 0 }
       },
       transform = {
         position = { x = x, y = y },
-        scale = { x = 2.0, y = 2.0 },
+        scale = { x = 1.0, y = 1.0 },
         rotation = 0.0
       }
     }
@@ -40,7 +41,6 @@ local function player()
   return {
     components = {
       tag = { tag = "player" },
-      camera_follow = {},
       health = { max_health = 100, regeneration_rate = 1 },
       box_collider = {
         width = 16 * 2,
@@ -53,7 +53,7 @@ local function player()
         height = 16,
         src_rect = { x = 16, y = 0 }
       },
-      transform = { position = { x = 400.0, y = 300.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
+      transform = { position = { x = 90.0, y = 300.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
       script = {
         "./assets/scripts/player_scripts/movement.lua",
         "./assets/scripts/player_scripts/player_collision.lua"
@@ -135,7 +135,7 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
       },
       transform = {
         position = { x = x, y = y },
-        scale = { x = 2.0, y = 2.0 },
+        scale = { x = 1.5, y = 1.5 },
         rotation = 0.0,
       },
       rg_body = {
@@ -143,6 +143,19 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
       },
       script = {
         "./assets/scripts/enemy_scripts/basic_enemy.lua",
+      },
+    }
+  }
+end
+
+local function init_component()
+  return {
+    components = {
+      tag = {
+        tag = "level_manager"
+      },
+      script = {
+        path = "./assets/scripts/general/level_manager.lua",
       },
     }
   }
@@ -177,7 +190,7 @@ scene = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
     },
     music = {
-      menu = "./assets/audio/music/Donkey Kong Country GB.mp3",
+      level_song = "./assets/audio/music/Aquatic Ambiance GB.mp3",
     }
   },
 
@@ -190,31 +203,59 @@ scene = {
 
   entities = {
     [0] =
-        background(2000, 2000, "background"),
+        init_component(),
+    background(2000, 2000, "background"),
     player(),
-    enemy(100, 0, "enemy_1", 400, 70, 0, 0),
-    enemy(100, 0, "enemy_1", 400, 500, 0, 0),
     text("Level 1", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
-    text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0),
-    text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 200.0, pauseScript),
+    text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
+    text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
   }
 }
 
-local function create_horizontal_barrier_row(num_barriers, init_x, y)
-  for i = 0, num_barriers do
-    scene.entities[#scene.entities + 1] = barrier(init_x + 32, y)
-    init_x = init_x + 32
+local function create_horizontal_barrier_row(num_barriers, init_x, y, sep)
+  for i = 1, num_barriers do
+    scene.entities[#scene.entities + 1] = barrier(init_x + sep, y)
+    init_x = init_x + sep
   end
 end
 
-local function create_vertical_barrier_column(num_barriers, init_y, x)
-  for i = 0, num_barriers do
-    scene.entities[#scene.entities + 1] = barrier(x, init_y + 32)
-    init_y = init_y + 32
+local function create_vertical_barrier_column(num_barriers, x, init_y, sep)
+  for i = 1, num_barriers do
+    scene.entities[#scene.entities + 1] = barrier(x, init_y + sep)
+    init_y = init_y + sep
   end
 end
 
-create_horizontal_barrier_row(10, 200, 200)
-create_horizontal_barrier_row(10, 200, 264)
+local function create_enemies(num_enemies, start_x, y, sep, vel_x, vel_y)
+  for i = 0, num_enemies - 1 do
+    scene.entities[#scene.entities + 1] = enemy(100, 0, "enemy_1", start_x + i * sep, y, vel_x, vel_y)
+  end
+end
 
-create_vertical_barrier_column(10, 200, 200)
+local start_x = 100
+local start_y = 100
+local sep = 42
+
+create_horizontal_barrier_row(12, start_x, start_y, sep)
+create_horizontal_barrier_row(12, start_x, start_y + sep * 9, sep)
+
+create_vertical_barrier_column(4, start_x, start_y - sep, sep)
+create_vertical_barrier_column(4, start_x, start_y + sep * 5, sep)
+
+create_vertical_barrier_column(4, start_x + sep * 13, start_y - sep, sep)
+create_vertical_barrier_column(4, start_x + sep * 13, start_y + sep * 5, sep)
+
+create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 3, sep)
+create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 6, sep)
+
+create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 3, sep)
+create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, sep)
+
+create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
+create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
+
+
+
+local speed = 250
+create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
+create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)

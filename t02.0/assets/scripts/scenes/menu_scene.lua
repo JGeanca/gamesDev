@@ -18,7 +18,7 @@ scene = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
     },
     music = {
-      menu = "./assets/audio/music/Donkey Kong Country GB.mp3",
+      level_song = "./assets/audio/music/Donkey Kong Country GB.mp3",
     }
   },
 

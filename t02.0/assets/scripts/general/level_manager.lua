@@ -1,5 +1,5 @@
 function init()
-  play_music("menu", -1)
+  play_music("level_song", -1)
 end
 
 -- function update()
