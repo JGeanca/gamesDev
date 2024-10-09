@@ -222,6 +222,7 @@ scene = {
   },
   total_points = 2,
   point_entities = {},
+  victory_point_id = nil,
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),
@@ -229,6 +230,7 @@ scene = {
     sprite("background", "./assets/images/background_space_ammo_8.png"),
     sprite("barrier", "./assets/images/barrier.png"),
     sprite("flag_point", "./assets/images/flag_point.png"),
+    sprite("victory_point", "./assets/images/pick_ups.png"),
   },
 
 
@@ -267,7 +269,6 @@ scene = {
     [0] =
         init_component(),
     background(2000, 2000, "background"),
-    victory_point(670, 300),
     player(),
     text("Level 1", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
@@ -302,6 +303,11 @@ function create_points()
   end
 end
 
+function create_victory_point()
+  local id = create_entity(670, 300, 16, 16, "victory_point", "victory_point")
+  scene.victory_point_id = id
+end
+
 local start_x = 100
 local start_y = 100
 local sep = 42
@@ -326,6 +332,6 @@ create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
 
 
-local speed = 250
+local speed = 0
 create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
 create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)
