@@ -217,12 +217,15 @@ scene = {
   collected_points = 0,
   is_paused = false,
   point_positions = {
-    { x = 400, y = 300 },
+    { x = 320, y = 300 },
     { x = 500, y = 300 },
+    { x = 570, y = 150 },
+
   },
-  total_points = 2,
+  total_points = 3,
   point_entities = {},
   victory_point_id = nil,
+  next_level = "level_02",
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),
@@ -252,9 +255,10 @@ scene = {
   audio = {
     sound_effects = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
+      point = "./assets/audio/sfx/point.wav",
     },
     music = {
-      level_song = "./assets/audio/music/Aquatic Ambiance GB.mp3",
+      level_song = "./assets/audio/music/Boss.mp3",
     }
   },
 
@@ -262,8 +266,6 @@ scene = {
     [0] =
     { name = "left", key = 1 },
   },
-
-
 
   entities = {
     [0] =
@@ -298,7 +300,9 @@ end
 
 function create_points()
   for i = 0, scene.total_points - 1 do
-    local id = create_entity(400 + i * 64, 300, 16, 16, "flag_point", "flag_point")
+    local point_x = scene.point_positions[i + 1].x
+    local point_y = scene.point_positions[i + 1].y
+    local id = create_entity(point_x, point_y, 16, 16, "flag_point", "flag_point")
     scene.point_entities[#scene.point_entities + 1] = id
   end
 end
@@ -332,6 +336,6 @@ create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
 
 
-local speed = 0
+local speed = 250
 create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
 create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)

@@ -15,7 +15,7 @@ scene = {
 
   audio = {
     sound_effects = {
-      shoot = "./assets/audio/sfx/shoot_01.wav",
+      selection = "./assets/audio/sfx/selection.wav",
     },
     music = {
       level_song = "./assets/audio/music/Donkey Kong Country GB.mp3",

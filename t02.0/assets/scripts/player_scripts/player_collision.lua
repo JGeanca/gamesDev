@@ -35,22 +35,18 @@ function on_collision(other)
     local initial_y = 300
 
     set_position(this, initial_x, initial_y) -- reset player position
-    play_sound("shoot")                      --TODO Change SOUND
+    play_sound("shoot")
     reset_points()
     reset_victory_point()
   elseif other_tag == "flag_point" then
     kill_entity(other)
     scene.collected_points = scene.collected_points + 1
-    print("Points: " .. scene.collected_points)
-    -- play_sound("point") --TODO
-    print("Total Points: " .. scene.total_points)
+    play_sound("point")
     if scene.collected_points == scene.total_points then
       create_victory_point()
     end
-  elseif other_tag == "victory_point" then --TODO
-    kill_entity(other)
-    print("Victory!")
-    go_to_scene("level_02")
+  elseif other_tag == "victory_point" then
+    go_to_scene(scene.next_level)
   end
 end
 
@@ -64,7 +60,6 @@ function reset_points()
   end
 
   scene.point_entities = {}
-  print("Points: " .. scene.collected_points)
   create_points()
 end
 
