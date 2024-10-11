@@ -265,8 +265,8 @@ scene = {
   next_level = "level_03",
 
   crosses = {
-    { x = 260, y = 260, radius = 80 },
-    { x = 500, y = 400, radius = 60 },
+    { x = 250, y = 170, radius = 75 },
+    { x = 500, y = 400, radius = 75 },
   },
   crosses_num = 2,
 
@@ -279,7 +279,6 @@ scene = {
     sprite("flag_point", "./assets/images/flag_point.png"),
     sprite("victory_point", "./assets/images/pick_ups.png"),
   },
-
 
   fonts = {
     [0] =
@@ -310,20 +309,11 @@ scene = {
     { name = "left", key = 1 },
   },
 
-
-
   entities = {
     [0] =
         init_component(),
     background(2000, 2000, "background"),
     player(),
-    enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 30, 0, 0), -- center
-    --circular_enemy("enemy_top", 200, 200 - 16),
-    --circular_enemy("enemy_bottom", 200, 200 - 16 + 60),
-    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 16 * 2, 0, 0),
-    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 16 * 4, 0, 0),
-    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 + 16 * 2, 0, 0),
-
     text("Level 2", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
     text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
@@ -366,32 +356,17 @@ local start_x = 58
 local start_y = 58
 local sep = 42
 
-create_horizontal_barrier_row(15, start_x, start_y, sep)            -- top
-create_horizontal_barrier_row(15, start_x, start_y + sep * 11, sep) --bot
-
--- create_vertical_barrier_column(4, start_x, start_y - sep, sep)
--- create_vertical_barrier_column(4, start_x, start_y + sep * 5, sep)
+create_horizontal_barrier_row(15, start_x, start_y, sep)                   -- top
+create_horizontal_barrier_row(15, start_x, start_y + sep * 11, sep)        -- bot
 
 create_vertical_barrier_column(12, start_x + sep * 15, start_y - sep, sep) -- right
 create_vertical_barrier_column(12, start_x, start_y - sep, sep)            -- left
 
-
-create_horizontal_barrier_row(15, start_x, start_y + sep * 5, sep) -- center top
-create_horizontal_barrier_row(15, start_x, start_y + sep * 6, sep) --cernter bot
-
--- create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 3, sep)
--- create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 6, sep)
-
--- create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 3, sep)
--- create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, sep)
-
--- create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
--- create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
-
+create_horizontal_barrier_row(15, start_x, start_y + sep * 5, sep)         -- center top
+create_horizontal_barrier_row(15, start_x, start_y + sep * 6, sep)         --center bot
 
 
 local speed = 40
-
 
 
 local function create_rotating_cross(center_x, center_y, radius, formation_index)
@@ -411,6 +386,6 @@ local function create_rotating_cross(center_x, center_y, radius, formation_index
   end
 end
 
-
-create_rotating_cross(scene.crosses[1].x, scene.crosses[1].y, scene.crosses[1].radius, 1)
-create_rotating_cross(scene.crosses[2].x, scene.crosses[2].y, scene.crosses[2].radius, 2)
+for i = 1, scene.crosses_num do
+  create_rotating_cross(scene.crosses[i].x, scene.crosses[i].y, scene.crosses[i].radius, i)
+end

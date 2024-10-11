@@ -218,7 +218,7 @@ void Game::update() {
     registry->getSystem<BoxCollisionSystem>().update(lua);
     registry->getSystem<AnimationSystem>().update();
   }
-  registry->getSystem<ScriptSystem>().update(lua);
+  registry->getSystem<ScriptSystem>().update(lua, deltaTime);
   registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
 }
 

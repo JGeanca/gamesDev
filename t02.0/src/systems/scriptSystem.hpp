@@ -59,7 +59,7 @@ class ScriptSystem : public System {
    * @brief This method updates the script components.
    * @param lua The lua state.
    */
-  void update(sol::state& lua) {
+  void update(sol::state& lua, float deltaTime = 0.0f) {
     for (auto& entity : getEntities()) {
       auto& script = entity.getComponent<ScriptComponent>();
 
@@ -76,7 +76,7 @@ class ScriptSystem : public System {
       for (auto& updateFunction : script.updateFunctions) {
         if (updateFunction != sol::nil) {
           lua["this"] = entity;
-          updateFunction();
+          updateFunction(deltaTime);
         }
       }
     }
