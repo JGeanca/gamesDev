@@ -1,5 +1,5 @@
 local angle = 0
-local ROTATION_SPEED = 4
+local ROTATION_SPEED = 3
 
 function init()
   -- init the enemy with the formation position

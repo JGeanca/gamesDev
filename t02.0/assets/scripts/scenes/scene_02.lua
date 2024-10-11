@@ -125,7 +125,7 @@ local function circular_enemy(tag, x, y, formation_index)
       },
       transform = {
         position = { x = x, y = y },
-        scale = { x = 1.3, y = 1.3 },
+        scale = { x = 1.2, y = 1.2 },
         rotation = 0.0,
       },
       rg_body = {
@@ -180,7 +180,7 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
         velocity = { x = vel_x, y = vel_y },
       },
       script = {
-
+        "./assets/scripts/enemy_scripts/basic_enemy.lua",
       },
     }
   }
@@ -238,6 +238,32 @@ function flag_point(x, y)
   }
 end
 
+function check_point(x, y)
+  return {
+    components = {
+      tag = {
+        tag = "check_point",
+      },
+      box_collider = {
+        width = 16 * 2,
+        height = 16 * 2,
+        offset = { x = 0.0, y = 0.0 },
+      },
+      transform = {
+        position = { x = x, y = y },
+        scale = { x = 2.0, y = 2.0 },
+        rotation = 0.0,
+      },
+      sprite = {
+        assetId = "flag_point",
+        width = 16,
+        height = 16,
+        src_rect = { x = 32, y = 0 },
+      },
+    }
+  }
+end
+
 local function init_component()
   return {
     components = {
@@ -255,22 +281,24 @@ scene = {
   collected_points = 0,
   is_paused = false,
   point_positions = {
-    { x = 400, y = 300 },
-    { x = 500, y = 300 },
-    { x = 600, y = 300 },
+    { x = 330, y = 360 },
   },
-  total_points = 3,
+  total_points = 1,
   point_entities = {},
   victory_point_id = nil,
   next_level = "level_03",
 
   circles = {
-    { x = 250, y = 170, radius = 60 },
-    { x = 500, y = 400, radius = 60 },
+    { x = 230, y = 170, radius = 60 },
+    { x = 430, y = 170, radius = 60 },
+    { x = 630, y = 185, radius = 73 },
+    { x = 600, y = 450, radius = 90 },
+    { x = 300, y = 450, radius = 90 },
   },
-  circles_num = 2,
+  circles_num = 5,
 
-  pj_reset_pos = { x = 80, y = 100 },
+  pj_reset_pos = { x = 300, y = 500 },
+  --pj_reset_pos = { x = 80, y = 100 },
 
   sprites = {
     [0] =
@@ -300,6 +328,8 @@ scene = {
   audio = {
     sound_effects = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
+      point = "./assets/audio/sfx/point.wav",
+      check_point = "./assets/audio/sfx/check_point.wav",
     },
     music = {
       level_song = "./assets/audio/music/contra_jungle_song.mp3",
@@ -315,6 +345,7 @@ scene = {
     [0] =
         init_component(),
     background(2000, 2000, "background"),
+    check_point(630, 320),
     player(),
     text("Level 2", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
@@ -344,13 +375,15 @@ end
 
 function create_points()
   for i = 0, scene.total_points - 1 do
-    local id = create_entity(400 + i * 64, 300, 16, 16, "flag_point", "flag_point")
+    local point_x = scene.point_positions[i + 1].x
+    local point_y = scene.point_positions[i + 1].y
+    local id = create_entity(point_x, point_y, 16, 16, "flag_point", "flag_point")
     scene.point_entities[#scene.point_entities + 1] = id
   end
 end
 
 function create_victory_point()
-  local id = create_entity(670, 300, 16, 16, "victory_point", "victory_point")
+  local id = create_entity(100, 430, 16, 16, "victory_point", "victory_point")
   scene.victory_point_id = id
 end
 
@@ -364,11 +397,12 @@ create_horizontal_barrier_row(15, start_x, start_y + sep * 11, sep)        -- bo
 create_vertical_barrier_column(12, start_x + sep * 15, start_y - sep, sep) -- right
 create_vertical_barrier_column(12, start_x, start_y - sep, sep)            -- left
 
-create_horizontal_barrier_row(15, start_x, start_y + sep * 5, sep)         -- center top
-create_horizontal_barrier_row(15, start_x, start_y + sep * 6, sep)         --center bot
+create_horizontal_barrier_row(12, start_x, start_y + sep * 5, sep)         -- center top
+create_horizontal_barrier_row(12, start_x, start_y + sep * 6, sep)         --center bot
 
 
-
+vel = 300
+create_enemies(1, 110, 300, 100, 0, vel)
 
 local diag_fact = 0.7
 

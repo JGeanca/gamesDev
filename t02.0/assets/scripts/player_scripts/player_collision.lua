@@ -44,6 +44,11 @@ function on_collision(other)
     end
   elseif other_tag == "victory_point" then
     go_to_scene(scene.next_level)
+  elseif other_tag == "check_point" then
+    local checkpoint_x, checkpoint_y = get_position(other)
+    scene.pj_reset_pos = { x = checkpoint_x, y = checkpoint_y }
+    kill_entity(other)
+    play_sound("check_point")
   end
 end
 
