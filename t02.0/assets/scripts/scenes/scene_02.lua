@@ -53,7 +53,7 @@ local function player()
         height = 16,
         src_rect = { x = 16, y = 0 }
       },
-      transform = { position = { x = 90.0, y = 300.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
+      transform = { position = { x = 80.0, y = 200.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
       script = {
         "./assets/scripts/player_scripts/movement.lua",
         "./assets/scripts/player_scripts/player_collision.lua"
@@ -107,6 +107,44 @@ local function text(msg, fontId, r, g, b, a, x, y, script)
   return result
 end
 
+local function circular_enemy(tag, x, y, formation_index)
+  return {
+    components = {
+      tag = { tag = tag .. "_" .. formation_index },
+      health = { max_health = 100, regeneration_rate = 0 },
+      box_collider = {
+        width = 16 * 2,
+        height = 16 * 2,
+        offset = { x = 0.0, y = 0.0 },
+      },
+      sprite = {
+        assetId = "enemy_1",
+        width = 16,
+        height = 16,
+        src_rect = { x = 16, y = 0 },
+      },
+      transform = {
+        position = { x = x, y = y },
+        scale = { x = 1.3, y = 1.3 },
+        rotation = 0.0,
+      },
+      rg_body = {
+        velocity = { x = 0, y = 0 },
+      },
+      script = {
+        "./assets/scripts/enemy_scripts/circle_enemy.lua",
+      },
+      animation = {
+        num_frames = 6,
+        speed_rate = 10,
+        is_loop = true,
+      },
+    },
+    center_x = 100,
+  }
+end
+
+
 local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
   return {
     components = {
@@ -135,14 +173,14 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
       },
       transform = {
         position = { x = x, y = y },
-        scale = { x = 1.5, y = 1.5 },
+        scale = { x = 1.3, y = 1.3 },
         rotation = 0.0,
       },
       rg_body = {
         velocity = { x = vel_x, y = vel_y },
       },
       script = {
-        "./assets/scripts/enemy_scripts/basic_enemy.lua",
+
       },
     }
   }
@@ -225,6 +263,13 @@ scene = {
   point_entities = {},
   victory_point_id = nil,
   next_level = "level_03",
+
+  crosses = {
+    { x = 260, y = 260, radius = 80 },
+    { x = 500, y = 400, radius = 60 },
+  },
+  crosses_num = 2,
+
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),
@@ -256,7 +301,7 @@ scene = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
     },
     music = {
-      level_song = "./assets/audio/music/contra_jungle_song.mp3",
+      --level_song = "./assets/audio/music/contra_jungle_song.mp3",
     }
   },
 
@@ -272,7 +317,14 @@ scene = {
         init_component(),
     background(2000, 2000, "background"),
     player(),
-    text("Level 1", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
+    enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 30, 0, 0), -- center
+    --circular_enemy("enemy_top", 200, 200 - 16),
+    --circular_enemy("enemy_bottom", 200, 200 - 16 + 60),
+    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 16 * 2, 0, 0),
+    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 - 16 * 4, 0, 0),
+    --enemy(100, 0, "enemy_1", 100 + 10 + 42 * 2, 200 + 16 * 2, 0, 0),
+
+    text("Level 2", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
     text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
   }
@@ -310,30 +362,55 @@ function create_victory_point()
   scene.victory_point_id = id
 end
 
-local start_x = 100
-local start_y = 100
+local start_x = 58
+local start_y = 58
 local sep = 42
 
-create_horizontal_barrier_row(12, start_x, start_y, sep)
-create_horizontal_barrier_row(12, start_x, start_y + sep * 9, sep)
+create_horizontal_barrier_row(15, start_x, start_y, sep)            -- top
+create_horizontal_barrier_row(15, start_x, start_y + sep * 11, sep) --bot
 
-create_vertical_barrier_column(4, start_x, start_y - sep, sep)
-create_vertical_barrier_column(4, start_x, start_y + sep * 5, sep)
+-- create_vertical_barrier_column(4, start_x, start_y - sep, sep)
+-- create_vertical_barrier_column(4, start_x, start_y + sep * 5, sep)
 
-create_vertical_barrier_column(4, start_x + sep * 13, start_y - sep, sep)
-create_vertical_barrier_column(4, start_x + sep * 13, start_y + sep * 5, sep)
+create_vertical_barrier_column(12, start_x + sep * 15, start_y - sep, sep) -- right
+create_vertical_barrier_column(12, start_x, start_y - sep, sep)            -- left
 
-create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 3, sep)
-create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 6, sep)
 
-create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 3, sep)
-create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, sep)
+create_horizontal_barrier_row(15, start_x, start_y + sep * 5, sep) -- center top
+create_horizontal_barrier_row(15, start_x, start_y + sep * 6, sep) --cernter bot
 
-create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
-create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
+-- create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 3, sep)
+-- create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 6, sep)
+
+-- create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 3, sep)
+-- create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, sep)
+
+-- create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
+-- create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
 
 
 local speed = 40
-create_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, speed)
-create_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, -speed)
+
+
+
+local function create_rotating_cross(center_x, center_y, radius, formation_index)
+  local formation = {
+    circular_enemy("enemy_top", center_x, center_y - radius, formation_index),
+    circular_enemy("enemy_bottom", center_x, center_y + radius, formation_index),
+    circular_enemy("enemy_left", center_x - radius, center_y, formation_index),
+    circular_enemy("enemy_right", center_x + radius, center_y, formation_index),
+    circular_enemy("enemy_topleft", center_x - radius * 0.7, center_y - radius * 0.7, formation_index),
+    circular_enemy("enemy_topright", center_x + radius * 0.7, center_y - radius * 0.7, formation_index),
+    circular_enemy("enemy_bottomleft", center_x - radius * 0.7, center_y + radius * 0.7, formation_index),
+    circular_enemy("enemy_bottomright", center_x + radius * 0.7, center_y + radius * 0.7, formation_index)
+  }
+
+  for i = 0, #formation - 1 do
+    scene.entities[#scene.entities + 1] = formation[i]
+  end
+end
+
+
+create_rotating_cross(scene.crosses[1].x, scene.crosses[1].y, scene.crosses[1].radius, 1)
+create_rotating_cross(scene.crosses[2].x, scene.crosses[2].y, scene.crosses[2].radius, 2)
