@@ -264,11 +264,11 @@ scene = {
   victory_point_id = nil,
   next_level = "level_03",
 
-  crosses = {
-    { x = 250, y = 170, radius = 75 },
-    { x = 500, y = 400, radius = 75 },
+  circles = {
+    { x = 250, y = 170, radius = 60 },
+    { x = 500, y = 400, radius = 60 },
   },
-  crosses_num = 2,
+  circles_num = 2,
 
   sprites = {
     [0] =
@@ -366,19 +366,23 @@ create_horizontal_barrier_row(15, start_x, start_y + sep * 5, sep)         -- ce
 create_horizontal_barrier_row(15, start_x, start_y + sep * 6, sep)         --center bot
 
 
-local speed = 40
 
 
-local function create_rotating_cross(center_x, center_y, radius, formation_index)
+local diag_fact = 0.7
+
+local function create_rotating_circle(center_x, center_y, radius, formation_index)
   local formation = {
     circular_enemy("enemy_top", center_x, center_y - radius, formation_index),
     circular_enemy("enemy_bottom", center_x, center_y + radius, formation_index),
     circular_enemy("enemy_left", center_x - radius, center_y, formation_index),
     circular_enemy("enemy_right", center_x + radius, center_y, formation_index),
-    circular_enemy("enemy_topleft", center_x - radius * 0.7, center_y - radius * 0.7, formation_index),
-    circular_enemy("enemy_topright", center_x + radius * 0.7, center_y - radius * 0.7, formation_index),
-    circular_enemy("enemy_bottomleft", center_x - radius * 0.7, center_y + radius * 0.7, formation_index),
-    circular_enemy("enemy_bottomright", center_x + radius * 0.7, center_y + radius * 0.7, formation_index)
+    circular_enemy("enemy_topleft", center_x - radius * diag_fact, center_y - radius * diag_fact, formation_index),
+    circular_enemy("enemy_topright", center_x + radius * diag_fact, center_y - radius * diag_fact,
+      formation_index),
+    circular_enemy("enemy_bottomleft", center_x - radius * diag_fact, center_y + radius * diag_fact,
+      formation_index),
+    circular_enemy("enemy_bottomright", center_x + radius * diag_fact, center_y + radius * diag_fact,
+      formation_index)
   }
 
   for i = 0, #formation - 1 do
@@ -386,6 +390,6 @@ local function create_rotating_cross(center_x, center_y, radius, formation_index
   end
 end
 
-for i = 1, scene.crosses_num do
-  create_rotating_cross(scene.crosses[i].x, scene.crosses[i].y, scene.crosses[i].radius, i)
+for i = 1, scene.circles_num do
+  create_rotating_circle(scene.circles[i].x, scene.circles[i].y, scene.circles[i].radius, i)
 end

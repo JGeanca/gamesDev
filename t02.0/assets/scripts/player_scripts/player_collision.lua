@@ -30,7 +30,7 @@ function on_collision(other)
     if action then
       action()
     end
-  elseif other_tag == "enemy" then
+  elseif string.sub(other_tag, 1, 5) == "enemy" then
     local initial_x = 90
     local initial_y = 300
 
