@@ -31,10 +31,7 @@ function on_collision(other)
       action()
     end
   elseif string.sub(other_tag, 1, 5) == "enemy" then
-    local initial_x = 90
-    local initial_y = 300
-
-    set_position(this, initial_x, initial_y) -- reset player position
+    set_position(this, scene.pj_reset_pos.x, scene.pj_reset_pos.y) -- reset player position
     play_sound("shoot")
     reset_points()
     reset_victory_point()

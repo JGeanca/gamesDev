@@ -226,6 +226,8 @@ scene = {
   point_entities = {},
   victory_point_id = nil,
   next_level = "level_02",
+  pj_reset_pos = { x = 90, y = 300 },
+
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),

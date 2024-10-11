@@ -1,4 +1,3 @@
--- circle_enemy.lua
 local angle = 0
 local ROTATION_SPEED = 4
 

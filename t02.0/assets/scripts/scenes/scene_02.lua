@@ -53,7 +53,7 @@ local function player()
         height = 16,
         src_rect = { x = 16, y = 0 }
       },
-      transform = { position = { x = 80.0, y = 200.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
+      transform = { position = { x = 80.0, y = 100.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
       script = {
         "./assets/scripts/player_scripts/movement.lua",
         "./assets/scripts/player_scripts/player_collision.lua"
@@ -270,6 +270,8 @@ scene = {
   },
   circles_num = 2,
 
+  pj_reset_pos = { x = 80, y = 100 },
+
   sprites = {
     [0] =
         sprite("enemy_1", "./assets/images/enemy_1.png"),
@@ -300,7 +302,7 @@ scene = {
       shoot = "./assets/audio/sfx/shoot_01.wav",
     },
     music = {
-      --level_song = "./assets/audio/music/contra_jungle_song.mp3",
+      level_song = "./assets/audio/music/contra_jungle_song.mp3",
     }
   },
 
