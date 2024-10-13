@@ -53,7 +53,7 @@ local function player()
         height = 16,
         src_rect = { x = 16, y = 0 }
       },
-      transform = { position = { x = 80.0, y = 100.0 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
+      transform = { position = { x = 80, y = 140 }, scale = { x = 2.0, y = 2.0 }, rotation = 0.0 },
       script = {
         "./assets/scripts/player_scripts/movement.lua",
         "./assets/scripts/player_scripts/player_collision.lua"
@@ -297,8 +297,8 @@ scene = {
   },
   circles_num = 5,
 
-  pj_reset_pos = { x = 300, y = 500 },
-  --pj_reset_pos = { x = 80, y = 100 },
+  --pj_reset_pos = { x = 300, y = 500 },
+  pj_reset_pos = { x = 80, y = 140 },
 
   sprites = {
     [0] =
@@ -402,7 +402,7 @@ create_horizontal_barrier_row(12, start_x, start_y + sep * 6, sep)         --cen
 
 
 vel = 300
-create_enemies(1, 110, 300, 100, 0, vel)
+create_enemies(1, 110, 330, 100, 0, vel)
 
 local diag_fact = 0.7
 

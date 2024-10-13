@@ -84,6 +84,21 @@ void Register::clearAllEntities() {
     entityComponentSignatures[i].reset();
     freeIds.push_back(i);
   }
+
+  for (auto& pool : componentsPool) {
+    if (pool) {
+      pool.reset();
+    }
+  }
+  entityComponentSignatures.clear();
+  entityComponentSignatures.resize(100);
+
+  entitiesToBeAdded.clear();
+  entitiesToBeRemoved.clear();
+
+  freeIds.clear();
+
+  numEntities = 0;
 }
 
 void Register::update() {
