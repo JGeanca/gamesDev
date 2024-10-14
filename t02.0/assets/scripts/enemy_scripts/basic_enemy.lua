@@ -15,6 +15,14 @@ function on_collision(other)
       bottom = function()
         set_position(this, this_x, this_y - 1)
         set_velocity(this, vel_x, -vel_y)
+      end,
+      left = function()
+        set_position(this, this_x + 1, this_y)
+        set_velocity(this, -vel_x, vel_y)
+      end,
+      right = function()
+        set_position(this, this_x - 1, this_y)
+        set_velocity(this, -vel_x, vel_y)
       end
     }
 
