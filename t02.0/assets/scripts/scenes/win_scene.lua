@@ -1,34 +1,7 @@
-dofile("assets/scripts/general/game_state.lua")
-local shared = dofile("assets/scripts/general/game_functions.lua")
-
 local pauseScript = "./assets/scripts/general/pause_text.lua"
 local menuScript = "./assets/scripts/menu/go_to_menu.lua"
 
 scene = {
-  collected_points = 0,
-  is_paused = false,
-  point_positions = {
-    { x = 330, y = 360 },
-  },
-  total_points = 1,
-  point_entities = {},
-  victory_point_id = nil,
-  victory_point_pos = { x = 100, y = 430 },
-  next_level = "win_scene", -- TODO
-
-  circles = {
-    { x = 230, y = 170, radius = 60 },
-    { x = 430, y = 170, radius = 60 },
-    { x = 630, y = 185, radius = 73 },
-    { x = 600, y = 450, radius = 90 },
-    { x = 300, y = 450, radius = 90 },
-  },
-  circles_num = 5,
-
-  pj_reset_pos = { x = 80, y = 140 },
-  --pj_reset_pos = { x = 300, y = 500 },
-  --pj_reset_pos = { x = 400, y = 400 },
-
   sprites = {
     [0] =
         shared.sprite("enemy_1", "./assets/images/enemy_1.png"),
@@ -74,31 +47,8 @@ scene = {
     [0] =
         shared.init_component(),
     shared.background(2000, 2000, "background"),
-    shared.check_point(630, 320),
-    shared.player(80, 140),
     shared.text("Level 3", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     shared.text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
     shared.text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
   }
 }
-
-local start_x = 58
-local start_y = 58
-local sep = 42
-
-shared.create_horizontal_barrier_row(15, start_x, start_y, sep)                   -- top
-shared.create_horizontal_barrier_row(15, start_x, start_y + sep * 11, sep)        -- bot
-
-shared.create_vertical_barrier_column(12, start_x + sep * 15, start_y - sep, sep) -- right
-shared.create_vertical_barrier_column(12, start_x, start_y - sep, sep)            -- left
-
-shared.create_horizontal_barrier_row(12, start_x, start_y + sep * 5, sep)         -- center top
-shared.create_horizontal_barrier_row(12, start_x, start_y + sep * 6, sep)         --center bot
-
-
-vel = 300
-shared.create_bouncing_enemies(1, 110, 330, 100, 0, 0, vel, 1.2, 1.2, 16)
-
-for i = 1, scene.circles_num do
-  shared.create_rotating_circle(scene.circles[i].x, scene.circles[i].y, scene.circles[i].radius, i)
-end

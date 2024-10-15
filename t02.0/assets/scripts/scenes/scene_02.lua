@@ -68,7 +68,7 @@ scene = {
         shared.init_component(),
     shared.background(2000, 2000, "background"),
     shared.player(210, 130),
-    shared.text("Level 3", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
+    shared.text("Level 2", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     shared.text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
     shared.text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
   }
