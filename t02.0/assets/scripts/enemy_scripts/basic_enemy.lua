@@ -4,7 +4,7 @@ function on_collision(other)
   local collision_type = get_collision_type(this, other)
   local this_x, this_y = get_position(this)
 
-  if other_tag == "barrier" then
+  if other_tag == "barrier" or other_tag == "invisible_barrier" then
     local vel_x, vel_y = get_velocity(this)
 
     local collision_actions = {
