@@ -43,8 +43,8 @@ local function player()
       tag = { tag = "player" },
       health = { max_health = 100, regeneration_rate = 1 },
       box_collider = {
-        width = 15 * 2,
-        height = 15 * 2,
+        width = 16 * 2,
+        height = 16 * 2,
         offset = { x = 0.0, y = 0.0 }
       },
       sprite = {
@@ -119,8 +119,8 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
         regeneration_rate = regen_rate,
       },
       box_collider = {
-        width = 15 * 2,
-        height = 15 * 2,
+        width = 14 * 2,
+        height = 14 * 2,
         offset = { x = 0.0, y = 0.0 },
       },
       sprite = {
@@ -136,7 +136,7 @@ local function enemy(max_health, regen_rate, assetId, x, y, vel_x, vel_y)
       },
       transform = {
         position = { x = x, y = y },
-        scale = { x = 1.1, y = 1.1 },
+        scale = { x = 1.12, y = 1.12 },
         rotation = 0.0,
       },
       rg_body = {
@@ -244,9 +244,12 @@ scene = {
   collected_points = 0,
   is_paused = false,
   point_positions = {
-    { x = 330, y = 360 },
+    { x = 404, y = 320 },
+    { x = 404, y = 270 },
+    { x = 360, y = 270 },
+    { x = 360, y = 320 },
   },
-  total_points = 1,
+  total_points = 4,
   point_entities = {},
   victory_point_id = nil,
   next_level = "level_03",
@@ -286,7 +289,7 @@ scene = {
       check_point = "./assets/audio/sfx/check_point.wav",
     },
     music = {
-      --level_song = "./assets/audio/music/contra_jungle_song.mp3",
+      level_song = "./assets/audio/music/Judgment X .mp3",
     }
   },
 
@@ -299,7 +302,6 @@ scene = {
     [0] =
         init_component(),
     background(2000, 2000, "background"),
-    check_point(630, 320),
     player(),
     text("Level 3", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
     text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
@@ -337,7 +339,7 @@ function create_points()
 end
 
 function create_victory_point()
-  local id = create_entity(100, 430, 16, 16, "victory_point", "victory_point")
+  local id = create_entity(550, 130, 16, 16, "victory_point", "victory_point")
   scene.victory_point_id = id
 end
 
@@ -385,4 +387,8 @@ create_vertical_barrier_column(2, start_x + sep * 10, start_y, sep)
 
 local speed = 150
 create_enemies(2, 155, start_y + sep * 4 + 12, 0, sep * 2, speed, 0)
-create_enemies(1, 285, start_y + sep * 5 + 12, 0, 0, -speed, 0)
+create_enemies(1, 286, start_y + sep * 5 + 12, 0, 0, -speed, 0)
+
+
+create_enemies(2, 155 + sep * 8, start_y + sep * 4 + 12, 0, sep * 2, speed, 0)
+create_enemies(1, 286 + sep * 8, start_y + sep * 5 + 12, 0, 0, -speed, 0)
