@@ -72,9 +72,6 @@ void Game::init() {
 
   this->renderer = SDL_CreateRenderer(this->window, SDL_DEFAULT_SCREEN_DRIVER,
                                       SDL_WITHOUT_FLAGS);
-  // audioManager->loadMusic("background",
-  //                         "./assets/audio/music/Donkey Kong Country GB.mp3");
-  // audioManager->playMusic("background", -1);
 }
 
 void Game::setUp() {

@@ -1,7 +1,8 @@
-create_points()
+local shared = dofile("assets/scripts/general/game_functions.lua")
+
+shared.create_points()
 
 function on_collision(other)
-  local this_tag = get_tag(this)
   local other_tag = get_tag(other)
   local collision_type = get_collision_type(this, other)
   local this_x, this_y = get_position(this)
@@ -33,6 +34,8 @@ function on_collision(other)
   elseif string.sub(other_tag, 1, 5) == "enemy" then
     set_position(this, scene.pj_reset_pos.x, scene.pj_reset_pos.y) -- reset player position
     play_sound("shoot")
+    game_state.total_deaths = game_state.total_deaths + 1
+    print("Total deaths: " .. game_state.total_deaths)
     reset_points()
     reset_victory_point()
   elseif other_tag == "flag_point" then
@@ -40,7 +43,7 @@ function on_collision(other)
     scene.collected_points = scene.collected_points + 1
     play_sound("point")
     if scene.collected_points == scene.total_points then
-      create_victory_point()
+      shared.create_victory_point()
     end
   elseif other_tag == "victory_point" then
     go_to_scene(scene.next_level)
@@ -62,7 +65,7 @@ function reset_points()
   end
 
   scene.point_entities = {}
-  create_points()
+  shared.create_points()
 end
 
 function reset_victory_point()
