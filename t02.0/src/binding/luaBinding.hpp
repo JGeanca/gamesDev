@@ -345,10 +345,23 @@ std::tuple<int, int> getSize(const Entity& entity) {
 }
 
 // * Entities
-// TODO: ADD DOC
 
+/**
+ * @brief Kill the entity.
+ * @param entity The entity.
+ */
 void killEntity(Entity& entity) { entity.killEntity(); }
 
+/**
+ * @brief Create an entity.
+ * @param x The x position.
+ * @param y The y position.
+ * @param width The width.
+ * @param height The height.
+ * @param textureId The texture id.
+ * @param tag The tag.
+ * @return The id of the entity.
+ */
 int createEntity(int x, int y, int width, int height,
                  const std::string& textureId, const std::string& tag) {
   Entity newEntity = Game::getInstance().registry->createEntity();
@@ -362,18 +375,59 @@ int createEntity(int x, int y, int width, int height,
   return newEntity.getId();
 }
 
+/**
+ * @brief Verify if the entity exists.
+ * @param entity The entity.
+ * @return true If the entity exists, false otherwise.
+ */
 int entityExists(Entity& entity) {
   return Game::getInstance().registry->entityExists(entity.getId());
 }
 
+/**
+ * @brief Verify if the entity exists by id.
+ * @param entityId The id of the entity.
+ * @return true If the entity exists, false otherwise.
+ */
 int entityExistsById(int entityId) {
   return Game::getInstance().registry->entityExists(entityId);
 }
 
+/**
+ * @brief Get the entity by id.
+ * @param entityId The id of the entity.
+ * @return The entity id.
+ */
 int getEntityId(Entity& entity) { return entity.getId(); }
 
+/**
+ * @brief Kill the entity by id.
+ * @param entityId The id of the entity.
+ */
 void killEntityById(int entityId) {
   Game::getInstance().registry->killEntityById(entityId);
+}
+
+/**
+ * @brief Create a text entity.
+ * @param x The x position.
+ * @param y The y position.
+ * @param text The text.
+ * @param font The font.
+ * @param size The size.
+ * @param tag The tag.
+ * @return The id of the entity.
+ */
+int createTextEntity(int x, int y, const std::string& text,
+                     const std::string& font, int size,
+                     const std::string& tag) {
+  Entity newEntity = Game::getInstance().registry->createEntity();
+  newEntity.addComponent<TextComponent>(text, font, size, 255);
+  newEntity.addComponent<TagComponent>(tag);
+  newEntity.addComponent<TransformComponent>(glm::vec2(x, y),
+                                             glm::vec2(1.0, 1.0), 0.0);
+
+  return newEntity.getId();
 }
 
 #endif  // LUA_BINDING_HPP

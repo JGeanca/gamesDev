@@ -1,3 +1,4 @@
+dofile("assets/scripts/general/game_state.lua")
 local shared = dofile("assets/scripts/general/game_functions.lua")
 
 shared.create_points()
@@ -35,6 +36,9 @@ function on_collision(other)
     set_position(this, scene.pj_reset_pos.x, scene.pj_reset_pos.y) -- reset player position
     play_sound("shoot")
     game_state.total_deaths = game_state.total_deaths + 1
+    kill_entity_by_id(game_state.deaths_id)
+    game_state.deaths_id = create_text_entity(300, 10, "Deaths: " .. game_state.total_deaths, "press_start_2p_20", 30,
+      "dd_txt")
     print("Total deaths: " .. game_state.total_deaths)
     reset_points()
     reset_victory_point()

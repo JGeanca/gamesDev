@@ -93,6 +93,7 @@ shared.create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, s
 shared.create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
 shared.create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
-local speed = 360
+--local speed = 360
+local speed = 0
 shared.create_bouncing_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, 0, speed, 1.5, 1.5, 16)
 shared.create_bouncing_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, 0, -speed, 1.5, 1.5, 16)
