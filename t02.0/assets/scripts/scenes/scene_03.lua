@@ -76,9 +76,9 @@ scene = {
     shared.background(2000, 2000, "background"),
     shared.check_point(630, 320),
     shared.player(80, 140),
-    shared.text("Level 3", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
-    shared.text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
-    shared.text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
+    shared.text("Level 3", "press_start_2p_20", 0, 255, 0, 255, 650.0, 15.0),
+    shared.text("Menu", "press_start_2p_20", 255, 255, 0, 255, 10.0, 15.0, menuScript),
+    shared.text("Game Paused", "press_start_2p_x", 255, 0, 0, 1, 230.0, 300.0, pauseScript),
   }
 }
 

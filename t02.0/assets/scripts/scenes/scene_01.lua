@@ -65,9 +65,9 @@ scene = {
         shared.init_component(),
     shared.background(2000, 2000, "background"),
     shared.player(90, 300),
-    shared.text("Level 1", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
-    shared.text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
-    shared.text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
+    shared.text("Level 1", "press_start_2p_20", 0, 255, 0, 255, 650.0, 15.0),
+    shared.text("Menu", "press_start_2p_20", 255, 255, 0, 255, 10.0, 15.0, menuScript),
+    shared.text("Game Paused", "press_start_2p_x", 255, 0, 0, 1, 230.0, 300.0, pauseScript),
   }
 }
 
@@ -93,7 +93,6 @@ shared.create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, s
 shared.create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
 shared.create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
 
---local speed = 360
-local speed = 0
+local speed = 360
 shared.create_bouncing_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, 0, speed, 1.5, 1.5, 16)
 shared.create_bouncing_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, 0, -speed, 1.5, 1.5, 16)

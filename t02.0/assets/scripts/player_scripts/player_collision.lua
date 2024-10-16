@@ -37,9 +37,8 @@ function on_collision(other)
     play_sound("shoot")
     game_state.total_deaths = game_state.total_deaths + 1
     kill_entity_by_id(game_state.deaths_id)
-    game_state.deaths_id = create_text_entity(300, 10, "Deaths: " .. game_state.total_deaths, "press_start_2p_20", 30,
+    game_state.deaths_id = create_text_entity(300, 15, "Deaths: " .. game_state.total_deaths, "press_start_2p_20", 30,
       "dd_txt")
-    print("Total deaths: " .. game_state.total_deaths)
     reset_points()
     reset_victory_point()
   elseif other_tag == "flag_point" then
