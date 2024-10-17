@@ -359,18 +359,21 @@ void killEntity(Entity& entity) { entity.killEntity(); }
  * @param width The width.
  * @param height The height.
  * @param textureId The texture id.
+ * @param rect_x The x position of the rectangle.
+ * @param rotation The rotation.
  * @param tag The tag.
  * @return The id of the entity.
  */
-int createEntity(int x, int y, int width, int height,
+int createEntity(int x, int y, int width, int height, int rect_x, int rotation,
                  const std::string& textureId, const std::string& tag) {
   Entity newEntity = Game::getInstance().registry->createEntity();
-  newEntity.addComponent<SpriteComponent>(textureId, width, height, 0.0, 0.0);
+  newEntity.addComponent<SpriteComponent>(textureId, width, height, rect_x,
+                                          0.0);
   newEntity.addComponent<BoxColliderComponent>(width * 2, height * 2,
                                                glm::vec2(0.0, 0.0));
   newEntity.addComponent<TagComponent>(tag);
   newEntity.addComponent<TransformComponent>(glm::vec2(x, y),
-                                             glm::vec2(2.0, 2.0), 0.0);
+                                             glm::vec2(2.0, 2.0), rotation);
 
   return newEntity.getId();
 }

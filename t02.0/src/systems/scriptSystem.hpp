@@ -54,7 +54,6 @@ class ScriptSystem : public System {
     lua.set_function("entity_exists_by_id", entityExistsById);
     lua.set_function("get_entity_id", getEntityId);
     lua.set_function("create_text_entity", createTextEntity);
-    lua.set_function("set_text_msg", setTextMessage);
   }
 
   /**

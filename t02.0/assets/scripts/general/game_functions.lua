@@ -198,10 +198,10 @@ function shared.victory_point(x, y)
       transform = {
         position = { x = x, y = y },
         scale = { x = 2.0, y = 2.0 },
-        rotation = 0.0,
+        rotation = 180.0,
       },
       sprite = {
-        assetId = "flag_point",
+        assetId = "victory_point",
         width = 16,
         height = 16,
         src_rect = { x = 32, y = 0 },
@@ -322,13 +322,14 @@ function shared.create_points()
   for i = 0, scene.total_points - 1 do
     local point_x = scene.point_positions[i + 1].x
     local point_y = scene.point_positions[i + 1].y
-    local id = create_entity(point_x, point_y, 16, 16, "flag_point", "flag_point")
+    local id = create_entity(point_x, point_y, 16, 16, 0, 0, "flag_point", "flag_point")
     scene.point_entities[#scene.point_entities + 1] = id
   end
 end
 
 function shared.create_victory_point()
-  local id = create_entity(scene.victory_point_pos.x, scene.victory_point_pos.y, 16, 16, "victory_point", "victory_point")
+  local id = create_entity(scene.victory_point_pos.x, scene.victory_point_pos.y, 16, 16, 32, 180, "victory_point",
+    "victory_point")
   scene.victory_point_id = id
 end
 
