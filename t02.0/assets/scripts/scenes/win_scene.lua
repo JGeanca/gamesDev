@@ -1,40 +1,29 @@
-local pauseScript = "./assets/scripts/general/pause_text.lua"
+local shared = dofile("assets/scripts/general/game_functions.lua")
 local menuScript = "./assets/scripts/menu/go_to_menu.lua"
 
 scene = {
   sprites = {
     [0] =
-        shared.sprite("enemy_1", "./assets/images/enemy_1.png"),
-    shared.sprite("player_ship", "./assets/images/player_ship.png"),
-    shared.sprite("background", "./assets/images/background_space_ammo_8.png"),
-    shared.sprite("barrier", "./assets/images/barrier.png"),
-    shared.sprite("flag_point", "./assets/images/flag_point.png"),
-    shared.sprite("victory_point", "./assets/images/pick_ups.png"),
+        shared.sprite("background", "./assets/images/background_win.png"),
+
   },
 
   fonts = {
     [0] =
-        shared.font("press_start_2p_20", "./assets/fonts/press_start_2p.ttf", 20),
-    shared.font("press_start_2p_18", "./assets/fonts/press_start_2p.ttf", 18),
-    shared.font("press_start_2p_x", "./assets/fonts/press_start_2p.ttf", 32),
+        shared.font("press_start_2p_24", "./assets/fonts/press_start_2p.ttf", 24),
+    shared.font("press_start_2p_20", "./assets/fonts/press_start_2p.ttf", 20),
+    shared.font("press_start_2p_15", "./assets/fonts/press_start_2p.ttf", 15),
   },
 
   keys = {
-    [0] =
-    { name = "up", key = 119 },    -- w
-    { name = "left",  key = 97 },  -- a
-    { name = "down",  key = 115 }, -- s
-    { name = "right", key = 100 }, -- d
   },
 
   audio = {
     sound_effects = {
-      shoot = "./assets/audio/sfx/shoot_01.wav",
-      point = "./assets/audio/sfx/point.wav",
-      check_point = "./assets/audio/sfx/check_point.wav",
+      selection = "./assets/audio/sfx/selection.wav",
     },
     music = {
-      level_song = "./assets/audio/music/contra_jungle_song.mp3",
+      level_song = "./assets/audio/music/Carry Out X.mp3",
     }
   },
 
@@ -45,10 +34,11 @@ scene = {
 
   entities = {
     [0] =
-        shared.init_component(),
-    shared.background(2000, 2000, "background"),
-    shared.text("Level 3", "press_start_2p_20", 150, 0, 150, 255, 650.0, 10.0),
-    shared.text("Menu", "press_start_2p_18", 150, 0, 150, 255, 10.0, 10.0, menuScript),
-    shared.text("Game Paused", "press_start_2p_x", 97, 0, 250, 1, 230.0, 300.0, pauseScript),
+        shared.init_component_2(),
+    shared.background(800, 600, "background"),
+    shared.text("GG!", "press_start_2p_24", 0, 255, 0, 255, 375.0, 100.0),
+    shared.text("Thanks for playing!", "press_start_2p_20", 0, 255, 0, 255, 200.0, 280.0),
+    shared.text("Back to menu", "press_start_2p_15", 255, 0, 0, 255, 585.0, 20.0, menuScript),
+
   }
 }

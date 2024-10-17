@@ -90,8 +90,8 @@ void playSound(const std::string& name) {
  * @brief Play a music.
  * @param name
  */
-void playMusic(const std::string& name) {
-  Game::getInstance().audioManager->playMusic(name);
+void playMusic(const std::string& name, int loops) {
+  Game::getInstance().audioManager->playMusic(name, loops);
 }
 
 /**

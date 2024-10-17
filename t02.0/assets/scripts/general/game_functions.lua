@@ -275,6 +275,19 @@ function shared.init_component()
   }
 end
 
+function shared.init_component_2()
+  return {
+    components = {
+      tag = {
+        tag = "level_manager"
+      },
+      script = {
+        path = "./assets/scripts/general/win.lua",
+      },
+    }
+  }
+end
+
 function shared.create_horizontal_barrier_row(num_barriers, init_x, y, sep)
   for i = 0, num_barriers - 1 do
     scene.entities[#scene.entities + 1] = shared.barrier(init_x + sep, y)

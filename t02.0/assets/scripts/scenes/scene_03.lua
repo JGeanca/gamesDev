@@ -14,7 +14,7 @@ scene = {
   point_entities = {},
   victory_point_id = nil,
   victory_point_pos = { x = 100, y = 430 },
-  next_level = "win_scene", -- TODO
+  next_level = "win_scene",
 
   circles = {
     { x = 230, y = 170, radius = 60 },
