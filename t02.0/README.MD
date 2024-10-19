@@ -38,6 +38,12 @@ Menu:
 
 Use mouse (left click) to navigate through the menu and levels.
 
+### Design UML
+
+![UML_Diagram](./design/GameEngineUML.svg)
+
+To see the diagram in more detail [click here](https://drive.google.com/file/d/1zphKNW7CagGxb6O-eT8wpsbV8bpayV1j/view?usp=drive_link)
+
 ## User Manual
 
 ### Requirements
