@@ -80,7 +80,7 @@ void setTextVisibility(const Entity& entity, bool isVisible) {
 
 /**
  * @brief Play a sound effect.
- * @param name
+ * @param name sound effect name.
  */
 void playSound(const std::string& name) {
   Game::getInstance().audioManager->playSoundEffect(name);

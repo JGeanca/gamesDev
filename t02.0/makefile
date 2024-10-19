@@ -61,3 +61,8 @@ ubsan: clean all
 # Valgrind Memory Checks
 memcheck: all
 	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./$(EXEC)
+
+docs:
+	doxygen Doxyfile
+
+.PHONY: all clean run run-d asan msan tsan ubsan memcheck docs

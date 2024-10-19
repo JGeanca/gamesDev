@@ -59,6 +59,7 @@ class ScriptSystem : public System {
   /**
    * @brief This method updates the script components.
    * @param lua The lua state.
+   * @param deltaTime The time between frames.
    */
   void update(sol::state& lua, float deltaTime = 0.0f) {
     for (auto& entity : getEntities()) {
