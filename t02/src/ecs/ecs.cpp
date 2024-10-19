@@ -84,6 +84,21 @@ void Register::clearAllEntities() {
     entityComponentSignatures[i].reset();
     freeIds.push_back(i);
   }
+
+  for (auto& pool : componentsPool) {
+    if (pool) {
+      pool.reset();
+    }
+  }
+  entityComponentSignatures.clear();
+  entityComponentSignatures.resize(100);
+
+  entitiesToBeAdded.clear();
+  entitiesToBeRemoved.clear();
+
+  freeIds.clear();
+
+  numEntities = 0;
 }
 
 void Register::update() {
@@ -99,4 +114,38 @@ void Register::update() {
     freeIds.push_back(entity.getId());
   }
   entitiesToBeRemoved.clear();
+}
+
+bool Register::entityExists(int entityId) const {
+  if (entityId < 0 || entityId >= numEntities) {
+    return false;
+  }
+
+  if (std::find(freeIds.begin(), freeIds.end(), entityId) != freeIds.end()) {
+    return false;
+  }
+
+  return !isEntityMarkedForRemoval(Entity(entityId));
+}
+
+bool Register::isEntityMarkedForRemoval(const Entity& entity) const {
+  return entitiesToBeRemoved.find(entity) != entitiesToBeRemoved.end();
+}
+
+void Register::killEntityById(int entityId) {
+  if (entityExists(entityId)) {
+    destroyEntity(Entity(entityId));
+  }
+}
+
+std::set<Entity> Register::getEntities() {
+  std::set<Entity> allEntities;
+
+  for (int i = 0; i < numEntities; i++) {
+    if (entityExists(i)) {
+      allEntities.insert(Entity(i));
+    }
+  }
+
+  return allEntities;
 }

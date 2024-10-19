@@ -9,6 +9,7 @@
 #include <sol/sol.hpp>
 
 #include "../assetManager/assetManager.hpp"
+#include "../audioManager/audioManager.hpp"
 #include "../controllerManager/controllerManager.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
@@ -28,19 +29,28 @@ const double MAX_DELTA_TIME = 0.05;
  * It has the main loop and the main methods to run the game.
  */
 class Game {
- private:                 // attributes
-  SDL_Window *window;     // SDL window pointer
-  bool isRunning;         // Flag to control the game loop.
-  int windowWidth;        // Window width
-  int windowHeight;       // Window height
+ private:              // attributes
+  SDL_Window *window;  // SDL window pointer
+  SDL_Rect camera;     // Camera rectangle
+  bool isRunning;      // Flag to control the game loop.
+
   int miliPreviousFrame;  // Milliseconds per frame (previous frame)
+  bool isPaused;          // Flag to control the pause state
 
  public:
+  int windowWidth;   // Window width
+  int windowHeight;  // Window height
+
+  int mapWidth;   // Map width
+  int mapHeight;  // Map height
+
   std::unique_ptr<Register> registry;                    // ECS registry
   std::unique_ptr<AssetManager> assetManager;            // Asset manager
   std::unique_ptr<EventManager> eventManager;            // Event manager
   std::unique_ptr<ControllerManager> controllerManager;  // Controller manager
   std::unique_ptr<SceneManager> sceneManager;            // Scene manager
+  std::unique_ptr<AudioManager> audioManager;            // Audio manager
+
   SDL_Renderer *renderer;  // SDL renderer pointer+
   sol::state lua;          // Lua state
 
@@ -107,6 +117,8 @@ class Game {
    * @details Free all the resources used by the game.
    */
   void destroy();
+
+  void togglePause();
 };
 
 #endif  // GAME_HPP

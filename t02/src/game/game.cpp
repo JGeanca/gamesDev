@@ -6,11 +6,12 @@
 #include "../events/clickEvent.hpp"
 #include "../sceneManager/sceneManager.hpp"
 #include "../systems/animationSystem.hpp"
-#include "../systems/collisionHandlerSystem.hpp"
-#include "../systems/collisionSystem.hpp"
+#include "../systems/boxCollisionSystem.hpp"
+#include "../systems/cameraMovementSystem.hpp"
+#include "../systems/circleCollisionSystem.hpp"
 #include "../systems/damageSystem.hpp"
+#include "../systems/healthSystem.hpp"
 #include "../systems/movementSystem.hpp"
-#include "../systems/playerSystem.hpp"
 #include "../systems/renderSystem.hpp"
 #include "../systems/renderTextSystem.hpp"
 #include "../systems/scriptSystem.hpp"
@@ -19,6 +20,7 @@
 
 Game::Game() {
   DEBUG_MSG("[Game] Game constructor called");
+  this->isPaused = false;
   this->window = nullptr;
   this->renderer = nullptr;
   this->isRunning = false;
@@ -28,17 +30,13 @@ Game::Game() {
   this->eventManager = std::make_unique<EventManager>();
   this->controllerManager = std::make_unique<ControllerManager>();
   this->sceneManager = std::make_unique<SceneManager>();
+  this->audioManager = std::make_unique<AudioManager>();
   init();
 }
 
 Game::~Game() {
   DEBUG_MSG("[Game] Game destructor called");
   destroy();
-  this->assetManager.reset();
-  this->controllerManager.reset();
-  this->eventManager.reset();
-  this->registry.reset();
-  this->sceneManager.reset();
 }
 
 Game &Game::getInstance() {
@@ -49,6 +47,10 @@ Game &Game::getInstance() {
 void Game::init() {
   this->windowWidth = 800;
   this->windowHeight = 600;
+  this->mapWidth = 2000;
+  this->mapHeight = 2000;
+
+  this->camera = {0, 0, windowWidth, windowHeight};
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     std::cerr << "Error initializing SDL: " << SDL_GetError() << std::endl;
     return;
@@ -77,15 +79,17 @@ void Game::setUp() {
   registry->addSystem<RenderTextSystem>();
   registry->addSystem<MovementSystem>();
   registry->addSystem<AnimationSystem>();
-  registry->addSystem<CollisionSystem>();
-  // registry->addSystem<DamageSystem>();
+  registry->addSystem<CircleCollisionSystem>();
+  registry->addSystem<BoxCollisionSystem>();
+  registry->addSystem<DamageSystem>();
   registry->addSystem<ScriptSystem>();
   registry->addSystem<UISystem>();
-  registry->addSystem<CollisionHandlerSystem>();
-  registry->addSystem<PlayerSystem>();
+  registry->addSystem<HealthSystem>();
+  registry->addSystem<CameraMovementSystem>();
+
   sceneManager->loadSceneFromScript("./assets/scripts/scenes.lua", lua);
 
-  lua.open_libraries(sol::lib::base, sol::lib::math);
+  lua.open_libraries(sol::lib::base, sol::lib::math, sol::lib::string);
   registry->getSystem<ScriptSystem>().createLuaBinding(lua);
 }
 
@@ -113,6 +117,12 @@ void Game::destroy() {
   DEBUG_MSG("[Game] Destroying game");
   SDL_DestroyRenderer(this->renderer);
   SDL_DestroyWindow(this->window);
+  this->assetManager.reset();
+  this->controllerManager.reset();
+  this->eventManager.reset();
+  this->sceneManager.reset();
+  this->audioManager.reset();
+  this->registry.reset();
   TTF_Quit();
   SDL_Quit();
 }
@@ -131,6 +141,14 @@ void Game::handleEvents() {
         if (event.key.keysym.sym == SDLK_ESCAPE) {
           sceneManager->stopScene();
           this->isRunning = false;
+          break;
+        }
+        if (event.key.keysym.sym == SDLK_p) {
+          togglePause();
+          break;
+        }
+        if (event.key.keysym.sym == SDLK_m) {
+          this->audioManager->toggleMusic();
           break;
         }
         controllerManager->keyDownEvent(event.key.keysym.sym);
@@ -166,7 +184,7 @@ void Game::render() {
   SDL_SetRenderDrawColor(this->renderer, 31, 31, 31, 255);
   SDL_RenderClear(this->renderer);
 
-  registry->getSystem<RenderSystem>().update(this->renderer,
+  registry->getSystem<RenderSystem>().update(this->renderer, this->camera,
                                              this->assetManager);
   registry->getSystem<RenderTextSystem>().update(this->renderer,
                                                  this->assetManager);
@@ -185,17 +203,26 @@ void Game::update() {
   miliPreviousFrame = SDL_GetTicks();
 
   // TODO: Add deltaTime to LUA
+  if (!isPaused) {
+    eventManager->reset();
+    registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
 
-  eventManager->reset();
-  // registry->getSystem<DamageSystem>().suscribeToCollisionEvent(eventManager);
-  registry->getSystem<CollisionHandlerSystem>().suscribeToCollisionEvent(
-      eventManager);
+    registry->update();
+    registry->getSystem<MovementSystem>().update(deltaTime);
+    registry->getSystem<CameraMovementSystem>().update(camera);
+    registry->getSystem<HealthSystem>().update(deltaTime);
+    registry->getSystem<CircleCollisionSystem>().update(eventManager);
+    registry->getSystem<BoxCollisionSystem>().update(lua);
+    registry->getSystem<AnimationSystem>().update();
+  }
+  registry->getSystem<ScriptSystem>().update(lua, deltaTime);
   registry->getSystem<UISystem>().subscribeToClickEvent(eventManager);
-  registry->getSystem<PlayerSystem>().subscribeToPlayerKilledEvent(
-      eventManager);
-  registry->update();
-  registry->getSystem<ScriptSystem>().update(lua);
-  registry->getSystem<MovementSystem>().update(deltaTime);
-  registry->getSystem<CollisionSystem>().update(eventManager);
-  registry->getSystem<AnimationSystem>().update();
+}
+
+void Game::togglePause() {
+  isPaused = !isPaused;
+  isPaused ? audioManager->pauseMusic() : audioManager->resumeMusic();
+  std::string pauseText = isPaused ? "PAUSED" : "RESUMED";
+  DEBUG_MSG("[Game] " + pauseText);
+  lua["scene"]["is_paused"] = isPaused;
 }

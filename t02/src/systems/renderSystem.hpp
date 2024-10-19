@@ -30,17 +30,18 @@ class RenderSystem : public System {
    * @brief Update the render system.
    * @param renderer SDL renderer pointer
    * @param AssetManager Asset manager pointer
+   * @param camera The camera rectangle.
    * @details This method renders the entities of the game.
    */
-  void update(SDL_Renderer* renderer,
+  void update(SDL_Renderer* renderer, SDL_Rect& camera,
               const std::unique_ptr<AssetManager>& AssetManager) {
     for (auto entity : getEntities()) {
       const auto& sprite = entity.getComponent<SpriteComponent>();
       const auto& transform = entity.getComponent<TransformComponent>();
 
       SDL_Rect srcRect = sprite.srcRect;
-      SDL_Rect destRect = {static_cast<int>(transform.position.x),
-                           static_cast<int>(transform.position.y),
+      SDL_Rect destRect = {static_cast<int>(transform.position.x - camera.x),
+                           static_cast<int>(transform.position.y - camera.y),
                            static_cast<int>(sprite.width * transform.scale.x),
                            static_cast<int>(sprite.height * transform.scale.y)};
 

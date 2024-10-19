@@ -5,8 +5,8 @@
 #include <string>
 
 #include "../components/circleColliderComponent.hpp"
-#include "../components/enemyComponent.hpp"
-#include "../components/playerComponent.hpp"
+#include "../components/healthComponent.hpp"
+#include "../components/tagComponent.hpp"
 #include "../ecs/ecs.hpp"
 #include "../eventManager/eventManager.hpp"
 #include "../events/collisionEvent.hpp"
@@ -36,18 +36,12 @@ class DamageSystem : public System {
         this, &DamageSystem::onCollision);
   }
 
-  /**
-   * @brief Check if the collision is between a player and an enemy
-   * @param entityA Entity A in the collision
-   * @param entityB Entity B in the collision
-   * @return true if the collision is between a player and an enemy, false
-   * otherwise
-   */
   bool isPlayerEnemyCollision(Entity& entityA, Entity& entityB) {
-    return (entityA.hasComponent<PlayerComponent>() &&
-            entityB.hasComponent<EnemyComponent>()) ||
-           (entityA.hasComponent<EnemyComponent>() &&
-            entityB.hasComponent<PlayerComponent>());
+    std::string tagA = entityA.getComponent<TagComponent>().tag;
+    std::string tagB = entityB.getComponent<TagComponent>().tag;
+
+    return (tagA == "player" && tagB == "enemy") ||
+           (tagA == "enemy" && tagB == "player");
   }
 
   /**
@@ -60,22 +54,24 @@ class DamageSystem : public System {
     Entity& entityA = event.entityA;
     Entity& entityB = event.entityB;
 
-    if (isPlayerEnemyCollision(entityA, entityB)) {
-      Entity& player =
-          entityA.hasComponent<PlayerComponent>() ? entityA : entityB;
-      Entity& enemy =
-          entityA.hasComponent<EnemyComponent>() ? entityA : entityB;
+    // TODO: Refactor this code
+    if (entityA.hasComponent<HealthComponent>() ||
+        entityB.hasComponent<HealthComponent>()) {
+      if (isPlayerEnemyCollision(entityA, entityB)) {
+        Entity& player = entityA.getComponent<TagComponent>().tag == "player"
+                             ? entityA
+                             : entityB;
 
-      DEBUG_MSG("[DamageSystem] Player collided with enemy. Player ID: " +
-                std::to_string(player.getId()) +
-                ", Enemy ID: " + std::to_string(enemy.getId()));
-      (void)enemy;  // Enemy is just for debugging purposes
-      player.killEntity();
+        auto& health = player.getComponent<HealthComponent>();
+        health.takeDamage(1);
+        std::string healthLeft = std::to_string(health.currentHealth);
+        DEBUG_MSG("Player took 1 damage, Health: " + healthLeft);
+        if (health.isDead()) {
+          DEBUG_MSG("Player is dead");
+          player.killEntity();
+        }
+      }
     }
-
-    DEBUG_MSG("[DamageSystem] Collision detected between " +
-              std::to_string(event.entityA.getId()) + " and " +
-              std::to_string(event.entityB.getId()));
   }
 };
 

@@ -34,6 +34,7 @@ class MovementSystem : public System {
     for (auto entity : getEntities()) {
       auto& transform = entity.getComponent<TransformComponent>();
       auto& rigidBody = entity.getComponent<RigidBodyComponent>();
+      transform.previousPosition = transform.position;
       transform.position.x += rigidBody.velocity.x * deltaTime;
       transform.position.y += rigidBody.velocity.y * deltaTime;
     }

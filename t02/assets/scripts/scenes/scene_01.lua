@@ -1,158 +1,98 @@
+dofile("assets/scripts/general/game_state.lua")
+local shared = dofile("assets/scripts/general/game_functions.lua")
+local pauseScript = "./assets/scripts/general/pause_text.lua"
+local menuScript = "./assets/scripts/menu/go_to_menu.lua"
+
 scene = {
+  collected_points = 0,
+  is_paused = false,
+  point_positions = {
+    { x = 320, y = 300 },
+    { x = 500, y = 300 },
+    { x = 570, y = 150 },
+    { x = 190, y = 440 },
+
+  },
+  total_points = 4,
+  point_entities = {},
+  victory_point_id = nil,
+  victory_point_pos = { x = 670, y = 300 },
+  next_level = "level_02",
+  pj_reset_pos = { x = 90, y = 300 },
+
   sprites = {
     [0] =
-    {assetId = "enemy_1", filePath = "./assets/images/enemy_1.png"},
-    {assetId = "player_ship", filePath = "./assets/images/player_ship.png"},
+        shared.sprite("enemy_1", "./assets/images/enemy_1.png"),
+    shared.sprite("player_ship", "./assets/images/player_ship.png"),
+    shared.sprite("background", "./assets/images/background_space_ammo_8.png"),
+    shared.sprite("barrier", "./assets/images/barrier.png"),
+    shared.sprite("flag_point", "./assets/images/flag_point.png"),
+    shared.sprite("victory_point", "./assets/images/pick_ups.png"),
   },
 
   fonts = {
-    [0] = 
-    {fontId = "press_start_2p_20", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 20},
-    {fontId = "press_start_2p_18", filePath = "./assets/fonts/press_start_2p.ttf", fontSize = 18},
-
+    [0] =
+        shared.font("press_start_2p_20", "./assets/fonts/press_start_2p.ttf", 20),
+    shared.font("press_start_2p_18", "./assets/fonts/press_start_2p.ttf", 18),
+    shared.font("press_start_2p_x", "./assets/fonts/press_start_2p.ttf", 32),
   },
 
   keys = {
-    [0] = 
-    {name = "left", key = 97},
-    {name = "right", key = 100},
-    {name = "up", key = 119},
-    {name = "down", key = 115}, 
+    [0] =
+    { name = "up", key = 119 },    -- w
+    { name = "left",  key = 97 },  -- a
+    { name = "down",  key = 115 }, -- s
+    { name = "right", key = 100 }, -- d
+  },
+
+  audio = {
+    sound_effects = {
+      shoot = "./assets/audio/sfx/shoot_01.wav",
+      point = "./assets/audio/sfx/point.wav",
+    },
+    music = {
+      level_song = "./assets/audio/music/Boss.mp3",
+    }
   },
 
   mouse_buttons = {
-    [0] = 
-    {name = "left", key = 1},
-    {name = "right", key = 3},
-    {name = "middle", key = 2},
+    [0] =
+    { name = "left", key = 1 },
   },
 
   entities = {
-    -- Player
     [0] =
-    {
-      components = {
-        player = {
-          reset_pos = {x = 400.0, y = 300.0},
-        },
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        sprite = {
-          assetId = "player_ship",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        transform = {
-          position = {x = 400.0, y = 300.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        script = {
-          path = "./assets/scripts/player_scripts/movement.lua"
-        },
-        rg_body = {
-          velocity = {x = 0.0, y = 0.0},
-        },            
-      },
-    },
-    { -- Enemy
-      components = {
-        enemy = {
-
-        },
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        sprite = {
-          assetId = "enemy_1",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        animation = {
-          num_frames = 6,
-          speed_rate = 10,
-          is_loop = true,
-        },
-        transform = {
-          position = {x = 100.0, y = 100.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        rg_body = {
-          velocity = {x = 100.0, y = 0.0},
-        },           
-      }
-    },
-    { -- Enemy
-      components = {
-        circle_collider = {
-          radius = 8,
-          width = 16,
-          height = 16,
-        },
-        victory = {
-          next_level = "level_02"
-        },
-        sprite = {
-          assetId = "enemy_1",
-          width = 16,
-          height = 16,
-          src_rect = {x = 16, y = 0},
-        },
-        animation = {
-          num_frames = 6,
-          speed_rate = 10,
-          is_loop = true,
-        },
-        transform = {
-          position = {x = 500.0, y = 500.0},
-          scale = {x = 2.0, y = 2.0},
-          rotation = 0.0,
-        },
-        rg_body = {
-          velocity = {x = 0.0, y = 0.0},
-        },           
-      }
-    },
-    { -- UI
-      components = {
-        text = {
-          text = "Level 1",
-          fontId = "press_start_2p_20",
-          r = 150, g = 0, b = 150, a = 255,
-        },
-        transform = {
-          position = {x = 650.0, y = 10.0},
-          scale = {x = 1.0, y = 1.0},
-          rotation = 0.0,
-        },         
-      }
-    },
-    {
-      components = {
-        clickable = {
-        },
-        text = {
-          text = "Menu",
-          fontId = "press_start_2p_18",
-          r = 150, g = 0, b = 150, a = 255,
-        },
-        transform = {
-          position = {x = 10.0, y = 10.0},
-          scale = {x = 1.0, y = 1.0},
-          rotation = 0.0,
-        },  
-        script = {
-          path = "./assets/scripts/menu/menu_button_00.lua",
-        },
-      }
-    }
+        shared.init_component(),
+    shared.background(2000, 2000, "background"),
+    shared.player(90, 300),
+    shared.text("Level 1", "press_start_2p_20", 0, 255, 0, 255, 650.0, 15.0),
+    shared.text("Menu", "press_start_2p_20", 255, 255, 0, 255, 10.0, 15.0, menuScript),
+    shared.text("Game Paused", "press_start_2p_x", 255, 0, 0, 1, 230.0, 300.0, pauseScript),
   }
 }
+
+local start_x = 100
+local start_y = 100
+local sep = 42
+
+shared.create_horizontal_barrier_row(12, start_x, start_y, sep)
+shared.create_horizontal_barrier_row(12, start_x, start_y + sep * 9, sep)
+
+shared.create_vertical_barrier_column(4, start_x, start_y - sep, sep)
+shared.create_vertical_barrier_column(4, start_x, start_y + sep * 5, sep)
+
+shared.create_vertical_barrier_column(4, start_x + sep * 13, start_y - sep, sep)
+shared.create_vertical_barrier_column(4, start_x + sep * 13, start_y + sep * 5, sep)
+
+shared.create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 3, sep)
+shared.create_horizontal_barrier_row(2, start_x - sep * 3, start_y + sep * 6, sep)
+
+shared.create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 3, sep)
+shared.create_horizontal_barrier_row(2, start_x + sep * 13, start_y + sep * 6, sep)
+
+shared.create_vertical_barrier_column(2, start_x - sep * 2, start_y + sep * 3, sep)
+shared.create_vertical_barrier_column(2, start_x + sep * 15, start_y + sep * 3, sep)
+
+local speed = 360
+shared.create_bouncing_enemies(6, start_x + sep + 9, start_y + sep + 2, sep * 2, 0, 0, speed, 1.5, 1.5, 16)
+shared.create_bouncing_enemies(6, start_x + sep * 2 + 9, start_y + sep * 8 + 15, sep * 2, 0, 0, -speed, 1.5, 1.5, 16)

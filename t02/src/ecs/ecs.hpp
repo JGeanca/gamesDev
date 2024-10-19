@@ -5,6 +5,7 @@
 #include <deque>
 #include <iostream>
 #include <memory>
+#include <optional>
 #include <set>
 #include <typeindex>
 #include <unordered_map>
@@ -361,6 +362,32 @@ class Register {
    * @brief Clears all entities from the register.
    */
   void clearAllEntities();
+
+  /**
+   * @brief Checks if an entity exists in the register.
+   * @param entityId The ID of the entity to check.
+   * @return True if the entity exists, false otherwise.
+   */
+  bool entityExists(int entityId) const;
+
+  /**
+   * @brief Checks if an entity is marked for removal.
+   * @param entity The entity to check.
+   * @return True if the entity is marked for removal, false otherwise.
+   */
+  bool isEntityMarkedForRemoval(const Entity& entity) const;
+
+  /**
+   * @brief Kills an entity by its ID.
+   * @param entityId The ID of the entity to kill.
+   */
+  void killEntityById(int entityId);
+
+  /**
+   * @brief Get all entities in the register.
+   * @return All entities in the register.
+   */
+  std::set<Entity> getEntities();
 };
 
 //* -----------------Implementation of template methods------------------------
