@@ -93,18 +93,90 @@ class SceneLoader {
 
  private:
   // Add component methods
+
+  /**
+   * @brief Add a tag component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addTagComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add an animation component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addAnimationComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a circle collider component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addCircleColliderComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a box collider component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addBoxColliderComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a rigid body component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addRigidBodyComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a sprite component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addSpriteComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a text component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addTextComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a clickable component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addClickableComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a transform component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addTransformComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a script component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   * @param lua Lua state
+   */
   void addScriptComponent(Entity& entity, const sol::table& components,
                           sol::state& lua);
+
+  /** @brief Add a health component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addHealthComponent(Entity& entity, const sol::table& components);
+
+  /**
+   * @brief Add a camera follow component to an entity
+   * @param entity Entity to add the component to
+   * @param components Lua table containing the component data
+   */
   void addCameraFollowComponent(Entity& entity, const sol::table& components);
 };
 

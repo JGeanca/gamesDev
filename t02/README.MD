@@ -15,6 +15,8 @@ This is a basic game that tries to provide a high level of difficulty, where pla
 
 For now, the game has only tree levels, but it is possible to add more levels with new mechanics in the future.
 
+**Clarification:** Due to the nature of the game, there are some points of the statement that are not applicable to this game. For example, the player does not kill enemies, so the score is not based on that, instead, the score is based on the number of deaths and so on. I obtained the professor's approval to make this kind of game.
+
 ## How to Play
 
 The objective of the game is to reach all the flag points to unlock the win condition. To do so, you must avoid the enemies and obstacles that will try to kill you. If you die, you will respawn at the last checkpoint you reached.
@@ -38,7 +40,7 @@ Menu:
 
 Use mouse (left click) to navigate through the menu and levels.
 
-### Design UML
+## Design UML
 
 ![UML_Diagram](./design/GameEngineUML.svg)
 
@@ -56,7 +58,7 @@ To run the program, you need a Linux terminal and the following libraries instal
 - libsdl2-mixer-dev
 - liblua5.3-dev
 
-## Installation
+### Installation
 
 You can install the required libraries by running the following command in the terminal:
 
