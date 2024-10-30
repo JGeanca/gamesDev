@@ -4,7 +4,7 @@ CFLAGS=-Wall -Wextra
 INC_PATH=-I"./libs/"
 SRC=$(shell find src -name '*.cpp')
 OBJ=$(patsubst src/%.cpp, build/%.o, $(SRC))
-LFLAGS=-lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3
+LFLAGS=-lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -llua5.3 -ltinyxml2
 EXEC=bin/exec
 
 SANITIZERS=

@@ -15,12 +15,99 @@
 #include "../components/tagComponent.hpp"
 #include "../components/textComponent.hpp"
 #include "../components/transformComponent.hpp"
+#include "../game/game.hpp"
 #include "../utils/debug.hpp"
 
 SceneLoader::SceneLoader() { DEBUG_MSG("[SceneLoader] SceneLoader created"); }
 
 SceneLoader::~SceneLoader() {
   DEBUG_MSG("[SceneLoader] SceneLoader destroyed");
+}
+
+void SceneLoader::loadMap(const sol::table& map,
+                          std::unique_ptr<Register>& registry) {
+  sol::optional<int> hasWidth = map["width"];
+  if (hasWidth != sol::nullopt) {
+    Game::getInstance().mapWidth = map["width"];
+  }
+
+  sol::optional<int> hasHeight = map["height"];
+  if (hasHeight != sol::nullopt) {
+    Game::getInstance().mapHeight = map["height"];
+  }
+
+  sol::optional<std::string> hasPath = map["map_path"];
+  if (hasPath != sol::nullopt) {
+    std::string mapPath = map["map_path"];
+
+    tinyxml2::XMLDocument xmlmap;
+    xmlmap.LoadFile(mapPath.c_str());
+
+    tinyxml2::XMLElement* xmlRoot = xmlmap.RootElement();
+
+    int tWidth, tHeight, mWidth, mHeight;
+    xmlRoot->QueryIntAttribute("tilewidth", &tWidth);
+    xmlRoot->QueryIntAttribute("tileheight", &tHeight);
+    xmlRoot->QueryIntAttribute("width", &mWidth);
+    xmlRoot->QueryIntAttribute("height", &mHeight);
+
+    Game::getInstance().mapWidth = mWidth * tWidth;
+    Game::getInstance().mapHeight = mHeight * tHeight;
+
+    std::string tilePath = map["tile_path"];  // tile set path
+    std::string tileName = map["tile_name"];  // tile set name
+
+    tinyxml2::XMLDocument xmltileset;
+    xmltileset.LoadFile(tilePath.c_str());
+
+    int columns;
+    tinyxml2::XMLElement* xmlTilesetRoot = xmltileset.RootElement();
+    xmlTilesetRoot->QueryIntAttribute("columns", &columns);
+
+    tinyxml2::XMLElement* xmlLayer = xmlRoot->FirstChildElement("layer");
+
+    while (xmlLayer) {
+      loadLayer(registry, xmlLayer, tWidth, tHeight, mWidth, tileName, columns);
+      xmlLayer = xmlLayer->NextSiblingElement("layer");
+    }
+  }
+}
+
+void SceneLoader::loadLayer(std::unique_ptr<Register>& registry,
+                            tinyxml2::XMLElement* layer, int tWidth,
+                            int tHeight, int mWidth, const std::string& tileSet,
+                            int columns) {
+  tinyxml2::XMLElement* xmlData = layer->FirstChildElement("data");
+  const char* data = xmlData->GetText();
+
+  std::stringstream tmpNum;
+  int pos = 0;
+  int tileNum = 0;
+
+  while (true) {
+    if (data[pos] == '\0') {
+      break;
+    }
+    if (isdigit(data[pos])) {
+      tmpNum << data[pos];
+    } else if (!isdigit(data[pos]) && tmpNum.str().length() != 0) {
+      int tiledId = std::stoi(tmpNum.str());
+      if (tiledId > 0) {
+        Entity tile = registry->createEntity();
+        tile.addComponent<TransformComponent>(
+            glm::vec2((tileNum % mWidth) * tWidth,
+                      (tileNum / mWidth) * tHeight),
+            glm::vec2(1, 1), 0);
+
+        tile.addComponent<SpriteComponent>(tileSet, tWidth, tHeight,
+                                           ((tiledId - 1) % columns) * tWidth,
+                                           ((tiledId - 1) / columns) * tHeight);
+      }
+      tileNum++;
+      tmpNum.str("");
+    }
+    pos++;
+  }
 }
 
 void SceneLoader::loadSprites(SDL_Renderer* renderer, const sol::table& sprites,
@@ -185,9 +272,6 @@ void SceneLoader::loadScene(
   sol::table mouseBindings = scene["mouse_buttons"];
   loadMouseBindings(mouseBindings, controllerManager);
 
-  sol::table entities = scene["entities"];
-  loadEntities(lua, entities, registry);
-
   sol::protected_function init_level = lua["init_level"];
   if (init_level.valid()) {
     auto result = init_level();
@@ -196,6 +280,12 @@ void SceneLoader::loadScene(
       std::cerr << "Error executing init_level: " << err.what() << std::endl;
     }
   }
+
+  sol::table maps = scene["maps"];
+  loadMap(maps, registry);
+
+  sol::table entities = scene["entities"];
+  loadEntities(lua, entities, registry);
 }
 
 void SceneLoader::addTagComponent(Entity& entity,

@@ -47,8 +47,8 @@ Game &Game::getInstance() {
 void Game::init() {
   this->windowWidth = 800;
   this->windowHeight = 600;
-  this->mapWidth = 2000;
-  this->mapHeight = 2000;
+  // this->mapWidth = 2000;
+  // this->mapHeight = 2000;
 
   this->camera = {0, 0, windowWidth, windowHeight};
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
